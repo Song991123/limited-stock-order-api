@@ -5,10 +5,10 @@
     "available": 10
   },
   {
+    "available": 8,
     "orders": 1,
     "stage": "purchase-restarted-after-commit",
-    "replayHttp": 200,
-    "available": 8
+    "replayHttp": 200
   },
   {
     "available": 8,
