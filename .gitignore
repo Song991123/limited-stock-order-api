@@ -1,0 +1,9 @@
+.gradle/
+.tools/
+.runtime/
+build/
+evidence/raw/
+*.log
+*.zip
+.idea/
+*.iml
