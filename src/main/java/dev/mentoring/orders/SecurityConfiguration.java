@@ -14,9 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * 로그인 계정 조회, 비밀번호 검증과 API 보안 필터 구성.
+ * 로그인 계정 확인, 비밀번호 비교와 CSRF 검사 설정.
  *
- * <p>Bean 메서드끼리 직접 호출하지 않고 매개변수로 의존성을 전달해 설정 프록시 생략.
+ * <p>Bean 메서드끼리 직접 호출하지 않아 proxyBeanMethods는 false 사용.
  */
 @Configuration(proxyBeanMethods = false)
 public class SecurityConfiguration {
@@ -27,9 +27,9 @@ public class SecurityConfiguration {
     }
 
     /**
-     * DB 계정명과 비밀번호 해시로 Spring Security의 인증 정보 구성.
+     * DB에 저장된 계정명과 비밀번호 해시로 로그인 정보 조회.
      *
-     * <p>반환한 조회 함수가 계정을 찾지 못하면 UsernameNotFoundException 전파.
+     * <p>로그인할 계정이 없으면 조회 함수에서 UsernameNotFoundException 발생.
      */
     @Bean
     UserDetailsService userDetailsService(JdbcClient jdbcClient) {
@@ -41,11 +41,11 @@ public class SecurityConfiguration {
     }
 
     /**
-     * 모든 API의 HTTP Basic 인증과 변경 요청의 세션 CSRF 검사 구성.
+     * 모든 API에 HTTP Basic 인증 적용. POST 요청에는 세션과 CSRF 토큰도 확인.
      *
-     * <p>ERROR 디스패치는 원래 오류 응답을 허용하기 위한 예외이며 일반 API 경로의 인증 면제가 아님.
+     * <p>ERROR 처리는 원래 오류 응답을 보내기 위해 허용. 일반 API의 인증을 생략하는 설정은 아님.
      *
-     * @throws Exception 보안 필터 구성을 만들지 못한 경우
+     * @throws Exception 보안 필터를 설정하지 못한 경우
      */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {

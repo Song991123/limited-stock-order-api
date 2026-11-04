@@ -52,6 +52,6 @@
 ## 상세 설계
 
 - [처리 규칙과 API 명세](RULES_AND_API_SPEC.md): 요청 키, 오류 응답, 저장 대상과 재시도 규칙.
-- [기술 선택과 비용](TECHNICAL_DECISIONS.md): 잠금 방식 비교, 트랜잭션 경계와 선택 이유.
+- [기술 선택과 비용](TECHNICAL_DECISIONS.md): 잠금 방식 비교, 함께 저장할 데이터와 선택 이유.
 - [구현과 검증 계획](IMPLEMENTATION_PLAN.md): 구현 순서, 실제 DB에서 확인할 조건과 측정 범위.
 - 그림 원문: [액터](diagrams/01-actors.puml), [재고 경쟁](diagrams/02-last-stock.puml), [재전송](diagrams/03-request-retry.puml), [취소와 상태](diagrams/04-cancellation-state.puml).

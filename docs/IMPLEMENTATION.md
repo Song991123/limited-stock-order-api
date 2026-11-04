@@ -24,17 +24,17 @@ SELECT FOR UPDATE 뒤 검사하는 방법과 JPA 버전 검사도 대안입니�
 
 취소 상태, 수량과 복구 이력도 같은 트랜잭션입니다. 복구 수량의 상한 또는 이력 저장에서 오류가 나면 접수 상태와 기존 수량으로 롤백합니다. 별도 재처리 스케줄러 없이 원래 주문 ID로 결과를 확인합니다.
 
-## 인증과 입력 경계
+## 로그인과 요청값 검사
 
 Spring Security의 계정 인증과 CSRF 검사를 유지하고, 주문 조회/취소 SQL에 고객 ID 조건을 넣습니다. 클라이언트가 다른 고객 ID나 복구 수량을 보내 결정하게 하지 않습니다. 문자열 숫자, 소수 수량과 알 수 없는 필드를 거절합니다.
 
-[RequestSizeFilter](../src/main/java/dev/mentoring/orders/RequestSizeFilter.java)는 폼 처리와 보안 필터가 본문을 소비하기 전에 크기를 검사합니다. 8KiB를 초과하면 고정 길이와 chunked 요청 모두 거절합니다. 취소는 검사한 원본 본문이 비어 있어야 합니다.
+[RequestSizeFilter](../src/main/java/dev/mentoring/orders/RequestSizeFilter.java)는 폼 처리와 보안 필터가 본문을 읽기 전에 크기를 검사합니다. 8KiB를 초과하면 고정 길이와 chunked 요청 모두 거절합니다. 취소 요청은 본문이 비어 있어야 합니다.
 
 [WriteAdmission](../src/main/java/dev/mentoring/orders/WriteAdmission.java)은 동시 쓰기를 제한하고 계정별 고정 1분 구간의 요청 수를 셉니다. 고객별 한도 초과에는 다음 구간까지 남은 초를 `Retry-After`로 반환합니다. 요청 키의 멱등성과 남용 제한은 다른 역할입니다.
 
 ## 코드 읽기
 
-[코드 해설](CODE_GUIDE.md)에 요청에서 커밋까지 읽는 순서와 어노테이션 역할을 정리했습니다. [동시성 선택과 코드 정리](REFACTORING.md)에는 비교한 대안, 이번 코드 변경과 입력 경계의 실패 조건을 연결합니다.
+[코드 해설](CODE_GUIDE.md)에 주문 요청을 받아 저장하기까지의 순서와 어노테이션 역할을 정리했습니다. [동시성 선택과 코드 정리](REFACTORING.md)에는 대안 비교, 바꾼 코드와 본문 크기 검사에서 발견한 오류를 적었습니다.
 
 ## 실행과 검증 도구
 
