@@ -1,4 +1,4 @@
-param([string]$NodeExecutable = (Get-Command node.exe).Source, [switch]$TestsOnly, [switch]$IsolatedDatabase)
+param([string]$NodeExecutable = (Get-Command node.exe).Source, [switch]$TestsOnly, [switch]$IsolatedDatabase, [string]$TestFilter)
 $ErrorActionPreference = 'Stop'
 $project = Split-Path -Parent $PSScriptRoot
 $runId = Get-Date -Format 'yyyyMMdd-HHmmss'
@@ -29,6 +29,7 @@ try {
     $env:GRADLE_USER_HOME = Join-Path ([IO.Path]::GetTempPath()) "stock-order-mini-$workspaceKey/gradle-home"
     $env:STOCK_BUILD_DIR = Join-Path ([IO.Path]::GetTempPath()) "stock-order-mini-$workspaceKey/build"
     $tasks = @('clean', 'test')
+    if ($TestFilter) { $tasks += @('--tests', $TestFilter) }
     if (-not $TestsOnly) { $tasks += 'bootJar' }
     & (Join-Path $project 'gradlew.bat') --no-daemon @tasks 2>&1 | Tee-Object -FilePath (Join-Path $evidence 'gradle.log')
     $exitCode = $LASTEXITCODE

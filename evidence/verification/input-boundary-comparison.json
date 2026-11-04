@@ -1,0 +1,38 @@
+{
+  "recordedOn": "2026-11-04",
+  "scope": "Authenticated customer cancelling their own order; not an authorization bypass",
+  "oversizedForm": {
+    "condition": "Valid form CSRF token and more than 8192 bytes in cancellation body",
+    "baseline": {
+      "sourceRevision": "1345f2b",
+      "testRun": "20261104-155728",
+      "http": 400,
+      "availableQuantity": 9,
+      "testExpectedHttp": 413,
+      "testPassed": false
+    },
+    "final": {
+      "testRun": "20261104-161332",
+      "http": 413,
+      "availableQuantity": 9,
+      "testPassed": true
+    }
+  },
+  "smallFormWithHeaderToken": {
+    "condition": "Valid CSRF header and nonempty form cancellation body",
+    "intermediateFilterChange": {
+      "testRun": "20261104-161129",
+      "http": 200,
+      "testExpectedHttp": 400,
+      "testPassed": false,
+      "note": "Regression after moving the body filter before form parsing; not a baseline result"
+    },
+    "final": {
+      "testRun": "20261104-161332",
+      "http": 400,
+      "availableQuantity": 9,
+      "testPassed": true
+    }
+  },
+  "rawRecords": "Local evidence/raw runs retain original observations and failing JUnit assertions"
+}
