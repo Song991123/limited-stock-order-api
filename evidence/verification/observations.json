@@ -9,211 +9,219 @@
   },
   {
     "observations": {
+      "pages": 3,
+      "pageSize": 1,
+      "available": 7
+    },
+    "scenario": "existing-page-query-names"
+  },
+  {
+    "observations": {
+      "replayHttp": 200,
       "orders": 1,
-      "available": 8,
-      "replayHttp": 200
+      "available": 8
     },
     "scenario": "commit-then-drop-http-response"
   },
   {
     "observations": {
-      "available": 9,
-      "http": 413
+      "http": 413,
+      "available": 9
     },
     "scenario": "form-csrf-body-size-guard"
   },
   {
     "observations": {
-      "available": 9,
-      "http": 400
+      "http": 400,
+      "available": 9
     },
     "scenario": "nonempty-form-with-csrf-header"
   },
   {
     "observations": {
-      "available": 0,
       "afterCancelCommitHttp": 201,
-      "beforeCancelCommitHttp": 409
+      "beforeCancelCommitHttp": 409,
+      "available": 0
     },
     "scenario": "cancel-and-purchase"
   },
   {
     "observations": {
-      "observedPostgresLockWaiters": 2,
-      "clients": 20
+      "clients": 20,
+      "observedPostgresLockWaiters": 3
     },
     "scenario": "overlap-barrier"
   },
   {
     "observations": {
+      "restorations": 1,
       "requests": 20,
-      "available": 10,
-      "restorations": 1
+      "available": 10
     },
     "scenario": "cancel-once-1"
   },
   {
     "observations": {
-      "observedPostgresLockWaiters": 3,
-      "clients": 20
+      "clients": 20,
+      "observedPostgresLockWaiters": 2
     },
     "scenario": "overlap-barrier"
   },
   {
     "observations": {
+      "restorations": 1,
       "requests": 20,
-      "available": 10,
-      "restorations": 1
+      "available": 10
     },
     "scenario": "cancel-once-2"
   },
   {
     "observations": {
-      "observedPostgresLockWaiters": 4,
-      "clients": 20
+      "clients": 20,
+      "observedPostgresLockWaiters": 5
     },
     "scenario": "overlap-barrier"
   },
   {
     "observations": {
+      "restorations": 1,
       "requests": 20,
-      "available": 10,
-      "restorations": 1
+      "available": 10
     },
     "scenario": "cancel-once-3"
   },
   {
     "observations": {
+      "retryAvailable": 8,
       "orders": 1,
-      "duringFailureAvailable": 10,
-      "retryAvailable": 8
+      "duringFailureAvailable": 10
     },
     "scenario": "rollback-after-subtraction"
   },
   {
     "observations": {
-      "observedPostgresLockWaiters": 2,
-      "clients": 2
+      "clients": 2,
+      "observedPostgresLockWaiters": 2
     },
     "scenario": "overlap-barrier"
   },
   {
     "observations": {
-      "observedPostgresLockWaiters": 5,
-      "clients": 20
+      "clients": 20,
+      "observedPostgresLockWaiters": 5
     },
     "scenario": "overlap-barrier"
   },
   {
     "observations": {
-      "available": 8,
-      "requests": 20,
       "replayed": 19,
-      "accepted": 1
+      "accepted": 1,
+      "available": 8,
+      "requests": 20
     },
     "scenario": "same-purchase-1"
   },
   {
     "observations": {
-      "observedPostgresLockWaiters": 5,
-      "clients": 20
+      "clients": 20,
+      "observedPostgresLockWaiters": 5
     },
     "scenario": "overlap-barrier"
   },
   {
     "observations": {
-      "available": 8,
-      "requests": 20,
       "replayed": 19,
-      "accepted": 1
+      "accepted": 1,
+      "available": 8,
+      "requests": 20
     },
     "scenario": "same-purchase-2"
   },
   {
     "observations": {
-      "observedPostgresLockWaiters": 7,
-      "clients": 20
+      "clients": 20,
+      "observedPostgresLockWaiters": 7
     },
     "scenario": "overlap-barrier"
   },
   {
     "observations": {
-      "available": 8,
-      "requests": 20,
       "replayed": 19,
-      "accepted": 1
+      "accepted": 1,
+      "available": 8,
+      "requests": 20
     },
     "scenario": "same-purchase-3"
   },
   {
     "observations": {
+      "available": 10,
       "invalidRequests": 7,
-      "http": 400,
-      "available": 10
+      "http": 400
     },
     "scenario": "mvc-path-and-query-validation"
   },
   {
     "observations": {
-      "observedPostgresLockWaiters": 2,
-      "clients": 2
+      "clients": 2,
+      "observedPostgresLockWaiters": 2
     },
     "scenario": "overlap-barrier"
   },
   {
     "observations": {
+      "accepted": 1,
       "outOfStock": 1,
       "available": 0,
-      "requests": 2,
-      "accepted": 1
+      "requests": 2
     },
     "scenario": "last-stock-1"
   },
   {
     "observations": {
-      "observedPostgresLockWaiters": 2,
-      "clients": 2
+      "clients": 2,
+      "observedPostgresLockWaiters": 2
     },
     "scenario": "overlap-barrier"
   },
   {
     "observations": {
+      "accepted": 1,
       "outOfStock": 1,
       "available": 0,
-      "requests": 2,
-      "accepted": 1
+      "requests": 2
     },
     "scenario": "last-stock-2"
   },
   {
     "observations": {
-      "observedPostgresLockWaiters": 2,
-      "clients": 2
+      "clients": 2,
+      "observedPostgresLockWaiters": 2
     },
     "scenario": "overlap-barrier"
   },
   {
     "observations": {
+      "accepted": 1,
       "outOfStock": 1,
       "available": 0,
-      "requests": 2,
-      "accepted": 1
+      "requests": 2
     },
     "scenario": "last-stock-3"
   },
   {
     "observations": {
+      "available": 1,
       "buyingActions": 40,
-      "orders": 27,
-      "available": 1
+      "orders": 29
     },
     "scenario": "mixed-parallel-operations"
   },
   {
     "observations": {
+      "available": 8,
       "orders": 1,
-      "http": 201,
-      "available": 8
+      "http": 201
     },
     "scenario": "create-get-list"
   }

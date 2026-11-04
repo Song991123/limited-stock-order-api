@@ -25,6 +25,20 @@ dependencies {
 }
 
 tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+tasks.named('javadoc') {
+    options.encoding = 'UTF-8'
+    options.docEncoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PRIVATE
+    options.docTitle = '한정 재고 주문 서버 코드'
+    options.windowTitle = '한정 재고 주문 서버 코드'
+    options.addBooleanOption('Xdoclint:all,-missing', true)
+    options.addBooleanOption('Werror', true)
+    options.addBooleanOption('notimestamp', true)
+    options.addBooleanOption('-no-platform-links', true)
+}
+
 tasks.named('test') {
     useJUnitPlatform()
     maxParallelForks = 1

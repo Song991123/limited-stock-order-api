@@ -30,7 +30,7 @@ try {
     $env:STOCK_BUILD_DIR = Join-Path ([IO.Path]::GetTempPath()) "stock-order-mini-$workspaceKey/build"
     $tasks = @('clean', 'test')
     if ($TestFilter) { $tasks += @('--tests', $TestFilter) }
-    if (-not $TestsOnly) { $tasks += 'bootJar' }
+    if (-not $TestsOnly) { $tasks += @('bootJar', 'javadoc') }
     & (Join-Path $project 'gradlew.bat') --no-daemon @tasks 2>&1 | Tee-Object -FilePath (Join-Path $evidence 'gradle.log')
     $exitCode = $LASTEXITCODE
     if (Test-Path -LiteralPath (Join-Path $env:STOCK_BUILD_DIR 'test-results/test')) {
