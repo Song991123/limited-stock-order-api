@@ -119,6 +119,16 @@ class OrderHttpIntegrationTest {
         assertThat(available()).isEqualTo(8);
     }
 
+    @Test void sameKeyCannotChangeProduct() throws Exception {
+        assertThat(alice.buy("one-purchase-one-product",product,1).statusCode()).isEqualTo(201);
+        var response=alice.buy("one-purchase-one-product",other,1);
+        assertThat(response.statusCode()).isEqualTo(409);
+        assertThat(json(response).path("code").asText()).isEqualTo("IDEMPOTENCY_KEY_REUSED");
+        assertThat(count("orders")).isEqualTo(1);
+        assertThat(available()).isEqualTo(9);
+        assertThat(jdbc.queryForObject("SELECT available_quantity FROM inventories WHERE product_id=?",Integer.class,other)).isEqualTo(10);
+    }
+
     @Test void sameTextKeyDifferentCustomers() throws Exception {
         assertThat(alice.buy("independent-key",product,1).statusCode()).isEqualTo(201);
         assertThat(bob.buy("independent-key",product,1).statusCode()).isEqualTo(201);
@@ -274,6 +284,54 @@ class OrderHttpIntegrationTest {
         var request=alice.request(port,"POST","/orders","large-chunked",publisher);
         assertThat(alice.http.send(request,HttpResponse.BodyHandlers.ofString()).statusCode()).isEqualTo(413);
         assertEmptyAndStock(10);
+    }
+
+    @Test void formCsrfCannotBypassBodySizeLimit() throws Exception {
+        long id=json(alice.buy("form-body-owner",product,1)).path("id").asLong();
+        String form="_csrf="+URLEncoder.encode(alice.csrf,StandardCharsets.UTF_8)+"&padding="+"x".repeat(9000);
+        var request=HttpRequest.newBuilder(uri(port,"/orders/"+id+"/cancel"))
+                .header("Authorization",alice.authorization).header("Content-Type","application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(form)).build();
+        var response=alice.http.send(request,HttpResponse.BodyHandlers.ofString());
+        observe("form-csrf-body-size-guard",Map.of("http",response.statusCode(),"available",available()));
+        assertThat(response.statusCode()).isEqualTo(413);
+        assertThat(available()).isEqualTo(9);
+    }
+
+    @Test void nonemptyFormBodyWithHeaderTokenIsRejected() throws Exception {
+        long id=json(alice.buy("form-with-header",product,1)).path("id").asLong();
+        var request=HttpRequest.newBuilder(uri(port,"/orders/"+id+"/cancel"))
+                .header("Authorization",alice.authorization).header(alice.csrfHeader,alice.csrf)
+                .header("Content-Type","application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString("quantity=999")).build();
+        var response=alice.http.send(request,HttpResponse.BodyHandlers.ofString());
+        assertThat(response.statusCode()).isEqualTo(400);
+        assertThat(json(response).path("code").asText()).isEqualTo("UNEXPECTED_BODY");
+        assertThat(available()).isEqualTo(9);
+        observe("nonempty-form-with-csrf-header",Map.of("http",400,"available",9));
+    }
+
+    @Test void formTokenDoesNotReplaceRequiredHeaderToken() throws Exception {
+        long id=json(alice.buy("header-token-required",product,1)).path("id").asLong();
+        String form="_csrf="+URLEncoder.encode(alice.csrf,StandardCharsets.UTF_8);
+        var request=HttpRequest.newBuilder(uri(port,"/orders/"+id+"/cancel"))
+                .header("Authorization",alice.authorization).header("Content-Type","application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(form)).build();
+        var response=alice.http.send(request,HttpResponse.BodyHandlers.ofString());
+        assertThat(response.statusCode()).isEqualTo(403);
+        assertThat(available()).isEqualTo(9);
+    }
+
+    @Test void mvcValidatesPathAndQueryConstraintsWithoutControllerProxy() throws Exception {
+        for (String path:List.of("/products/0","/orders/0","/orders?limit=0","/orders?limit=101",
+                "/orders?beforeId=0","/orders?limit=word")) {
+            var response=alice.send("GET",path,null,null);
+            assertThat(response.statusCode()).as(path).isEqualTo(400);
+            assertThat(json(response).path("code").asText()).isEqualTo("INVALID_INPUT");
+        }
+        assertThat(alice.cancel(0).statusCode()).isEqualTo(400);
+        assertEmptyAndStock(10);
+        observe("mvc-path-and-query-validation",Map.of("invalidRequests",7,"http",400,"available",10));
     }
 
     @Test void unauthenticatedAndCsrfMissingRequestsAreRejected() throws Exception {

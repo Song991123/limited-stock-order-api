@@ -1,6 +1,6 @@
 {
-  "testedOn": "20261104-152503",
-  "tests": 38,
+  "testedOn": "20261104-161332",
+  "tests": 47,
   "failures": 0,
   "errors": 0,
   "skipped": 0,
@@ -10,21 +10,21 @@
   "suites": [
     {
       "name": "dev.mentoring.orders.OrderHttpIntegrationTest",
-      "tests": 34,
+      "tests": 39,
       "failures": 0,
       "errors": 0,
-      "seconds": 21.191
+      "seconds": 20.993
     },
     {
       "name": "dev.mentoring.orders.OrderProcessRecoveryTest",
       "tests": 1,
       "failures": 0,
       "errors": 0,
-      "seconds": 29.277
+      "seconds": 24.951
     },
     {
       "name": "dev.mentoring.orders.WriteAdmissionTest",
-      "tests": 3,
+      "tests": 7,
       "failures": 0,
       "errors": 0,
       "seconds": 0.007
