@@ -7,10 +7,10 @@
 | 파일 | 확인할 동작 |
 | --- | --- |
 | [OrderController](../src/main/java/dev/mentoring/orders/OrderController.java) | 요청 입력, 로그인 고객, 접수 결과의 HTTP 응답 |
-| [OrderService](../src/main/java/dev/mentoring/orders/OrderService.java) | 새 구매와 재전송 구분, 주문과 취소의 저장 경계 |
+| [OrderService](../src/main/java/dev/mentoring/orders/OrderService.java) | 주문 접수와 취소, 재고 수량과 증감 이력 저장 |
 | [OrderRepository](../src/main/java/dev/mentoring/orders/OrderRepository.java) | 실제 SQL, 재고와 상태를 바꾸는 조건 |
 | [V1 마이그레이션](../src/main/resources/db/migration/V1__orders_and_inventory.sql) | 중복 키, 수량 범위와 미완료 요청 커밋 제한 |
-| [WriteAdmission](../src/main/java/dev/mentoring/orders/WriteAdmission.java) | 쓰기 동시 진입 수와 고객별 요청 수 제한 |
+| [WriteAdmission](../src/main/java/dev/mentoring/orders/WriteAdmission.java) | 동시에 처리할 요청 수와 고객별 분당 요청 수 제한 |
 | [RequestSizeFilter](../src/main/java/dev/mentoring/orders/RequestSizeFilter.java) | 다른 필터가 읽기 전 본문 크기 검사 |
 
 ## 주문 한 건의 처리
@@ -34,25 +34,25 @@
 | `status = 'ACCEPTED'` 취소 UPDATE | 같은 주문의 두 번 복구 | 모든 주문을 한 번에 취소하는 전역 규칙 |
 | 서비스 트랜잭션 | 주문만 남거나 재고만 바뀌는 부분 저장 | 평범한 SELECT 결과의 독점 사용 |
 | 수량 CHECK, 이력 UNIQUE | 잘못된 수량과 중복 이력의 커밋 | 올바른 업무 순서 자체 |
-| Semaphore와 고객별 카운터 | 한 JVM 안의 과도한 쓰기 진입 | 여러 서버가 공유하는 한도와 DB 정합성 |
+| Semaphore와 고객별 카운터 | 서버 프로그램 하나에 너무 많은 요청이 동시에 실행되는 상황 | 여러 서버가 공유하는 한도와 재고 중복 차감 |
 
 재고가 1개일 때 A와 B가 각각 1개를 주문하면 A의 UPDATE가 재고 기록을 잠급니다. B가 같은 기록을 갱신하려면 기다립니다. A가 커밋한 뒤 DB가 B의 `수량 >= 1`을 다시 검사하므로 B는 차감하지 못합니다. 잠금이 없는 방식도, 도착 순서대로 처리하는 대기열도 아닙니다. [PostgreSQL의 갱신과 조건 재검사](https://www.postgresql.org/docs/16/transaction-iso.html#XACT-READ-COMMITTED)
 
-## 저장 경계의 어노테이션
+## 주문과 재고를 함께 저장하는 설정
 
 ```java
 @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
 public OrderPlacement placeOrder(String username, String idempotencyKey, CreateOrderRequest orderRequest)
 ```
 
-- `@Transactional`: 이 서비스 호출의 SQL을 같은 DB 트랜잭션에 참여시킵니다. 접수와 취소에 각각 적용해 원자적으로 확정할 범위를 드러냅니다.
-- `READ_COMMITTED`: 각 SQL이 시작할 때 확정된 자료를 읽습니다. 동일 키의 등록 충돌 뒤 별도 SELECT로 선행 결과를 읽는 흐름과 맞춥니다. 이것만으로 수량 경쟁이 해결되지는 않습니다.
-- `rollbackFor = Exception.class`: checked 예외도 롤백 대상으로 포함합니다. 현재 저장 오류는 주로 unchecked 예외라 기본 규칙으로도 롤백되지만, checked 예외가 전파될 때의 경계도 명시합니다.
+- `@Transactional`: 주문 정보, 재고와 이력을 트랜잭션 하나로 저장합니다. 중간에 오류가 나면 함께 되돌리도록 주문 접수와 취소에 각각 적용했습니다.
+- `READ_COMMITTED`: 각 SQL이 시작하기 전에 커밋된 데이터를 읽습니다. 같은 키의 저장을 기다린 뒤 새 SELECT를 실행하면 다른 요청이 커밋한 결과를 읽을 수 있습니다. 재고 경쟁은 조건부 UPDATE로 따로 처리합니다.
+- `rollbackFor = Exception.class`: checked 예외가 발생해도 롤백합니다. 현재 저장 오류는 주로 unchecked 예외라 기본 설정으로도 롤백되지만, checked 예외도 같은 방식으로 처리하도록 적었습니다.
 - `readOnly = true`: 주문 조회에 적용한 읽기 전용 트랜잭션 설정입니다. 고객 소유권은 이 설정이 아니라 SQL의 `buyer_id` 조건으로 검사합니다.
 
 컨트롤러가 Spring이 주입한 서비스를 호출하므로 트랜잭션 프록시를 통과합니다. 서비스 내부의 private 메서드는 이미 열린 트랜잭션 안에서 실행합니다. 내부 메서드에 새 어노테이션을 붙이는 것만으로 별도 트랜잭션이 생기는 것은 아닙니다. 커밋 실패도 호출자에게 예외로 전달돼 성공 응답을 만들지 않습니다. [Spring 트랜잭션 프록시와 기본값](https://docs.spring.io/spring-framework/reference/6.2/data-access/transaction/declarative/annotations.html)
 
-초기 데이터는 `ApplicationRunner.run`의 `TransactionTemplate` 콜백 안에서 저장합니다. 주문 API의 저장 경계와 별개이며, 콜백에 포함된 저장을 함께 확정합니다.
+서버를 시작할 때는 `ApplicationRunner.run`에서 기본 고객과 상품을 저장합니다. `TransactionTemplate` 안에서 함께 저장하므로 하나라도 실패하면 모두 롤백합니다. 주문 API와는 별도로 실행합니다.
 
 ## 요청과 객체 등록의 어노테이션
 
@@ -89,4 +89,4 @@ public OrderPlacement placeOrder(String username, String idempotencyKey, CreateO
 
 [이름과 주석의 작성 기준](NAMING_AND_JAVADOC.md)에 변수/메서드의 구분, 실제 바꾼 이름의 이유와 Javadoc을 읽는 방법을 정리했습니다.
 
-동시 진입 한도 초과에는 429와 `Retry-After: 1`, 고객별 고정 1분 한도 초과에는 다음 구간까지 남은 초를 올림해 반환합니다. 이 값은 재시도 안내이며, 그때 성공한다는 예약은 아닙니다. DB 잠금/연결 일시 오류의 503도 성공으로 처리하지 않습니다. 응답을 잃으면 같은 구매 키, 취소는 같은 주문 ID로 확인합니다.
+동시에 실행할 수 있는 요청 수를 넘으면 429와 `Retry-After: 1`을 반환합니다. 고객별 분당 횟수를 넘으면 횟수가 초기화될 때까지 기다릴 초를 알려줍니다. 시간이 지나도 재고나 서버 상황에 따라 실패할 수 있습니다. DB 연결이나 잠금 문제의 503도 성공으로 처리하지 않습니다. 응답을 받지 못했다면 같은 구매 키, 취소는 같은 주문 ID로 결과를 확인합니다.

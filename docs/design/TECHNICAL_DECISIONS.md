@@ -58,19 +58,19 @@ RETURNING product_id, quantity;
 
 주문 상태는 최소한의 두 상태만 둡니다. 지금은 조건부 상태 변경으로 규칙이 드러나므로 State Pattern이나 상태 머신 제품을 먼저 도입하지 않습니다. 결제 대기, 출고, 반품처럼 전이와 수행 동작이 늘어날 때 다시 비교할 선택입니다.
 
-## 4. 저장 경계와 실패 처리
+## 4. 주문과 재고 저장, 오류 처리
 
 주문 접수의 요청 기록, 재고 차감, 주문과 차감 이력은 한 트랜잭션입니다. 취소의 상태 변경, 재고 복구와 복구 이력도 각각 한 트랜잭션입니다. `REQUIRES_NEW`로 일부 저장만 먼저 확정하지 않습니다.
 
 재고 부족은 예상한 업무 결과여서 요청 거절을 저장하고 커밋합니다. 이를 롤백 예외로 던지면 거절 기록도 사라집니다. 접수 서비스가 결과를 반환하고 Controller가 트랜잭션 종료 후 409로 변환하는 안입니다.
 
-반대로 SQL, 제약과 예상하지 못한 저장 오류는 전체 롤백 대상입니다. 별도 서비스의 공개 메서드에 `@Transactional(rollbackFor = Exception.class)`을 적용하고, 저장 예외를 잡아 정상 결과로 바꾸거나 같은 클래스의 내부 호출만으로 전파를 기대하지 않습니다. 결과가 비어 있는 요청의 커밋은 지연 제약 트리거로도 거절합니다. Spring의 기본 롤백 규칙은 모든 checked 예외를 포함하지 않으므로 명시적으로 설정합니다. [Spring의 롤백 규칙](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/rolling-back.html)
+SQL이나 제약 오류가 나면 모두 롤백합니다. 컨트롤러가 호출하는 서비스 메서드에 `@Transactional(rollbackFor = Exception.class)`을 붙이고, 저장 오류를 성공 결과로 바꾸지 않습니다. 같은 클래스 안에서 메서드를 호출하는 것만으로 새 트랜잭션 설정이 적용되지는 않습니다. 처리 결과를 채우지 않은 요청은 커밋 시점의 지연 제약 트리거에서도 거절합니다. checked 예외도 롤백하도록 명시했습니다. [Spring의 롤백 규칙](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/rolling-back.html)
 
 응답은 커밋 성공 뒤에 보냅니다. 서버 중단이 커밋 전이면 DB 복구로 미확정 변경이 사라져야 하고, 커밋 뒤 응답 유실이면 같은 요청의 재전송으로 확정 결과를 찾아야 합니다. 커밋 중 연결이 끊기면 확정 여부를 모를 수 있어 같은 키로 확인합니다. 이것은 구현 뒤 실제 프로세스 중단으로 나눠 확인할 조건입니다.
 
 ## 5. Spring JDBC 선택 이유
 
-핵심 로직은 단순한 조건부 SQL과 변경 건수 확인입니다. Spring JDBC의 `JdbcClient`로 파라미터 바인딩과 결과 처리를 작성하면 SQL과 트랜잭션 경계를 직접 대조할 수 있습니다. 접수와 취소에 쓰는 저장소는 같은 DataSource와 JDBC 트랜잭션 관리자를 사용합니다. [Spring JDBC와 JdbcClient](https://docs.spring.io/spring-framework/reference/data-access/jdbc/core.html)
+핵심 처리는 조건부 SQL과 변경 건수 확인입니다. Spring JDBC의 `JdbcClient`로 작성하면 어떤 SQL을 실행하고 어떤 데이터를 함께 저장하는지 직접 확인할 수 있습니다. 접수와 취소에 쓰는 저장소는 같은 DataSource와 JDBC 트랜잭션 관리자를 사용합니다. [Spring JDBC와 JdbcClient](https://docs.spring.io/spring-framework/reference/data-access/jdbc/core.html)
 
 첫 구현에는 JPA를 섞지 않습니다. 원시 UPDATE와 JPA의 관리 객체가 다른 값을 갖는 문제까지 함께 다룰 필요가 없고, 현재 모델에는 복잡한 연관관계 탐색도 없습니다. 대신 SQL과 RowMapper, 스키마 변경을 직접 관리하는 비용이 있습니다. JPA가 느리다는 이유로 제외한 것이 아닙니다.
 
@@ -86,7 +86,7 @@ RETURNING product_id, quantity;
 
 외부 메시지 발행이나 긴 파일 생성이 없어 Outbox와 실행 스케줄러는 첫 선택에서 제외합니다. 상품 한 종류에 몰리는 쓰기는 DB에서 순차 처리되므로 핫 상품의 처리량 한계는 남습니다. 대기열이나 캐시를 추가할지는 그 한계를 측정한 뒤 판단합니다.
 
-## 7. 보안과 운영 경계
+## 7. 인증과 요청 수 제한
 
 주문 키는 인증 수단이 아닙니다. 로그인 계정에서 고객 ID를 얻고 목록, 단건 조회와 취소에 모두 소유권 조건을 둡니다. 다른 고객의 주문은 404로 응답합니다. SQL은 파라미터로 바인딩하며 서버가 복구 수량을 결정합니다.
 

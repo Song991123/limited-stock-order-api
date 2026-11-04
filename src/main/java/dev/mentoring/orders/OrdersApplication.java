@@ -3,7 +3,7 @@ package dev.mentoring.orders;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/** 주문 API 서버의 시작점과 같은 패키지 아래 Spring 구성요소 탐색. */
+/** 주문 API 서버 실행. 같은 패키지 아래의 컨트롤러, 서비스와 설정 클래스 등록. */
 @SpringBootApplication
 public class OrdersApplication {
     /**

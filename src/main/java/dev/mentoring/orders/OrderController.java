@@ -19,16 +19,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 상품 조회, 주문 접수와 취소의 HTTP 진입점.
+ * 상품 조회, 주문 접수와 취소 요청 처리.
  *
- * <p>인증 계정과 검증한 입력을 서비스로 전달하고, 커밋된 업무 결과를 HTTP 상태와 본문으로 변환.
+ * <p>로그인 고객과 요청값을 서비스로 전달하고 처리 결과를 HTTP 응답으로 반환.
  */
 @RestController
 public class OrderController {
     private final OrderService orderService;
     private final WriteAdmission writeAdmission;
 
-    /** 주문 처리 서비스와 쓰기 진입 제한 연결. */
+    /** 주문 처리 서비스와 요청 수 제한 기능 연결. */
     public OrderController(OrderService orderService, WriteAdmission writeAdmission) {
         this.orderService = orderService;
         this.writeAdmission = writeAdmission;
@@ -69,9 +69,9 @@ public class OrderController {
     }
 
     /**
-     * 자기 주문의 목록 조회. Java 이름과 외부 쿼리 이름을 명시적으로 구분.
+     * 내 주문 목록 조회.
      *
-     * @param beforeOrderId beforeId 쿼리의 제외 상한, 기본값은 long 최댓값
+     * @param beforeOrderId beforeId 쿼리 값, 이 ID보다 작은 주문부터 조회
      * @param pageSize limit 쿼리의 최대 반환 개수, 허용 범위 1~100
      */
     @GetMapping("/orders")
@@ -90,12 +90,12 @@ public class OrderController {
     /**
      * 본문 없는 자기 주문 취소 요청 처리.
      *
-     * <p>MVC 폼 변환은 본문을 다시 구성할 수 있어, 크기 검사를 마친 원본 스트림으로 빈 본문 판정.
-     * 복원 수량은 요청에서 받지 않고 저장된 주문에서 사용.
+     * <p>MVC가 폼 본문을 바꿔 읽을 수 있어 서버가 받은 본문을 직접 확인.
+     * 재고에 더할 수량은 요청에서 받지 않고 저장된 주문 수량 사용.
      *
      * @param orderId 취소할 주문 ID
      * @param request 크기 검사를 통과한 원본 요청
-     * @return 취소된 자기 주문, 재요청도 추가 복원 없이 같은 주문 반환
+     * @return 취소된 자기 주문, 다시 요청해도 재고를 더하지 않고 같은 주문 반환
      * @throws IOException 요청 본문을 읽지 못한 경우
      * @throws OrderProblem 불필요한 본문이 있거나 자기 주문이 없는 경우
      */
@@ -110,9 +110,9 @@ public class OrderController {
     }
 
     /**
-     * 서비스 프록시의 커밋 성공 뒤 업무 결과를 HTTP 응답으로 변환.
+     * 주문 처리 결과로 HTTP 응답 생성. DB 커밋 성공 후 실행.
      *
-     * <p>재고 부족을 서비스 예외로 던지지 않아 해당 키의 거절 기록도 유지.
+     * <p>재고 부족도 DB에 결과를 저장한 뒤 여기서 409로 응답.
      */
     private ResponseEntity<?> toOrderResponse(OrderPlacement placementResult) {
         return switch (placementResult) {

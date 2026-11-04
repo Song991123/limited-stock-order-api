@@ -1,12 +1,12 @@
 package dev.mentoring.orders;
 
-/** 쓰기 진입 한도 초과와 다음 시도까지 기다릴 초 단위 시간. */
+/** 요청 수가 한도를 넘었을 때 발생하는 예외. 다시 요청할 때까지 기다릴 초도 저장. */
 public class WriteLimitExceeded extends RuntimeException {
     private final int retryAfterSeconds;
 
     /**
-     * 한도 검사기가 계산한 재시도 대기 시간 보관.
-     * @param retryAfterSeconds 다음 시도까지 기다릴 양의 정수 초, 성공 예약은 아님
+     * 다시 요청할 때까지 기다릴 시간 저장.
+     * @param retryAfterSeconds 기다릴 양의 정수 초, 이 시간이 지나도 성공을 보장하지는 않음
      */
     WriteLimitExceeded(int retryAfterSeconds) {
         super("Write admission limit exceeded");

@@ -11,7 +11,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 /**
  * 로컬 실행용 고객과 상품의 초기 데이터 등록.
  *
- * <p>생성된 비밀번호는 해시로 저장하고, 상품이 비어 있을 때만 초기 수량 구성.
+ * <p>생성된 비밀번호는 해시로 저장하고 상품이 없을 때만 상품과 초기 재고 등록.
  */
 @Component
 public class DemoDataInitializer implements ApplicationRunner {
@@ -21,7 +21,7 @@ public class DemoDataInitializer implements ApplicationRunner {
     private final String alicePassword;
     private final String bobPassword;
 
-    /** DB 클라이언트, 초기 저장의 트랜잭션 경계와 실행 비밀번호 연결. */
+    /** DB 저장 도구, TransactionTemplate과 실행용 비밀번호 연결. */
     public DemoDataInitializer(JdbcClient jdbcClient, PasswordEncoder passwordEncoder,
             TransactionTemplate transactionTemplate,
             @Value("${stock.demo.alice-password}") String alicePassword,
@@ -34,9 +34,9 @@ public class DemoDataInitializer implements ApplicationRunner {
     }
 
     /**
-     * 애플리케이션 시작 콜백에서 초기 고객과 상품을 한 트랜잭션으로 등록.
+     * 서버 시작 시 고객과 상품의 기본 데이터 저장.
      *
-     * <p>내부 메서드 호출에 새 트랜잭션을 기대하지 않고 TransactionTemplate로 저장 경계 지정.
+     * <p>TransactionTemplate 안에서 함께 저장해 중간에 실패하면 모두 롤백.
      */
     @Override
     public void run(ApplicationArguments args) {
@@ -64,7 +64,7 @@ public class DemoDataInitializer implements ApplicationRunner {
                 """).param("username", username).param("hash", passwordEncoder.encode(rawPassword)).update();
     }
 
-    /** 실행 상품과 초기/판매 가능 수량 10개 등록. 호출자의 초기화 트랜잭션에 참여. */
+    /** 상품과 재고 10개 등록. 고객 등록과 같은 트랜잭션으로 저장. */
     private void registerProduct(String productName) {
         long productId = jdbcClient.sql("INSERT INTO products(name) VALUES (:name) RETURNING id")
                 .param("name", productName).query(Long.class).single();
