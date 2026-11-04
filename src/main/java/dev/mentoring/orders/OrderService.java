@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 주문 접수와 취소의 저장 경계.
+ * 주문 접수와 취소 처리.
  *
- * <p>요청 기록, 재고, 주문과 증감 이력을 함께 확정. HTTP 응답 변환은 컨트롤러에서 수행.
+ * <p>주문 정보, 재고 수량과 재고 증감 이력을 함께 저장. HTTP 응답은 컨트롤러에서 생성.
  */
 @Service
 public class OrderService {
@@ -26,10 +26,10 @@ public class OrderService {
     }
 
     /**
-     * 새 구매를 접수하거나 같은 구매 키의 확정 결과 반환.
+     * 신규 주문 접수. 같은 구매를 다시 요청하면 기존 처리 결과 반환.
      *
-     * <p>새 요청만 재고 차감으로 진행. 정상 반환 뒤 Spring 프록시가 커밋하고,
-     * 저장 예외가 전파되면 요청 등록부터 전체 롤백.
+     * <p>새 요청만 재고 차감. 메서드 실행을 마친 뒤 Spring이 커밋하고,
+     * 저장 중 예외가 발생하면 요청 등록부터 모두 롤백.
      *
      * @param username 인증된 로그인 계정명
      * @param idempotencyKey 같은 구매의 재시도에서 유지할 키
@@ -43,7 +43,7 @@ public class OrderService {
         long buyerId = orderRepository.findBuyerId(username);
         orderRepository.findProduct(orderRequest.productId());
 
-        // 같은 구매 키의 선등록. 새 요청만 재고 변경으로 진행
+        // 구매 요청부터 등록해 같은 키로 재고를 두 번 차감하지 않도록 처리
         var registeredRequestId = orderRepository.tryRegisterPurchase(buyerId, idempotencyKey, orderRequest);
         if (registeredRequestId.isEmpty()) {
             return replayPurchase(buyerId, idempotencyKey, orderRequest);
@@ -52,7 +52,7 @@ public class OrderService {
     }
 
     /**
-     * 기존 구매의 상품과 수량을 대조해 중복 차감 없이 결과 복원.
+     * 저장된 구매 요청과 상품/수량을 비교한 뒤 기존 처리 결과 반환. 재고는 다시 차감하지 않음.
      *
      * @return 취소됐다면 취소 상태를 포함한 원래 주문, 또는 원래의 재고 부족 결과
      * @throws OrderProblem 같은 키에 다른 상품이나 수량을 보낸 경우
@@ -70,10 +70,10 @@ public class OrderService {
     }
 
     /**
-     * 선등록한 요청의 재고 확보와 주문 저장.
+     * 재고 차감과 주문 정보 저장.
      *
-     * <p>재고 부족도 확정할 업무 결과이므로 예외 대신 결과 반환. 이후 같은 키에 같은 거절을 재사용.
-     * 호출자의 트랜잭션에 참여하며 이 메서드 안에서 독립 커밋하지 않음.
+     * <p>재고 부족 결과도 DB에 저장. 같은 키로 다시 요청해도 같은 결과를 주기 위해 예외로 처리하지 않음.
+     * 주문 접수 메서드와 같은 트랜잭션으로 저장하며 따로 커밋하지 않음.
      *
      * @param purchaseRequestId 이번 트랜잭션에서 등록한 구매 요청 기록 ID
      */
@@ -90,14 +90,14 @@ public class OrderService {
     }
 
     /**
-     * 자기 주문의 취소 상태, 재고 복원과 복원 이력을 함께 저장.
+     * 주문 취소와 재고 복구. 취소 상태, 재고 수량과 복구 이력을 함께 저장.
      *
-     * <p>ACCEPTED에서 CANCELLED로 바뀐 요청만 수량을 복원. 이미 취소됐다면 추가 복원 없이 반환.
+     * <p>ACCEPTED에서 CANCELLED로 바꾼 요청만 재고를 다시 더함. 이미 취소됐다면 결과만 반환.
      *
      * @param username 인증된 로그인 계정명
      * @param orderId 취소할 주문 ID
      * @return 취소된 자기 주문
-     * @throws OrderProblem 자기 주문이 없거나 재고 복원 조건이 깨진 경우
+     * @throws OrderProblem 자기 주문이 없거나 복구할 수량이 맞지 않는 경우
      */
     @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
     public OrderView cancelOrder(String username, long orderId) {
@@ -114,7 +114,7 @@ public class OrderService {
     }
 
     /**
-     * 상태 변경 0건일 때 자기 주문을 다시 읽어 기존 취소인지 판정.
+     * 취소할 주문을 바꾸지 못했을 때 이미 취소된 주문인지 확인.
      *
      * @throws OrderProblem 주문이 없거나 예상과 달리 취소 상태가 아닌 경우
      */
@@ -139,7 +139,7 @@ public class OrderService {
     /**
      * 로그인 고객의 주문을 ID 내림차순으로 조회.
      *
-     * @param beforeOrderId 결과에서 제외할 상한 ID, 다음 조회에는 직전 결과의 마지막 ID 사용
+     * @param beforeOrderId 이 ID보다 작은 주문부터 조회, 다음 페이지에는 직전 페이지의 마지막 ID 사용
      * @param pageSize 한 번에 반환할 최대 주문 수
      * @return 최대 pageSize개의 자기 주문
      */

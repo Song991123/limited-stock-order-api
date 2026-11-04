@@ -17,9 +17,9 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
- * 컨트롤러 처리 오류를 일관된 HTTP 상태와 오류 코드로 변환.
+ * 입력 오류, 주문 실패와 DB 오류에 대한 응답 처리.
  *
- * <p>클라이언트에 SQL, 원문 입력과 내부 예외 메시지를 노출하지 않음.
+ * <p>SQL, 요청값과 상세 예외 메시지는 응답에 포함하지 않음.
  */
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -29,7 +29,7 @@ public class ApiExceptionHandler {
      */
     public record ErrorBody(String code) {}
 
-    /** 업무상 문제를 HTTP 상태로 변환. 서비스의 문제 구분과 전송 규격 분리. */
+    /** 주문 처리 중 발생한 오류를 HTTP 상태와 오류 코드로 반환. */
     @ExceptionHandler(OrderProblem.class)
     public ResponseEntity<ErrorBody> handleOrderProblem(OrderProblem error) {
         int httpStatus = switch (error.reason()) {
@@ -41,7 +41,7 @@ public class ApiExceptionHandler {
         return buildErrorResponse(httpStatus, error.reason().name());
     }
 
-    /** 쓰기 한도 초과를 429로 변환하고 검사기가 계산한 재시도 초를 그대로 전달. */
+    /** 요청 수가 한도를 넘으면 429 응답. 다시 요청할 때까지 기다릴 초도 함께 반환. */
     @ExceptionHandler(WriteLimitExceeded.class)
     public ResponseEntity<ErrorBody> handleWriteLimit(WriteLimitExceeded error) {
         return ResponseEntity.status(429)
@@ -58,10 +58,10 @@ public class ApiExceptionHandler {
     }
 
     /**
-     * DB 연결, 잠금과 트랜잭션 실패를 원인 예외까지 확인해 분류.
+     * DB 오류의 원인을 확인해 응답 처리.
      *
-     * <p>일시 오류는 503과 재시도 안내, 그 외 저장 오류는 내부 오류로 반환.
-     * 커밋 성공 여부를 모르는 연결 오류도 있으므로 새 구매 키를 발급하는 복구는 하지 않음.
+     * <p>연결 끊김과 잠금 시간 초과 같은 일시 오류는 503, 나머지 저장 오류는 500 응답.
+     * 연결이 끊기면 커밋 여부를 모를 수 있으므로 같은 구매 키로 주문 결과 확인 필요.
      */
     @ExceptionHandler({DataAccessException.class, TransactionException.class})
     public ResponseEntity<ErrorBody> handleDatabaseFailure(Exception error) {
@@ -74,7 +74,7 @@ public class ApiExceptionHandler {
     }
 
     /**
-     * 분류하지 않은 오류 처리. Spring의 경로/메서드/미디어 타입 거절 상태는 유지.
+     * 나머지 오류 처리. Spring이 반환한 404, 405, 415 등의 상태는 그대로 사용.
      *
      * <p>예상하지 못한 오류에는 참조 번호와 예외 종류만 로그로 남기고 500 반환.
      */
@@ -88,7 +88,7 @@ public class ApiExceptionHandler {
         return buildErrorResponse(500, "INTERNAL_ERROR");
     }
 
-    /** JDBC 일시 연결 오류와 PostgreSQL의 연결/트랜잭션/잠금/취소/종료 SQLSTATE 판정. */
+    /** JDBC 예외와 PostgreSQL 오류 코드(SQLSTATE)로 재시도할 수 있는 DB 오류인지 확인. */
     private static boolean isRetryableDatabaseFailure(Throwable cause) {
         if (cause instanceof SQLTransientConnectionException) return true;
         if (!(cause instanceof SQLException sqlException)) return false;

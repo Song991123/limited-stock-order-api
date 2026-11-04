@@ -1,5 +1,5 @@
 {
-  "testedOn": "20261104-165025",
+  "testedOn": "20261104-172707",
   "tests": 48,
   "failures": 0,
   "errors": 0,
@@ -13,21 +13,21 @@
       "tests": 40,
       "failures": 0,
       "errors": 0,
-      "seconds": 22.17
+      "seconds": 17.253
     },
     {
       "name": "dev.mentoring.orders.OrderProcessRecoveryTest",
       "tests": 1,
       "failures": 0,
       "errors": 0,
-      "seconds": 20.666
+      "seconds": 17.338
     },
     {
       "name": "dev.mentoring.orders.WriteAdmissionTest",
       "tests": 7,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.012
+      "seconds": 0.006
     }
   ],
   "scope": [

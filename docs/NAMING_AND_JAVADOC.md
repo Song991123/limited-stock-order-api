@@ -42,12 +42,12 @@
 | `existing` | `recordedPurchase`, `existingOrder` | 최초 구매 결과와 현재 주문 상태 구분 |
 | `ORDER`, `PRODUCT` | `ORDER_ROW_MAPPER`, `PRODUCT_ROW_MAPPER` | 데이터 한 건이 아니라 SQL 결과 변환기라는 역할 |
 | `jdbc`, `rs`, `name` | `jdbcClient`, `resultSet`, `columnName` | 조회 도구, 결과 행과 컬럼명 구분 |
-| `slots`, `windows` | `writePermits`, `customerRateWindows` | 동시 진입 권한과 고객별 빈도 구간 구분 |
+| `slots`, `windows` | `writePermits`, `customerRateWindows` | 동시에 실행할 수 있는 요청 수와 고객별 분당 횟수 구분 |
 | `concurrent`, `perCustomerPerMinute` | `maxConcurrentWrites`, `maxRequestsPerCustomerPerMinute` | 현재 사용량이 아닌 허용 상한 |
 | `minute`, `count`, `remaining` | `windowIndex`, `requestCount`, `remainingWindowNanos` | 구간 번호, 요청 수와 시간 단위 |
 | `execute`, `reserve` | `executeWrite`, `checkAndCountRequest` | 작업 실행과 원자적인 한도 검사/카운트 구분 |
 | 예외 처리기의 `order`, `database` | `handleOrderProblem`, `handleDatabaseFailure` | 조회가 아니라 오류 응답 처리라는 행동 |
-| `purchaseResponse` | `toOrderResponse` | 업무 결과를 HTTP 응답으로 바꾸는 변환 |
+| `purchaseResponse` | `toOrderResponse` | 주문 처리 결과로 HTTP 응답 생성 |
 
 `OrderProblem.missing()`과 `invariant()`는 해당 예외를 생성하는 짧은 정적 팩토리입니다. record의 `reason()` 같은 접근자나 예외 팩토리까지 기계적으로 `get`/`create`를 덧붙이지 않았습니다. 실제 반환 의미는 각 선언의 Javadoc에서 확인할 수 있습니다.
 
@@ -68,14 +68,14 @@ URL의 `{id}`는 그대로 두고 Java에서는 `productId`로 읽습니다. 주
 
 ```java
 /**
- * 자기 주문의 취소 상태, 재고 복원과 복원 이력을 함께 저장.
+ * 주문 취소와 재고 복구. 취소 상태, 재고 수량과 복구 이력을 함께 저장.
  *
- * <p>ACCEPTED에서 CANCELLED로 바뀐 요청만 수량을 복원.
- * 이미 취소됐다면 추가 복원 없이 반환.
+ * <p>ACCEPTED에서 CANCELLED로 바꾼 요청만 재고를 다시 더함.
+ * 이미 취소됐다면 결과만 반환.
  *
  * @param orderId 취소할 주문 ID
  * @return 취소된 자기 주문
- * @throws OrderProblem 자기 주문이 없거나 재고 복원 조건이 깨진 경우
+ * @throws OrderProblem 자기 주문이 없거나 복구할 수량이 맞지 않는 경우
  */
 ```
 
@@ -99,4 +99,4 @@ URL의 `{id}`는 그대로 두고 Java에서는 `productId`로 읽습니다. 주
 
 선언별 주석 존재는 JDK의 JavaCompiler/DocTrees로 따로 확인했습니다. 주 코드 19개 파일, 타입 선언 27개와 직접 작성한 메서드/생성자 76개 모두 Javadoc이 있었습니다. 자동 생성된 record 접근자까지 사람이 주석을 작성했다고 세지 않았습니다. [주석 검사 기록](../evidence/verification/documentation.json)에 범위를 남깁니다.
 
-주석과 이름은 저장 경계, 재고 조건, 유일성 제약이나 API 응답을 바꾸는 수정이 아닙니다. 같은 구매의 중복 처리, 취소 복원과 종료 뒤 재시도는 기존 회귀 검사로 확인하고, 기존 쿼리 이름의 페이지 조회도 추가로 검사합니다. 읽기 쉬워졌다는 판단을 성능 개선율이나 사람의 독립 평가 결과로 표현하지 않습니다.
+주석과 이름을 고치면서 함께 저장할 데이터, 재고 검사 조건, 유일성 제약과 API 응답은 유지했습니다. 같은 구매의 재요청, 취소 후 재고 복구, 서버 종료 뒤 재시도와 기존 쿼리 이름을 사용한 페이지 조회도 검사합니다. 설명을 고친 작업이므로 성능 개선이나 사람의 독립 평가 결과로 표현하지 않습니다.

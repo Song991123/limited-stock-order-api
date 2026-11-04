@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * 한 JVM의 쓰기 동시 진입 수와 고객별 요청 빈도 제한.
+ * 주문 접수와 취소 요청의 동시 처리 수, 고객별 분당 요청 수 제한.
  *
- * <p>대기열을 늘리지 않고 한도 초과 요청 거절. 재고와 주문의 정합성은 별도 DB 규칙에서 보장.
+ * <p>실행 중인 서버 프로그램 하나에만 적용. 한도를 넘으면 대기시키지 않고 거절하며, 재고 중복 차감은 DB에서 별도로 검사.
  */
 @Component
 public class WriteAdmission {
@@ -21,10 +21,10 @@ public class WriteAdmission {
     private final ConcurrentHashMap<String, RateWindow> customerRateWindows = new ConcurrentHashMap<>();
 
     /**
-     * 로컬 실행 정책값으로 쓰기 한도 구성.
+     * 설정값으로 동시 처리 수와 고객별 분당 요청 한도 초기화.
      *
      * @param maxConcurrentWrites 동시에 실행할 최대 쓰기 호출 수
-     * @param maxRequestsPerCustomerPerMinute 고객별 고정 1분 구간의 최대 호출 수
+     * @param maxRequestsPerCustomerPerMinute 1분마다 초기화하는 고객별 최대 요청 횟수
      * @throws IllegalArgumentException 한도가 양수가 아닌 경우
      */
     public WriteAdmission(@Value("${stock.admission.concurrent-writes}") int maxConcurrentWrites,
@@ -37,10 +37,10 @@ public class WriteAdmission {
     }
 
     /**
-     * 동시 진입과 고객별 빈도를 확인한 뒤 쓰기 작업 실행.
+     * 요청 수를 확인한 뒤 주문 접수 또는 취소 실행.
      *
-     * <p>작업의 성공/실패와 관계없이 finally에서 동시 진입 권한 반환.
-     * 고객별 호출 수는 실패한 업무 요청도 포함하며, 같은 고객의 작업 자체를 직렬화하지 않음.
+     * <p>성공/실패와 관계없이 finally에서 Semaphore.release() 호출.
+     * 실행 중 실패한 요청도 분당 횟수에 포함. 같은 고객의 요청도 허용된 동시 처리 수 안에서 함께 실행 가능.
      *
      * @param username 인증된 계정명, 고객별 카운터 구분 기준
      * @param writeOperation 동기 실행할 주문 또는 취소 처리
@@ -60,20 +60,21 @@ public class WriteAdmission {
     }
 
     /**
-     * 고객 한 명의 고정 1분 구간과 호출 수.
+     * 고객별 1분 동안 받은 요청 수 기록.
      *
-     * <p>단조 시계를 구간으로 나눠 시스템 시각 변경의 영향 배제. 구간 경계의 순간 집중은 평탄화하지 않음.
+     * <p>System.nanoTime() 값을 1분 단위로 나눠 요청 수 초기화.
+     * 컴퓨터 시각을 바꿔도 영향이 없지만, 초기화 직전과 직후에 요청이 몰리는 현상은 막지 못함.
      */
     static final class RateWindow {
         private long windowIndex = Long.MIN_VALUE;
         private int requestCount;
 
         /**
-         * 구간 변경 확인, 한도 검사와 호출 수 증가를 같은 모니터에서 수행.
+         * 요청 수를 초기화할 시각인지 확인하고 횟수 계산. synchronized로 검사 중 다른 스레드의 동시 변경 방지.
          *
-         * @param currentTimeNanos System.nanoTime 기준 시각, 벽시계 시각이 아님
-         * @param maxRequests 현재 구간에서 허용할 최대 호출 수
-         * @throws WriteLimitExceeded 한도 소진, 다음 구간까지 남은 초를 올림해 전달
+         * @param currentTimeNanos System.nanoTime()으로 읽은 값
+         * @param maxRequests 요청 수를 초기화하기 전까지 허용할 최대 횟수
+         * @throws WriteLimitExceeded 한도 초과, 요청 수를 초기화할 때까지 기다릴 초도 함께 전달
          */
         synchronized void checkAndCountRequest(long currentTimeNanos, int maxRequests) {
             long currentWindowIndex = Math.floorDiv(currentTimeNanos, NANOS_PER_MINUTE);

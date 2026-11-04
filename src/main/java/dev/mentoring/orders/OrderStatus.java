@@ -1,9 +1,9 @@
 package dev.mentoring.orders;
 
-/** 주문의 현재 상태. 최초 요청의 결과를 나타내는 PurchaseOutcome과 구분. */
+/** 주문 상태. 구매 요청의 최초 결과는 PurchaseOutcome에 따로 기록. */
 public enum OrderStatus {
-    /** 재고를 확보한 접수 주문. */
+    /** 주문 접수 완료. 주문한 수량만큼 재고 차감. */
     ACCEPTED,
-    /** 주문 취소와 수량 복원을 함께 확정한 상태. */
+    /** 주문 취소와 재고 복구 완료. */
     CANCELLED
 }

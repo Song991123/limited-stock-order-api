@@ -11,9 +11,9 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 /**
- * 주문, 구매 요청과 상품 재고의 SQL 저장소.
+ * 주문 정보, 구매 요청과 재고 증감 이력의 DB 저장 및 조회.
  *
- * <p>쓰기 메서드는 서비스의 같은 트랜잭션에 참여. 조건부 갱신과 유일성 제약으로 중복 차감/복원 방지.
+ * <p>OrderService와 같은 트랜잭션으로 저장. SQL 조건과 유일성 제약으로 중복 차감과 복구 방지.
  */
 @Repository
 public class OrderRepository {
@@ -27,13 +27,13 @@ public class OrderRepository {
 
     private final JdbcClient jdbcClient;
 
-    /** Spring이 현재 트랜잭션의 연결을 공유하는 JdbcClient 주입. */
+    /** DB 조회와 저장에 사용할 JdbcClient 연결. */
     public OrderRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
 
     /**
-     * 인증 계정명에 대응하는 내부 구매자 ID 조회.
+     * 로그인 계정명으로 구매자 ID 조회.
      *
      * @throws OrderProblem 구매자 기록이 없는 경우
      */
@@ -52,7 +52,7 @@ public class OrderRepository {
     }
 
     /**
-     * 상품 존재와 현재 수량 조회. 조회 결과 자체는 재고 예약이 아님.
+     * 상품과 현재 재고 조회. 조회만으로 재고를 예약하지 않음.
      *
      * @throws OrderProblem 상품 또는 연결된 재고 기록이 없는 경우
      */
@@ -65,12 +65,12 @@ public class OrderRepository {
     }
 
     /**
-     * 고객과 구매 키의 요청 기록 선등록.
+     * 구매 요청 등록. 같은 고객과 구매 키는 한 번만 저장.
      *
-     * <p>같은 키의 INSERT가 겹치면 선행 트랜잭션 종료까지 대기할 수 있음.
-     * 등록 0건은 현재 문장의 조회 시점과 다를 수 있어, 기존 결과는 다음 SELECT로 조회.
+     * <p>다른 요청이 같은 키를 저장 중이면 그 요청의 커밋 또는 롤백까지 대기.
+     * 먼저 저장된 기록이 현재 INSERT에서 보이지 않을 수 있어 다음 SELECT로 다시 조회.
      *
-     * @return 새로 등록한 요청 ID, 이미 확정된 같은 키가 있으면 빈 Optional
+     * @return 새로 등록한 요청 ID, 같은 키가 이미 저장돼 있으면 빈 Optional
      */
     Optional<Long> tryRegisterPurchase(long buyerId, String idempotencyKey, CreateOrderRequest orderRequest) {
         return jdbcClient.sql("""
@@ -82,9 +82,9 @@ public class OrderRepository {
     }
 
     /**
-     * 같은 키로 먼저 확정된 구매 입력과 최초 결과 조회.
+     * 같은 키로 이미 저장한 상품, 수량과 최초 처리 결과 조회.
      *
-     * @throws OrderProblem 기록이 없거나 확정된 기록의 결과가 비어 있는 경우
+     * @throws OrderProblem 요청 기록이 없거나 저장된 처리 결과가 비어 있는 경우
      */
     RecordedPurchase findRecordedPurchase(long buyerId, String idempotencyKey) {
         return jdbcClient.sql("""
@@ -99,7 +99,7 @@ public class OrderRepository {
     }
 
     /**
-     * 현재 트랜잭션의 미완료 구매 요청에 최종 결과 저장.
+     * 구매 요청에 접수 성공 또는 재고 부족 결과 저장.
      *
      * @throws OrderProblem 요청이 없거나 이미 결과가 기록된 경우
      */
@@ -113,7 +113,7 @@ public class OrderRepository {
     /**
      * 충분한 재고가 있을 때만 수량 차감.
      *
-     * <p>확인과 차감을 한 UPDATE에 결합. PostgreSQL이 행 잠금 대기 뒤 WHERE 조건을 재검사.
+     * <p>재고 확인과 차감을 한 UPDATE로 처리. 다른 요청을 기다렸다면 바뀐 재고로 WHERE 조건 재검사.
      *
      * @return 1건 차감했으면 true, 재고를 확보하지 못했으면 false
      */
@@ -125,7 +125,7 @@ public class OrderRepository {
     }
 
     /**
-     * 재고를 확보한 구매 요청에 ACCEPTED 주문 생성.
+     * 재고 차감에 성공한 요청의 주문 정보 저장. 주문 상태는 ACCEPTED.
      *
      * @param purchaseRequestId 같은 트랜잭션에서 선등록한 요청 ID
      * @return DB가 생성한 주문 ID와 접수 시각을 포함한 주문
@@ -140,9 +140,9 @@ public class OrderRepository {
     }
 
     /**
-     * 접수 결과가 ACCEPTED인 구매 요청에 연결된 자기 주문 조회.
+     * 접수에 성공한 구매 요청 ID로 주문 정보 조회.
      *
-     * @throws OrderProblem 요청에 대응하는 자기 주문이 없는 정합성 오류
+     * @throws OrderProblem 구매 요청은 접수 성공인데 해당 고객의 주문이 없는 경우
      */
     OrderView findOrderByRequest(long purchaseRequestId, long buyerId) {
         return jdbcClient.sql("SELECT " + ORDER_COLUMNS
@@ -152,7 +152,7 @@ public class OrderRepository {
     }
 
     /**
-     * 주문 ID와 소유 고객을 함께 검사한 단건 조회.
+     * 주문 ID와 구매자 ID가 모두 일치하는 주문 조회.
      *
      * @throws OrderProblem 주문이 없거나 소유자가 다른 경우
      */
@@ -163,9 +163,9 @@ public class OrderRepository {
     }
 
     /**
-     * 자기 주문의 커서 기반 목록 조회.
+     * 내 주문 목록 조회. 마지막으로 조회한 주문보다 작은 ID부터 다음 페이지 조회.
      *
-     * @param beforeOrderId 포함하지 않을 상한 주문 ID
+     * @param beforeOrderId 이 ID보다 작은 주문부터 조회
      * @param pageSize 반환할 최대 주문 수
      */
     List<OrderView> findOwnedOrders(long buyerId, long beforeOrderId, int pageSize) {
@@ -191,10 +191,10 @@ public class OrderRepository {
     }
 
     /**
-     * 취소된 주문에 저장된 수량만 재고로 복원.
+     * 취소한 주문의 수량만큼 재고를 다시 더함.
      *
      * @param cancelledOrder 이번 트랜잭션에서 취소 상태로 바꾼 주문
-     * @throws OrderProblem 재고 기록이 없거나 초기 수량을 초과하는 복원인 경우
+     * @throws OrderProblem 재고 기록이 없거나 복구 후 수량이 초기 수량을 넘는 경우
      */
     void restoreStock(OrderView cancelledOrder) {
         requireExactlyOneRow(jdbcClient.sql("""
@@ -205,7 +205,7 @@ public class OrderRepository {
     }
 
     /**
-     * 주문의 재고 차감/복원 이력 저장. 주문과 종류의 유일성 제약으로 중복 이력 제한.
+     * 주문별 재고 증감 이력 저장. 주문 ID와 이력 종류의 유일성 제약으로 중복 기록 방지.
      *
      * @param quantityDelta 차감은 음수, 복원은 양수인 수량 변화
      */
@@ -218,7 +218,7 @@ public class OrderRepository {
     }
 
     /**
-     * 반드시 한 기록을 바꿔야 하는 저장의 실제 변경 건수 확인.
+     * DB에서 실제로 한 건을 변경했는지 확인.
      *
      * @throws OrderProblem 예상과 다른 변경 건수
      */
@@ -227,7 +227,7 @@ public class OrderRepository {
     }
 
     /**
-     * 시간대가 있는 DB 시각을 Instant로 변환. 아직 취소하지 않은 시각의 null 보존.
+     * DB에 저장된 시간을 Instant로 변환. 취소 시각이 없으면 null 반환.
      *
      * @throws SQLException 지정한 컬럼을 시각으로 읽지 못한 경우
      */

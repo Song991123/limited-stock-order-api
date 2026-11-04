@@ -18,27 +18,27 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
- * 주문 POST 요청의 원본 본문을 폼 파싱과 보안 검사 전에 크기 제한.
+ * 주문 요청의 본문 크기 검사.
  *
- * <p>문자 인코딩 설정 다음 순서에서 실행. CSRF 폼 파싱이 본문을 먼저 소비해 제한을 우회하지 않게 배치.
- * 허용한 본문은 뒤의 MVC와 취소 API가 읽을 수 있도록 보관.
+ * <p>문자 인코딩 설정 후 실행하며 폼 처리와 보안 필터가 본문을 읽기 전에 크기 검사.
+ * 검사한 본문은 뒤에서 다시 읽을 수 있도록 보관.
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class RequestSizeFilter extends OncePerRequestFilter {
     private static final int MAX_REQUEST_BODY_BYTES = 8192;
 
-    /** 주문 경로의 POST만 검사 대상으로 선택. */
+    /** 주문 POST 요청이 아니면 크기 검사 생략. */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return !request.getMethod().equals("POST") || !request.getRequestURI().startsWith("/orders");
     }
 
     /**
-     * 본문을 최대 허용 크기보다 한 바이트 더 읽어 초과 여부 확인.
+     * 요청 본문이 8KiB를 넘는지 확인.
      *
-     * <p>Content-Length만 믿지 않아 길이를 미리 모르는 chunked 요청에도 같은 제한 적용.
-     * 초과 요청은 413으로 끝내고 뒤의 필터와 주문 처리로 전달하지 않음.
+     * <p>8KiB보다 한 바이트 더 읽어 확인하므로 Content-Length가 없는 chunked 요청도 검사 가능.
+     * 크기를 넘으면 413으로 응답하고 주문 처리는 실행하지 않음.
      *
      * @throws ServletException 뒤의 필터 또는 Servlet 처리 실패
      * @throws IOException 본문 읽기 또는 응답 쓰기 실패
@@ -57,9 +57,9 @@ public class RequestSizeFilter extends OncePerRequestFilter {
     }
 
     /**
-     * 검사한 본문을 다시 읽을 수 있게 제공하는 요청 래퍼.
+     * 크기를 검사한 본문을 뒤에서 다시 읽을 수 있도록 보관.
      *
-     * <p>폼 파라미터를 재구성하는 래퍼가 아니므로 CSRF 토큰은 요청 헤더로 수신.
+     * <p>폼 파라미터는 다시 만들지 않으므로 CSRF 토큰은 요청 헤더로 받아야 함.
      */
     private static final class CachedBodyRequest extends HttpServletRequestWrapper {
         private final byte[] cachedBody;
@@ -70,13 +70,13 @@ public class RequestSizeFilter extends OncePerRequestFilter {
             this.cachedBody = bodyBytes;
         }
 
-        /** 요청할 때마다 검사한 본문의 시작 위치에서 읽는 동기 스트림 생성. */
+        /** 보관한 본문을 처음부터 읽을 수 있는 스트림 반환. */
         @Override
         public ServletInputStream getInputStream() {
             return new CachedBodyStream(cachedBody);
         }
 
-        /** 원본 문자 인코딩으로 보관한 본문을 읽고, 인코딩이 없으면 UTF-8 사용. */
+        /** 요청의 문자 인코딩으로 본문 읽기. 인코딩이 없으면 UTF-8 사용. */
         @Override
         public BufferedReader getReader() throws IOException {
             String characterEncoding = getCharacterEncoding();
@@ -93,11 +93,11 @@ public class RequestSizeFilter extends OncePerRequestFilter {
         public long getContentLengthLong() { return cachedBody.length; }
     }
 
-    /** 보관한 바이트 배열을 제공하는 동기 Servlet 입력 스트림. */
+    /** 보관한 본문을 읽는 ServletInputStream 구현. */
     private static final class CachedBodyStream extends ServletInputStream {
         private final ByteArrayInputStream bodyStream;
 
-        /** 요청별 읽기 위치를 가진 바이트 스트림 생성. */
+        /** 본문을 처음부터 읽을 스트림 생성. */
         private CachedBodyStream(byte[] bodyBytes) {
             bodyStream = new ByteArrayInputStream(bodyBytes);
         }
@@ -110,7 +110,7 @@ public class RequestSizeFilter extends OncePerRequestFilter {
         @Override
         public boolean isFinished() { return bodyStream.available() == 0; }
 
-        /** 메모리에서 동기 읽기가 가능하므로 항상 준비 상태 반환. */
+        /** 본문이 메모리에 있어 바로 읽을 수 있으므로 true 반환. */
         @Override
         public boolean isReady() { return true; }
 

@@ -3,10 +3,10 @@ package dev.mentoring.orders;
 import java.util.Objects;
 
 /**
- * 주문 서비스의 접수 판단 결과.
+ * 주문 접수 결과. 새 주문, 기존 주문, 재고 부족으로 구분.
  *
- * <p>신규/재전송에는 주문을 포함하고 재고 부족에는 포함하지 않도록 타입으로 구분.
- * HTTP 상태는 이 타입 밖의 컨트롤러에서 결정.
+ * <p>새 주문과 기존 주문에는 주문 정보를 포함. 재고 부족에는 주문 정보가 없음.
+ * HTTP 상태 코드는 컨트롤러에서 추가.
  */
 public sealed interface OrderPlacement {
     /**
@@ -31,6 +31,6 @@ public sealed interface OrderPlacement {
         }
     }
 
-    /** 재고를 확보하지 못한 확정 결과. 새 주문과 추가 차감 없음. */
+    /** 재고 부족으로 주문 실패. 주문을 만들거나 재고를 차감하지 않음. */
     record OutOfStock() implements OrderPlacement {}
 }
