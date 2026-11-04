@@ -1,0 +1,47 @@
+@startuml
+!theme plain
+hide footbox
+skinparam defaultFontName Malgun Gothic
+skinparam defaultFontSize 17
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam sequenceGroupBackgroundColor #F1F5F8
+skinparam sequenceParticipantBackgroundColor #F1F5F8
+skinparam sequenceParticipantBorderColor #647788
+skinparam sequenceLifeLineBorderColor #819196
+
+title 처리 흐름 | 같은 구매의 재전송과 새 구매
+actor "구매 고객" as customer
+participant "주문 API" as server
+database "PostgreSQL" as db
+
+customer -> server : 구매 키, 상품과 수량으로 주문
+group 요청 한 건의 트랜잭션
+server -> db : 인증된 고객과 키로 요청 기록 등록 시도
+db --> server : 새 등록 또는 같은 키 등록 안 됨
+alt 새 요청 기록 등록
+server -> db : 조건부 재고 차감
+db --> server : 변경 1건 또는 0건
+alt 재고 확보
+server -> db : 주문, 차감 이력과 접수 결과 저장
+else 재고 부족
+server -> db : 주문 생성 없이 거절 결과 저장
+end
+else 이미 같은 구매 키 존재
+server -> db : 별도 SELECT로 기존 입력과 결과 조회
+db --> server : 저장된 상품, 수량과 결과
+server -> server : 입력이 같으면 기존 결과 사용\n다르면 409 / 재고 차감 없음
+end
+server -> db : 커밋
+db --> server : 확정
+end
+server --> customer : 신규 주문 201 / 기존 주문 200\n재고 부족 또는 키 불일치 409
+
+legend bottom
+응답 유실: 같은 구매 키 유지 후 제한 재시도
+취소 뒤 같은 키: 원래 취소 주문 반환 / 새 차감 없음
+새 키: 별도 구매 / 상품과 수량만으로 중복 판정 안 함
+일시적 DB 오류: 전체 롤백 / 같은 키로 제한 재시도
+정합성 오류: 전체 롤백과 오류 기록 / 성공으로 숨기지 않음
+endlegend
+@enduml
