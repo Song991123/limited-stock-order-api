@@ -1,0 +1,47 @@
+{
+  "testedOn": "20261104-152503",
+  "tests": 38,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "isolatedDatabase": true,
+  "testDatabaseStopped": true,
+  "sourceSnapshot": "source-sha256.json",
+  "suites": [
+    {
+      "name": "dev.mentoring.orders.OrderHttpIntegrationTest",
+      "tests": 34,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 21.191
+    },
+    {
+      "name": "dev.mentoring.orders.OrderProcessRecoveryTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 29.277
+    },
+    {
+      "name": "dev.mentoring.orders.WriteAdmissionTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.007
+    }
+  ],
+  "scope": [
+    "real HTTP",
+    "PostgreSQL 16.15",
+    "SQL fault injection",
+    "HTTP response loss",
+    "separate JVM termination and restart"
+  ],
+  "unmeasured": [
+    "locking-method performance comparison",
+    "production capacity",
+    "long-running load",
+    "database server crash recovery",
+    "record-retention capacity guard"
+  ]
+}

@@ -1,0 +1,34 @@
+server:
+  address: 127.0.0.1
+  port: ${STOCK_PORT:18086}
+  error:
+    include-message: never
+    include-stacktrace: never
+spring:
+  datasource:
+    url: ${STOCK_DB_URL}
+    username: ${STOCK_DB_USER}
+    password: ${STOCK_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 12
+      minimum-idle: 1
+      connection-timeout: 5000
+      connection-init-sql: SET lock_timeout = '3s'; SET statement_timeout = '8s'
+      transaction-isolation: TRANSACTION_READ_COMMITTED
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+      fail-on-trailing-tokens: true
+      accept-float-as-int: false
+    mapper:
+      allow-coercion-of-scalars: false
+stock:
+  demo:
+    alice-password: ${STOCK_ALICE_PASSWORD}
+    bob-password: ${STOCK_BOB_PASSWORD}
+  admission:
+    concurrent-writes: 32
+    per-customer-per-minute: 120
+logging:
+  level:
+    org.springframework.jdbc.core: info

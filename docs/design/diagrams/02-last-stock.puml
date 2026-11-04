@@ -1,0 +1,51 @@
+@startuml
+!theme plain
+hide footbox
+skinparam defaultFontName Malgun Gothic
+skinparam defaultFontSize 17
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam sequenceGroupBackgroundColor #F1F5F8
+skinparam sequenceParticipantBackgroundColor #F1F5F8
+skinparam sequenceParticipantBorderColor #647788
+skinparam sequenceLifeLineBorderColor #819196
+
+title 처리 흐름 | 마지막 1개를 서로 다른 고객이 주문
+actor "고객 A" as a
+participant "주문 API\nA 요청 처리" as apiA
+database "PostgreSQL\n남은 수량 1" as db
+participant "주문 API\nB 요청 처리" as apiB
+actor "고객 B" as b
+
+note over apiA,apiB
+같은 백엔드의 서로 다른 요청 처리
+요청마다 별도 DB 연결과 트랜잭션
+end note
+
+a -> apiA : 상품 1개 주문
+apiA -> db : A의 새 구매 키 등록
+db --> apiA : 등록 성공
+b -> apiB : 같은 상품 1개 주문
+apiB -> db : B의 새 구매 키 등록
+db --> apiB : 등록 성공
+
+apiA -> db : 남은 수량 >= 1일 때만 차감
+db --> apiA : 변경 1건 / A가 재고 기록 잠금 유지
+apiB -> db : 남은 수량 >= 1일 때만 차감
+note right of db : B의 UPDATE는 A의 확정까지 대기
+apiA -> db : 주문과 차감 이력, 요청 결과 저장
+apiA -> db : A 트랜잭션 커밋 / 잠금 해제
+db --> apiA : 확정
+apiA --> a : 201 / 접수된 주문
+
+db --> apiB : A 커밋 뒤 수량 0으로 조건 재검사\n변경 0건
+apiB -> db : B 요청의 재고 부족 결과 저장 / 커밋
+db --> apiB : 확정
+apiB --> b : 409 / OUT_OF_STOCK
+
+legend bottom
+결과: 주문 1건, 차감 1회, 남은 수량 0
+A가 먼저 확정하는 예시 / 요청 도착 순서 보장 없음
+저장 예외: 해당 요청의 키, 주문, 수량과 이력 전체 롤백
+endlegend
+@enduml

@@ -1,0 +1,25 @@
+@startuml
+!theme plain
+skinparam defaultFontName Malgun Gothic
+skinparam defaultFontSize 18
+skinparam shadowing false
+skinparam stateBackgroundColor #F1F5F8
+skinparam stateBorderColor #647788
+skinparam ArrowColor #455768
+
+title 처리 흐름 | 주문 한 건의 상태와 재고 복구
+state "접수됨\nACCEPTED" as accepted
+state "취소됨\nCANCELLED" as cancelled
+
+[*] --> accepted : 접수 커밋\n[재고 확보와 주문 저장 성공]
+accepted --> cancelled : 취소 커밋\n[상태 변경, 수량 복구와 이력 저장 성공]
+cancelled --> cancelled : 취소 재요청 / 현재 주문 반환\n추가 수량 복구 없음
+
+legend bottom
+신규 저장 오류: 전체 롤백 / 주문과 차감 없음
+재고 부족: 요청 거절 / 주문 생성 없음
+취소 저장 오류: 전체 롤백 / 접수 상태 유지, 복구 없음
+취소 응답 유실: 같은 주문에 재요청 / 추가 복구 없음
+주문 상태와 수량 변경은 같은 트랜잭션
+endlegend
+@enduml

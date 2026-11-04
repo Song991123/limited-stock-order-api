@@ -1,0 +1,35 @@
+@startuml
+left to right direction
+skinparam defaultFontName Malgun Gothic
+skinparam defaultFontSize 18
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam ArrowColor #455768
+skinparam rectangleBackgroundColor #F4F7F9
+skinparam rectangleBorderColor #647788
+skinparam usecaseBackgroundColor white
+skinparam usecaseBorderColor #647788
+skinparam nodesep 35
+skinparam ranksep 55
+
+title 처리 흐름 | 한정 재고 상품의 액터와 요청
+actor "구매 고객\nA와 B는 서로 다른 계정" as customer
+rectangle "주문 접수 서버" {
+  usecase "상품과 남은 수량 조회\n조회 시점의 판매 가능 수량" as stock
+  usecase "상품과 수량으로 주문\n재고 확보와 주문 저장" as order
+  usecase "자기 주문 목록과 상태 조회" as lookup
+  usecase "자기 주문 취소\n취소와 판매 가능 수량 복구" as cancel
+}
+customer --> stock
+customer --> order
+customer --> lookup
+customer --> cancel
+
+legend bottom left
+경쟁: 마지막 재고에 대한 고객 A와 B의 동시 주문
+재전송: 응답 유실 뒤 같은 구매 키로 재요청
+중복 취소: 같은 주문 상태 변경과 수량 복구는 한 번만
+저장: PostgreSQL의 요청 기록, 주문, 재고와 증감 이력
+실행: 요청을 받은 API에서 짧은 트랜잭션 처리
+endlegend
+@enduml
