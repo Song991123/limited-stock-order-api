@@ -2,7 +2,7 @@
 
 ## 주문 재전송 처리
 
-[OrderService.purchase](../src/main/java/dev/mentoring/orders/OrderService.java)는 인증 계정, 요청 키와 입력을 확인한 뒤 요청을 먼저 등록합니다. 같은 고객과 키에는 DB 유일성 제약을 적용합니다. 이미 있으면 별도 SELECT로 상품과 수량을 대조하고 원래 결과를 사용합니다.
+[OrderService.placeOrder](../src/main/java/dev/mentoring/orders/OrderService.java)는 인증 계정, 요청 키와 입력을 확인한 뒤 요청을 먼저 등록합니다. 같은 고객과 키에는 DB 유일성 제약을 적용합니다. 이미 있으면 별도 SELECT로 상품과 수량을 대조하고 원래 결과를 사용합니다.
 
 [OrderRepository.tryRegisterPurchase](../src/main/java/dev/mentoring/orders/OrderRepository.java)은 `ON CONFLICT DO NOTHING RETURNING id`를 사용합니다. 같은 키의 등록이 겹치면 DB가 먼저 진행된 요청의 확정을 기다립니다. 새 요청만 재고 차감으로 내려갑니다. 같은 상품의 별도 구매는 새 키를 사용하므로 허용합니다.
 
@@ -20,7 +20,7 @@ SELECT FOR UPDATE 뒤 검사하는 방법과 JPA 버전 검사도 대안입니�
 
 ## 취소와 재고 복구
 
-`OrderService.cancel`은 자기 주문이 ACCEPTED일 때만 CANCELLED로 바꿉니다. 실제 상태를 바꾼 요청만 저장된 수량을 복구하고 RESTORE 이력을 남깁니다. 이미 취소된 주문에는 추가 수량을 더하지 않습니다.
+`OrderService.cancelOrder`는 자기 주문이 ACCEPTED일 때만 CANCELLED로 바꿉니다. 실제 상태를 바꾼 요청만 저장된 수량을 복구하고 RESTORE 이력을 남깁니다. 이미 취소된 주문에는 추가 수량을 더하지 않습니다.
 
 취소 상태, 수량과 복구 이력도 같은 트랜잭션입니다. 복구 수량의 상한 또는 이력 저장에서 오류가 나면 접수 상태와 기존 수량으로 롤백합니다. 별도 재처리 스케줄러 없이 원래 주문 ID로 결과를 확인합니다.
 

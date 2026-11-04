@@ -1,0 +1,22 @@
+{
+  "verifiedOn": "2026-11-04",
+  "sourceInspection": {
+    "tool": "JDK 21 JavaCompiler and DocTrees",
+    "mode": "parse declarations without type analysis",
+    "javaSourceFiles": 19,
+    "typeDeclarations": 27,
+    "explicitMethodsAndConstructors": 76,
+    "declarationsWithoutJavadoc": [],
+    "implicitRecordAccessorsCounted": false
+  },
+  "documentationBuild": {
+    "testRun": "20261104-165025",
+    "task": "javadoc",
+    "memberLevel": "private",
+    "doclint": "all,-missing",
+    "warningsAsErrors": true,
+    "passed": true,
+    "localOutput": "build/docs/javadoc/index.html"
+  },
+  "scope": "Comment presence, syntax and resolved references; semantic accuracy checked separately against source and HTTP/DB tests"
+}

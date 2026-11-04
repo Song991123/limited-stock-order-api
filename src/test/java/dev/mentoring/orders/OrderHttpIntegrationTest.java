@@ -78,6 +78,24 @@ class OrderHttpIntegrationTest {
         observe("create-get-list", Map.of("http",201,"orders",1,"available",8));
     }
 
+    /** 내부 매개변수 이름을 바꿔도 기존 beforeId/limit API와 ID 응답 필드 유지. */
+    @Test void existingQueryNamesStillSelectOneOrderPage() throws Exception {
+        long firstOrderId=json(alice.buy("page-first",product,1)).path("id").asLong();
+        long secondOrderId=json(alice.buy("page-second",product,1)).path("id").asLong();
+        long thirdOrderId=json(alice.buy("page-third",product,1)).path("id").asLong();
+
+        var firstPage=json(alice.send("GET","/orders?limit=1",null,null));
+        assertThat(firstPage).hasSize(1);
+        assertThat(firstPage.get(0).path("id").asLong()).isEqualTo(thirdOrderId);
+        var nextPage=json(alice.send("GET","/orders?limit=1&beforeId="+thirdOrderId,null,null));
+        assertThat(nextPage).hasSize(1);
+        assertThat(nextPage.get(0).path("id").asLong()).isEqualTo(secondOrderId);
+        var lastPage=json(alice.send("GET","/orders?limit=1&beforeId="+secondOrderId,null,null));
+        assertThat(lastPage).hasSize(1);
+        assertThat(lastPage.get(0).path("id").asLong()).isEqualTo(firstOrderId);
+        observe("existing-page-query-names",Map.of("pageSize",1,"pages",3,"available",7));
+    }
+
     @RepeatedTest(3) void lastStockTwoCustomers(RepetitionInfo repetition) throws Exception {
         stock(1);
         var responses = overlap(List.of(() -> alice.buy("last-a", product, 1), () -> bob.buy("last-b", product, 1)));

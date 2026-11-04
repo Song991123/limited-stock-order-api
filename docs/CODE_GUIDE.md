@@ -17,7 +17,7 @@
 
 1. 크기 필터가 본문을 읽어 8KiB 초과 요청을 거절합니다. 허용한 본문은 뒤에서 읽을 수 있게 보관합니다.
 2. Spring Security가 계정과 CSRF 헤더를 검사하고, MVC가 상품과 수량의 입력 조건을 검사합니다.
-3. 컨트롤러가 쓰기 한도를 확인한 뒤 서비스의 `purchase`를 호출합니다. 구매자 ID는 본문이 아니라 로그인 계정에서 구합니다.
+3. 컨트롤러가 쓰기 한도를 확인한 뒤 서비스의 `placeOrder`를 호출합니다. 구매자 ID는 본문이 아니라 로그인 계정에서 구합니다.
 4. 서비스는 고객과 구매 키의 요청 기록을 먼저 등록합니다. 같은 키가 이미 있으면 상품과 수량을 대조해 원래 주문 또는 거절 결과를 반환합니다.
 5. 새 요청만 `tryDecreaseStock`으로 이동합니다. 남은 수량이 충분할 때만 UPDATE가 1건을 바꿉니다.
 6. 차감 성공이면 주문, 차감 이력과 접수 결과를 같은 트랜잭션에 저장합니다. 재고 부족이면 거절 결과만 저장합니다.
@@ -42,7 +42,7 @@
 
 ```java
 @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
-public OrderPlacement purchase(String username, String key, CreateOrderRequest input)
+public OrderPlacement placeOrder(String username, String idempotencyKey, CreateOrderRequest orderRequest)
 ```
 
 - `@Transactional`: 이 서비스 호출의 SQL을 같은 DB 트랜잭션에 참여시킵니다. 접수와 취소에 각각 적용해 원자적으로 확정할 범위를 드러냅니다.
@@ -86,5 +86,7 @@ public OrderPlacement purchase(String username, String key, CreateOrderRequest i
 ## 취소와 재시도
 
 `tryCancelOwnedOrder`는 로그인 고객의 ACCEPTED 주문만 바꿉니다. 상태를 바꾼 요청만 저장된 수량을 복원하고 RESTORE 이력을 저장합니다. 이미 취소된 주문은 현재 결과만 반환합니다.
+
+[이름과 주석의 작성 기준](NAMING_AND_JAVADOC.md)에 변수/메서드의 구분, 실제 바꾼 이름의 이유와 Javadoc을 읽는 방법을 정리했습니다.
 
 동시 진입 한도 초과에는 429와 `Retry-After: 1`, 고객별 고정 1분 한도 초과에는 다음 구간까지 남은 초를 올림해 반환합니다. 이 값은 재시도 안내이며, 그때 성공한다는 예약은 아닙니다. DB 잠금/연결 일시 오류의 503도 성공으로 처리하지 않습니다. 응답을 잃으면 같은 구매 키, 취소는 같은 주문 ID로 확인합니다.
