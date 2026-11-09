@@ -1,0 +1,26 @@
+{
+  "scope": "Actual loopback HTTP and an isolated PostgreSQL database; no production traffic",
+  "before": {
+    "run": "20261110-013000",
+    "tests": 50,
+    "failures": 3,
+    "existingHttpTestsPassed": 47,
+    "observations": [
+      {"scenario": "encoded-order-path-body-limit", "http": 201, "orders": 1, "available": 9},
+      {"scenario": "same-key-unknown-product", "http": 404, "code": "NOT_FOUND", "orders": 1, "available": 9},
+      {"scenario": "duplicate-order-field", "http": 500, "orders": 0, "available": 10}
+    ]
+  },
+  "after": {
+    "run": "20261110-013729",
+    "tests": 109,
+    "failures": 0,
+    "evidence": "observations.json",
+    "observations": [
+      {"scenario": "encoded-order-path-body-limit", "http": 413, "orders": 0, "available": 10},
+      {"scenario": "same-key-unknown-product", "http": 409, "code": "IDEMPOTENCY_KEY_REUSED", "orders": 1, "available": 9},
+      {"scenario": "duplicate-order-field", "http": 400, "orders": 0, "available": 10}
+    ]
+  },
+  "notClaimed": ["authentication bypass", "memory disclosure", "production security certification", "performance improvement"]
+}
