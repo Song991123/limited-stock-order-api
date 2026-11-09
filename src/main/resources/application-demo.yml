@@ -1,0 +1,4 @@
+stock:
+  demo:
+    alice-password: ${STOCK_ALICE_PASSWORD}
+    bob-password: ${STOCK_BOB_PASSWORD}

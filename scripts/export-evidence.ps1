@@ -22,6 +22,8 @@ $observations = Get-Content -LiteralPath (Join-Path $resolved 'http-observations
 $observations | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $destination 'observations.json') -Encoding UTF8
 $processCases = @(Get-Content -LiteralPath (Join-Path $resolved 'process-recovery.json') -Raw | ConvertFrom-Json | Where-Object { $_.stage -ne 'owned-jvm-terminated' })
 $processCases | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $destination 'process-recovery.json') -Encoding UTF8
+$normalStartup = Get-Content -LiteralPath (Join-Path $resolved 'normal-startup.json') -Raw | ConvertFrom-Json
+[ordered]@{ profile=$normalStartup.profile; demoInitializerPresent=[bool]$normalStartup.demoInitializerPresent; buyers=[int]$normalStartup.buyers; products=[int]$normalStartup.products; unauthenticatedHttp=[int]$normalStartup.unauthenticatedHttp } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $destination 'normal-startup.json') -Encoding UTF8
 $clean = Get-Content -LiteralPath (Join-Path $resolved 'isolated-base-cleanup.json') -Raw | ConvertFrom-Json
 $xml = [xml]'<?xml version="1.0" encoding="utf-8"?><testsuites />'
 $suites = @()
@@ -35,5 +37,5 @@ foreach ($file in Get-ChildItem -LiteralPath (Join-Path $resolved 'junit-xml') -
 }
 foreach ($name in @('tests','failures','errors','skipped')) { $xml.DocumentElement.SetAttribute($name, [string]$summary.$name) }
 $xml.Save((Join-Path $destination 'junit-summary.xml'))
-[ordered]@{ testedOn=(Split-Path $resolved -Leaf); tests=$summary.tests; failures=$summary.failures; errors=$summary.errors; skipped=$summary.skipped; isolatedDatabase=[bool]$summary.isolatedDatabase; testDatabaseStopped=(-not $clean.pidFileExists); sourceSnapshot='source-sha256.json'; suites=$suites; scope=@('real HTTP','PostgreSQL 16.15','SQL fault injection','HTTP response loss','separate JVM termination and restart'); unmeasured=@('locking-method performance comparison','production capacity','long-running load','database server crash recovery','record-retention capacity guard') } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $destination 'latest.json') -Encoding UTF8
+[ordered]@{ testedOn=(Split-Path $resolved -Leaf); tests=$summary.tests; failures=$summary.failures; errors=$summary.errors; skipped=$summary.skipped; isolatedDatabase=[bool]$summary.isolatedDatabase; testDatabaseStopped=(-not $clean.pidFileExists); sourceSnapshot='source-sha256.json'; suites=$suites; scope=@('real HTTP','PostgreSQL 16.15','SQL fault injection','HTTP response loss','separate JVM termination and restart','normal profile startup without demo data'); unmeasured=@('locking-method performance comparison','production capacity','long-running load','database server crash recovery','record-retention capacity guard') } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $destination 'latest.json') -Encoding UTF8
 Write-Output "Published representative verification evidence: $($summary.tests) tests"

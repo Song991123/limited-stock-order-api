@@ -1,0 +1,71 @@
+name: Verify orders
+
+on:
+  push:
+    branches: ["main", "develop", "feature/**", "refactor/**"]
+  pull_request:
+    branches: ["main", "develop"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: stock_order_app
+          POSTGRES_PASSWORD: stock_order_ci_only
+          POSTGRES_DB: stock_order_test
+        ports:
+          - 5432/tcp
+        options: >-
+          --health-cmd "pg_isready -U stock_order_app -d stock_order_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Set up Java 21
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Set up Gradle and validate wrapper
+        uses: gradle/actions/setup-gradle@4c125117fe7c5aed11272ec4213f602f012f89f2 # v5
+      - name: Test and build
+        env:
+          STOCK_DB_URL: jdbc:postgresql://127.0.0.1:${{ job.services.postgres.ports[5432] }}/stock_order_test
+          STOCK_DB_USER: stock_order_app
+          STOCK_DB_PASSWORD: stock_order_ci_only
+          STOCK_ALICE_PASSWORD: alice_ci_test_only_2026
+          STOCK_BOB_PASSWORD: bob_ci_test_only_2026
+          STOCK_EVIDENCE_DIR: ${{ github.workspace }}/evidence/raw/ci
+          PGPASSWORD: stock_order_ci_only
+        run: |
+          mkdir -p "$STOCK_EVIDENCE_DIR"
+          psql -h 127.0.0.1 -p ${{ job.services.postgres.ports[5432] }} -U stock_order_app -d stock_order_test -c 'select version();'
+          bash ./gradlew --no-daemon clean test bootJar javadoc
+      - name: Save test reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: order-test-reports
+          path: |
+            build/reports/tests/test
+            build/test-results/test/TEST-*.xml
+            evidence/raw/ci/http-observations.json
+            evidence/raw/ci/process-recovery.json
+            evidence/raw/ci/normal-startup.json
+          if-no-files-found: warn
+          retention-days: 14
