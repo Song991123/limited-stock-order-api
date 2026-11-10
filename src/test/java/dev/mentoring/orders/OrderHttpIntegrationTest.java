@@ -670,6 +670,28 @@ class OrderHttpIntegrationTest {
         assertEmptyAndStock(10);
     }
 
+    /** 계정 조회 분리 후에도 없는 이름과 SQL 구문 형태의 이름을 계정 값으로만 처리. */
+    @Test void unknownAndSqlLikeAccountsCannotAuthenticate() throws Exception {
+        var rejected = new ArrayList<Integer>();
+        var client = HttpClient.newHttpClient();
+        for (String username : List.of("unknown-customer", "alice' --", "' OR '1'='1")) {
+            String authorization = "Basic " + Base64.getEncoder().encodeToString(
+                    (username + ":" + System.getenv("STOCK_ALICE_PASSWORD")).getBytes(StandardCharsets.UTF_8));
+            var request = HttpRequest.newBuilder(uri(port, "/products"))
+                    .header("Authorization", authorization).GET().build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            assertThat(response.statusCode()).isEqualTo(401);
+            assertThat(response.headers().firstValue("WWW-Authenticate")).hasValueSatisfying(value ->
+                    assertThat(value).startsWith("Basic "));
+            rejected.add(response.statusCode());
+        }
+        var accepted = alice.send("GET", "/products", null, null);
+        assertThat(accepted.statusCode()).isEqualTo(200);
+        assertEmptyAndStock(10);
+        observe("account-query-parameter-binding", Map.of("rejectedStatuses", rejected,
+                "authenticatedHttp", accepted.statusCode(), "orders", count("orders"), "available", available()));
+    }
+
     @Test void routingMethodAndMediaTypeErrorsRemainClientErrors() throws Exception {
         assertThat(alice.send("GET","/unknown-route",null,null).statusCode()).isEqualTo(404);
         assertThat(alice.send("PUT","/products",null,"{}").statusCode()).isEqualTo(405);
