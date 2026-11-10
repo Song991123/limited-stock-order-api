@@ -1,6 +1,14 @@
 package dev.mentoring.orders.config;
 
 import jakarta.servlet.DispatcherType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.mentoring.orders.dto.response.ErrorResponse;
+import dev.mentoring.orders.exception.DatabaseFailures;
+import java.util.UUID;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -48,14 +56,40 @@ public class SecurityConfiguration {
      * @throws Exception 보안 필터를 설정하지 못한 경우
      */
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         return httpSecurity.authorizeHttpRequests(authorization -> authorization
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                         .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint))
+                .exceptionHandling(errors -> errors.authenticationEntryPoint(authenticationEntryPoint))
                 .csrf(Customizer.withDefaults())
                 .requestCache(cache -> cache.disable())
                 .formLogin(form -> form.disable())
                 .build();
+    }
+
+    /** 잘못된 계정은 기존 401, 계정 조회 저장소의 장애는 안전한 503/500 응답으로 구분. */
+    @Bean
+    AuthenticationEntryPoint authenticationEntryPoint(ObjectMapper mapper) {
+        var rejected = new BasicAuthenticationEntryPoint();
+        rejected.setRealmName("Realm");
+        rejected.afterPropertiesSet();
+        return (request, response, failure) -> {
+            if (!(failure instanceof AuthenticationServiceException)) {
+                rejected.commence(request, response, failure);
+                return;
+            }
+            boolean unavailable = DatabaseFailures.isUnavailable(failure);
+            String code = unavailable ? "DATABASE_UNAVAILABLE" : "INTERNAL_ERROR";
+            String reference = UUID.randomUUID().toString();
+            LoggerFactory.getLogger(SecurityConfiguration.class).error(
+                    "Authentication service failed: reference={}, code={}, type={}, sqlState={}",
+                    reference, code, failure.getClass().getSimpleName(), DatabaseFailures.safeSqlState(failure));
+            response.setStatus(unavailable ? 503 : 500);
+            response.setContentType("application/json");
+            response.setHeader("X-Error-Id", reference);
+            if (unavailable) response.setHeader("Retry-After", "1");
+            mapper.writeValue(response.getOutputStream(), new ErrorResponse(code));
+        };
     }
 }

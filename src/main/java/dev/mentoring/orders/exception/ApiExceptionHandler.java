@@ -3,8 +3,6 @@ package dev.mentoring.orders.exception;
 import dev.mentoring.orders.dto.response.ErrorResponse;
 import dev.mentoring.orders.web.admission.WriteLimitExceeded;
 import jakarta.validation.ConstraintViolationException;
-import java.sql.SQLException;
-import java.sql.SQLTransientConnectionException;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,10 +65,8 @@ public class ApiExceptionHandler {
      */
     @ExceptionHandler({DataAccessException.class, TransactionException.class})
     public ResponseEntity<ErrorResponse> handleDatabaseFailure(Exception error) {
-        for (Throwable cause = error; cause != null; cause = cause.getCause()) {
-            if (isRetryableDatabaseFailure(cause)) {
-                return buildServerError(HttpStatus.SERVICE_UNAVAILABLE, "DATABASE_UNAVAILABLE", error);
-            }
+        if (DatabaseFailures.isUnavailable(error)) {
+            return buildServerError(HttpStatus.SERVICE_UNAVAILABLE, "DATABASE_UNAVAILABLE", error);
         }
         return handleUnexpectedFailure(error);
     }
@@ -91,15 +87,6 @@ public class ApiExceptionHandler {
         return buildServerError(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", error);
     }
 
-    /** JDBC 예외와 PostgreSQL 오류 코드(SQLSTATE)로 재시도할 수 있는 DB 오류인지 확인. */
-    private static boolean isRetryableDatabaseFailure(Throwable cause) {
-        if (cause instanceof SQLTransientConnectionException) return true;
-        if (!(cause instanceof SQLException sqlException)) return false;
-        String sqlState = sqlException.getSQLState();
-        return sqlState != null && (sqlState.startsWith("08") || sqlState.startsWith("40")
-                || sqlState.equals("55P03") || sqlState.equals("57014") || sqlState.equals("57P01"));
-    }
-
     /** 고정 오류 코드 본문 생성. DB 일시 오류 503에는 1초 재시도 안내 추가. */
     private static ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatusCode status, String errorCode) {
         return errorResponseBuilder(status).body(new ErrorResponse(errorCode));
@@ -110,7 +97,7 @@ public class ApiExceptionHandler {
             HttpStatusCode status, String errorCode, Exception error) {
         String errorId = UUID.randomUUID().toString();
         LOGGER.error("Request failed: reference={}, code={}, type={}, sqlState={}",
-                errorId, errorCode, error.getClass().getSimpleName(), safeSqlState(error));
+                errorId, errorCode, error.getClass().getSimpleName(), DatabaseFailures.safeSqlState(error));
         return errorResponseBuilder(status).header("X-Error-Id", errorId).body(new ErrorResponse(errorCode));
     }
 
@@ -121,14 +108,4 @@ public class ApiExceptionHandler {
         return builder;
     }
 
-    /** DB 오류 코드는 고정 길이 영문/숫자 값만 기록하고 그 외 값은 생략. */
-    private static String safeSqlState(Throwable error) {
-        for (Throwable cause = error; cause != null; cause = cause.getCause()) {
-            if (cause instanceof SQLException sqlError) {
-                String state = sqlError.getSQLState();
-                if (state != null && state.matches("[0-9A-Z]{5}")) return state;
-            }
-        }
-        return "none";
-    }
 }
