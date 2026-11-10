@@ -55,7 +55,7 @@ public class OrderController {
     public ResponseEntity<OrderResponse> placeOrder(Principal principal,
             @RequestHeader(name = "Idempotency-Key", required = false) String idempotencyKey,
             @Valid @RequestBody CreateOrderRequest orderRequest) {
-        return writeAdmission.executeWrite(principal.getName(),
+        return writeAdmission.executeOrder(principal.getName(),
                 () -> toOrderResponse(orderService.placeOrder(principal.getName(), idempotencyKey,
                         orderRequest.productId(), orderRequest.quantity())));
     }
@@ -98,7 +98,7 @@ public class OrderController {
         if (request.getInputStream().read() != -1) {
             throw new OrderProblem(OrderProblem.Reason.UNEXPECTED_BODY);
         }
-        return writeAdmission.executeWrite(principal.getName(),
+        return writeAdmission.executeCancellation(principal.getName(),
                 () -> OrderResponse.from(orderService.cancelOrder(principal.getName(), orderId)));
     }
 
