@@ -197,7 +197,7 @@
   },
   {
     "file": "src/test/java/dev/mentoring/orders/service/OrderServiceTest.java",
-    "sha256Utf8Lf": "d8e9aaa57c05a31817fda5589cf2f6f37659f0019c07dd5d9d52ee1d847170f4"
+    "sha256Utf8Lf": "49cb564486de7074f4eea8e5a4b11be7342123aefeb9552ef5c6dc2222792e49"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/service/ProductServiceTest.java",

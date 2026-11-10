@@ -60,7 +60,7 @@ class OrderServiceTest {
         verifyNoInteractions(orderRepository, productRepository);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "{displayName} [{index}] orderId={0}")
     @ValueSource(longs = {0, -1})
     void rejectsInvalidCancellationIdBeforeAccessingRepository(long orderId) {
         assertThatThrownBy(() -> orderService.cancelOrder("alice", orderId))
@@ -69,7 +69,7 @@ class OrderServiceTest {
         verifyNoInteractions(orderRepository, productRepository);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "{displayName} [{index}] orderId={0}")
     @ValueSource(longs = {0, -1})
     void rejectsInvalidReadIdBeforeAccessingRepository(long orderId) {
         assertThatThrownBy(() -> orderService.getOrder("alice", orderId))
