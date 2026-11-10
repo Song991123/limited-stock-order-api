@@ -16,6 +16,8 @@ spring:
       connection-init-sql: SET lock_timeout = '3s'; SET statement_timeout = '8s'
       transaction-isolation: TRANSACTION_READ_COMMITTED
   jackson:
+    parser:
+      strict-duplicate-detection: true
     deserialization:
       fail-on-unknown-properties: true
       fail-on-trailing-tokens: true
@@ -23,9 +25,6 @@ spring:
     mapper:
       allow-coercion-of-scalars: false
 stock:
-  demo:
-    alice-password: ${STOCK_ALICE_PASSWORD}
-    bob-password: ${STOCK_BOB_PASSWORD}
   admission:
     concurrent-writes: 32
     per-customer-per-minute: 120

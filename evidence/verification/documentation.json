@@ -1,6 +1,7 @@
 {
-  "verifiedOn": "2026-11-04",
+  "verifiedOn": "2026-11-10",
   "sourceInspection": {
+    "referenceRun": "20261104-172707",
     "tool": "JDK 21 JavaCompiler and DocTrees",
     "mode": "parse declarations without type analysis",
     "javaSourceFiles": 19,
@@ -10,7 +11,7 @@
     "implicitRecordAccessorsCounted": false
   },
   "documentationBuild": {
-    "testRun": "20261104-172707",
+    "testRun": "20261110-011050",
     "task": "javadoc",
     "memberLevel": "private",
     "doclint": "all,-missing",

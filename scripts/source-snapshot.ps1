@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 $project = Split-Path -Parent $PSScriptRoot
-$files = @(Get-ChildItem -LiteralPath (Join-Path $project 'src'), (Join-Path $project 'scripts') -Recurse -File | Where-Object { $_.Extension -in '.java','.sql','.yml','.ps1','.cjs' })
+$files = @(Get-ChildItem -LiteralPath (Join-Path $project 'src'), (Join-Path $project 'scripts'), (Join-Path $project '.github') -Recurse -File | Where-Object { $_.Extension -in '.java','.sql','.yml','.ps1','.cjs' })
 $files += Get-Item -LiteralPath (Join-Path $project 'build.gradle'), (Join-Path $project 'settings.gradle'), (Join-Path $project 'gradle.properties'), (Join-Path $project 'gradle/wrapper/gradle-wrapper.properties')
 $sha = [Security.Cryptography.SHA256]::Create()
 try {

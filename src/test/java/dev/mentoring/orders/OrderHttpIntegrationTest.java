@@ -22,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -29,6 +30,7 @@ import org.springframework.test.context.DynamicPropertySource;
         "stock.admission.per-customer-per-minute=100000", "spring.main.banner-mode=off"
 })
 @DirtiesContext
+@ActiveProfiles("demo")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Timeout(60)
 class OrderHttpIntegrationTest {
@@ -96,7 +98,8 @@ class OrderHttpIntegrationTest {
         observe("existing-page-query-names",Map.of("pageSize",1,"pages",3,"available",7));
     }
 
-    @RepeatedTest(3) void lastStockTwoCustomers(RepetitionInfo repetition) throws Exception {
+    @RepeatedTest(value = 3, name = "{displayName} [{currentRepetition}/{totalRepetitions}]")
+    void lastStockTwoCustomers(RepetitionInfo repetition) throws Exception {
         stock(1);
         var responses = overlap(List.of(() -> alice.buy("last-a", product, 1), () -> bob.buy("last-b", product, 1)));
         assertThat(responses.stream().map(HttpResponse::statusCode)).containsExactlyInAnyOrder(201,409);
@@ -106,7 +109,8 @@ class OrderHttpIntegrationTest {
         observe("last-stock-" + repetition.getCurrentRepetition(), Map.of("requests",2,"accepted",1,"outOfStock",1,"available",0));
     }
 
-    @RepeatedTest(3) void twentyRetriesOnePurchase(RepetitionInfo repetition) throws Exception {
+    @RepeatedTest(value = 3, name = "{displayName} [{currentRepetition}/{totalRepetitions}]")
+    void twentyRetriesOnePurchase(RepetitionInfo repetition) throws Exception {
         var operations = new ArrayList<Callable<HttpResponse<String>>>();
         for (int i=0;i<20;i++) operations.add(() -> alice.buy("same-purchase",product,2));
         var responses = overlap(operations);
@@ -147,6 +151,21 @@ class OrderHttpIntegrationTest {
         assertThat(jdbc.queryForObject("SELECT available_quantity FROM inventories WHERE product_id=?",Integer.class,other)).isEqualTo(10);
     }
 
+    /** 기존 구매 키의 다른 상품 입력은 상품 존재 여부와 관계없이 같은 충돌로 처리. */
+    @Test void sameKeyWithUnknownProductStillReportsChangedInput() throws Exception {
+        assertThat(alice.buy("existing-purchase-input", product, 1).statusCode()).isEqualTo(201);
+
+        var response = alice.buy("existing-purchase-input", Long.MAX_VALUE, 1);
+
+        observe("same-key-unknown-product", Map.of("http", response.statusCode(),
+                "code", json(response).path("code").asText(), "orders", count("orders"), "available", available()));
+        assertThat(response.statusCode()).isEqualTo(409);
+        assertThat(json(response).path("code").asText()).isEqualTo("IDEMPOTENCY_KEY_REUSED");
+        assertThat(count("orders")).isEqualTo(1);
+        assertThat(count("order_requests")).isEqualTo(1);
+        assertThat(available()).isEqualTo(9);
+    }
+
     @Test void sameTextKeyDifferentCustomers() throws Exception {
         assertThat(alice.buy("independent-key",product,1).statusCode()).isEqualTo(201);
         assertThat(bob.buy("independent-key",product,1).statusCode()).isEqualTo(201);
@@ -161,6 +180,21 @@ class OrderHttpIntegrationTest {
         assertThat(alice.buy("insert-failure",product,2).statusCode()).isEqualTo(201);
         assertThat(available()).isEqualTo(8);
         observe("rollback-after-subtraction",Map.of("duringFailureAvailable",10,"retryAvailable",8,"orders",1));
+    }
+
+    /** 실제 서버 오류에서도 JSON은 오류 코드만 반환하고 헤더에는 로그를 찾을 번호 제공. */
+    @Test void serverFailureHasAnErrorReferenceWithoutSqlDetails() throws Exception {
+        fail("orders", "BEFORE INSERT", null);
+
+        var response = alice.buy("referenced-storage-failure", product, 2);
+
+        assertThat(response.statusCode()).isEqualTo(500);
+        String reference = response.headers().firstValue("X-Error-Id").orElseThrow();
+        assertThat(UUID.fromString(reference).toString()).isEqualTo(reference);
+        assertThat(json(response).path("code").asText()).isEqualTo("INTERNAL_ERROR");
+        assertJsonFields(json(response), "code");
+        assertEmptyAndStock(10);
+        observe("server-error-reference", Map.of("http", 500, "referencePresent", true, "available", 10));
     }
 
     @Test void requestFinishFailureRollsBackOrderAndMovement() throws Exception {
@@ -192,7 +226,8 @@ class OrderHttpIntegrationTest {
         assertThat(bob.buy("new-buying-action",product,1).statusCode()).isEqualTo(201);
     }
 
-    @RepeatedTest(3) void twentyCancellationsRestoreOnce(RepetitionInfo repetition) throws Exception {
+    @RepeatedTest(value = 3, name = "{displayName} [{currentRepetition}/{totalRepetitions}]")
+    void twentyCancellationsRestoreOnce(RepetitionInfo repetition) throws Exception {
         long id = json(alice.buy("cancel-once",product,3)).path("id").asLong();
         var operations = new ArrayList<Callable<HttpResponse<String>>>();
         for(int i=0;i<20;i++) operations.add(() -> alice.cancel(id));
@@ -295,6 +330,145 @@ class OrderHttpIntegrationTest {
         assertEmptyAndStock(10);
     }
 
+    /** 본문 변환이나 필드 검증에 실패한 구매 키를 정상 입력으로 다시 사용할 수 있는지 확인. */
+    @Test void invalidOrderBodiesDoNotReservePurchaseKey() throws Exception {
+        String validBody = payload(product, 1);
+        var invalidBodies = List.of(
+                "", "null", "[]", "{}",
+                "{\"productId\":null,\"quantity\":1}",
+                "{\"productId\":0,\"quantity\":1}",
+                "{\"productId\":-1,\"quantity\":1}",
+                "{\"productId\":\"1\",\"quantity\":1}",
+                "{\"productId\":1.5,\"quantity\":1}",
+                "{\"productId\":9223372036854775808,\"quantity\":1}",
+                "{\"productId\":1,\"quantity\":null}",
+                "{\"productId\":1,\"quantity\":true}",
+                "{\"productId\":1,\"quantity\":[]}",
+                "{\"productId\":1,\"quantity\":{}}",
+                validBody + " {}",
+                validBody.substring(0, validBody.length() - 1));
+
+        for (String body : invalidBodies) {
+            var response = alice.send("POST", "/orders", "corrected-purchase", body);
+            assertThat(response.statusCode()).as(body).isEqualTo(400);
+            assertThat(json(response).path("code").asText()).isEqualTo("INVALID_INPUT");
+            assertEmptyAndStock(10);
+        }
+
+        assertThat(alice.buy("corrected-purchase", product, 1).statusCode()).isEqualTo(201);
+        assertThat(count("order_requests")).isEqualTo(1);
+        assertThat(available()).isEqualTo(9);
+        observe("invalid-bodies-do-not-reserve-key", Map.of(
+                "rejectedBodies", invalidBodies.size(), "correctedHttp", 201, "available", 9));
+    }
+
+    /** 키의 형식 오류와 같은 구매의 내용 충돌을 서로 다른 응답으로 유지. */
+    @Test void purchaseKeyFormatAndLengthAreValidatedBeforeSaving() throws Exception {
+        for (String key : List.of("", "bad key", "bad/key", "a".repeat(129))) {
+            var response = alice.send("POST", "/orders", key, payload(product, 1));
+            assertThat(response.statusCode()).as("key length=%s", key.length()).isEqualTo(400);
+            assertThat(json(response).path("code").asText()).isEqualTo("INVALID_REQUEST_KEY");
+            assertEmptyAndStock(10);
+        }
+
+        assertThat(alice.buy("a", product, 1).statusCode()).isEqualTo(201);
+        assertThat(alice.buy("A0_-".repeat(32), product, 1).statusCode()).isEqualTo(201);
+        assertThat(count("order_requests")).isEqualTo(2);
+        assertThat(available()).isEqualTo(8);
+        observe("purchase-key-format-and-length", Map.of(
+                "invalidKeys", 4, "shortestAcceptedLength", 1, "longestAcceptedLength", 128));
+    }
+
+    /** 양의 정수 입력이라도 재고 확보 여부는 입력 검증이 아닌 DB의 재고 조건으로 판단. */
+    @Test void positiveQuantityAndUnknownProductRemainBusinessDecisions() throws Exception {
+        var shortage = alice.buy("large-positive-quantity", product, Integer.MAX_VALUE);
+        assertThat(shortage.statusCode()).isEqualTo(409);
+        assertThat(json(shortage).path("code").asText()).isEqualTo("OUT_OF_STOCK");
+        assertThat(alice.buy("large-positive-quantity", product, Integer.MAX_VALUE).statusCode()).isEqualTo(409);
+
+        var unknownProduct = alice.buy("unknown-positive-product", Long.MAX_VALUE, 1);
+        assertThat(unknownProduct.statusCode()).isEqualTo(404);
+        assertThat(count("order_requests")).isEqualTo(1);
+        assertThat(count("orders")).isZero();
+        assertThat(count("inventory_movements")).isZero();
+        assertThat(available()).isEqualTo(10);
+        observe("validation-and-stock-decision", Map.of(
+                "positiveQuantityHttp", 409, "unknownProductHttp", 404, "available", 10));
+    }
+
+    /** 잘못된 취소 ID나 본문은 기존 접수 상태와 차감된 재고를 바꾸지 않음. */
+    @Test void invalidCancellationInputsKeepOrderAndStock() throws Exception {
+        long orderId = json(alice.buy("validated-cancellation", product, 2)).path("id").asLong();
+        for (String invalidId : List.of("0", "-1", "word", "9223372036854775808")) {
+            var response = alice.send("POST", "/orders/" + invalidId + "/cancel", null, null);
+            assertThat(response.statusCode()).as(invalidId).isEqualTo(400);
+            assertThat(json(response).path("code").asText()).isEqualTo("INVALID_INPUT");
+        }
+        for (String body : List.of(" ", "null", "{}", "{\"quantity\":999}")) {
+            var response = alice.send("POST", "/orders/" + orderId + "/cancel", null, body);
+            assertThat(response.statusCode()).as(body).isEqualTo(400);
+            assertThat(json(response).path("code").asText()).isEqualTo("UNEXPECTED_BODY");
+        }
+
+        assertThat(json(alice.send("GET", "/orders/" + orderId, null, null)).path("status").asText())
+                .isEqualTo("ACCEPTED");
+        assertThat(available()).isEqualTo(8);
+        assertThat(count("order_requests")).isEqualTo(1);
+        assertThat(jdbc.queryForObject("SELECT count(*) FROM inventory_movements WHERE kind='RESTORE'", Long.class))
+                .isZero();
+        assertThat(alice.cancel(orderId).statusCode()).isEqualTo(200);
+        assertThat(available()).isEqualTo(10);
+        observe("invalid-cancellation-inputs", Map.of(
+                "rejectedRequests", 8, "beforeValidCancelAvailable", 8, "afterValidCancelAvailable", 10));
+    }
+
+    /** 컨트롤러를 나눠도 기존 상품 조회 경로와 응답 형식 유지. */
+    @Test void productQueriesRemainAvailableAfterControllerSplit() throws Exception {
+        var products = alice.send("GET", "/products", null, null);
+        assertThat(products.statusCode()).isEqualTo(200);
+        assertThat(json(products)).hasSize(2);
+
+        var response = alice.send("GET", "/products/" + product, null, null);
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(json(response).path("id").asLong()).isEqualTo(product);
+        assertThat(json(response).path("availableQuantity").asInt()).isEqualTo(10);
+        assertEmptyAndStock(10);
+    }
+
+    /** 응답 DTO로 분리한 뒤에도 기존 JSON 필드, 상태와 재전송 결과 유지. */
+    @Test void responseDtosKeepExistingHttpFields() throws Exception {
+        var created = json(alice.buy("dto-response-fields", product, 2));
+        assertJsonFields(created, "id", "productId", "quantity", "status", "createdAt", "cancelledAt");
+        assertThat(created.path("cancelledAt").isNull()).isTrue();
+        long orderId = created.path("id").asLong();
+        assertThat(json(alice.send("GET", "/orders/" + orderId, null, null))).isEqualTo(created);
+        assertThat(json(alice.send("GET", "/orders", null, null)).get(0)).isEqualTo(created);
+
+        var cancelled = json(alice.cancel(orderId));
+        assertJsonFields(cancelled, "id", "productId", "quantity", "status", "createdAt", "cancelledAt");
+        assertThat(cancelled.path("status").asText()).isEqualTo("CANCELLED");
+        assertThat(cancelled.path("cancelledAt").isNull()).isFalse();
+        assertThat(json(alice.buy("dto-response-fields", product, 2))).isEqualTo(cancelled);
+
+        var productResponse = json(alice.send("GET", "/products/" + product, null, null));
+        assertJsonFields(productResponse, "id", "name", "availableQuantity");
+        assertThat(productResponse.path("availableQuantity").asInt()).isEqualTo(10);
+        var csrfResponse = json(alice.send("GET", "/csrf", null, null));
+        assertJsonFields(csrfResponse, "headerName", "parameterName", "token");
+        assertThat(csrfResponse.path("token").asText()).isNotBlank();
+        var error = alice.send("POST", "/orders", "invalid key", payload(product, 1));
+        assertThat(error.statusCode()).isEqualTo(400);
+        assertJsonFields(json(error), "code");
+        observe("dto-response-json-fields", Map.of(
+                "orderFields", 6, "productFields", 3, "csrfFields", 3, "errorFields", 1, "available", 10));
+    }
+
+    private void assertJsonFields(JsonNode body, String... expectedFields) {
+        var actualFields = new HashSet<String>();
+        body.fieldNames().forEachRemaining(actualFields::add);
+        assertThat(actualFields).containsExactlyInAnyOrder(expectedFields);
+    }
+
     @Test void requestBodyLimitAppliesToChunkedAndFixedLength() throws Exception {
         String oversized=" ".repeat(9000)+payload(product,1);
         assertThat(alice.send("POST","/orders","large-fixed",oversized).statusCode()).isEqualTo(413);
@@ -302,6 +476,41 @@ class OrderHttpIntegrationTest {
         var request=alice.request(port,"POST","/orders","large-chunked",publisher);
         assertThat(alice.http.send(request,HttpResponse.BodyHandlers.ofString()).statusCode()).isEqualTo(413);
         assertEmptyAndStock(10);
+    }
+
+    /** MVC가 같은 주문 경로로 읽는 인코딩 URL에도 본문 제한을 동일하게 적용. */
+    @Test void encodedOrderPathCannotBypassRequestBodyLimit() throws Exception {
+        String oversized = " ".repeat(9000) + payload(product, 1);
+        var response = alice.send("POST", "/%6frders", "encoded-large-fixed", oversized);
+        observe("encoded-order-path-body-limit", Map.of("http", response.statusCode(),
+                "orders", count("orders"), "available", available()));
+        assertThat(response.statusCode()).isEqualTo(413);
+
+        var publisher = HttpRequest.BodyPublishers.ofInputStream(
+                () -> new java.io.ByteArrayInputStream(oversized.getBytes(StandardCharsets.UTF_8)));
+        var request = alice.request(port, "POST", "/%6frders", "encoded-large-chunked", publisher);
+        assertThat(alice.http.send(request, HttpResponse.BodyHandlers.ofString()).statusCode()).isEqualTo(413);
+        assertEmptyAndStock(10);
+        assertThat(alice.send("POST", "/%6frders", "encoded-large-fixed", payload(product, 1)).statusCode())
+                .isEqualTo(201);
+    }
+
+    /** 중복 JSON 필드는 마지막 값으로 덮어 읽지 않고 저장 전에 거절. */
+    @Test void duplicateOrderFieldsDoNotChooseOneValueOrReserveKey() throws Exception {
+        var duplicateBodies = List.of(
+                "{\"productId\":" + product + ",\"quantity\":1,\"quantity\":2}",
+                "{\"productId\":" + product + ",\"quantity\":1,\"quantity\":1}",
+                "{\"productId\":" + product + ",\"productId\":" + other + ",\"quantity\":1}");
+        for (String body : duplicateBodies) {
+            var response = alice.send("POST", "/orders", "duplicate-field-purchase", body);
+            observe("duplicate-order-field", Map.of("http", response.statusCode(),
+                    "orders", count("orders"), "available", available()));
+            assertThat(response.statusCode()).isEqualTo(400);
+            assertThat(json(response).path("code").asText()).isEqualTo("INVALID_INPUT");
+            assertEmptyAndStock(10);
+        }
+        assertThat(alice.buy("duplicate-field-purchase", product, 1).statusCode()).isEqualTo(201);
+        assertThat(available()).isEqualTo(9);
     }
 
     @Test void formCsrfCannotBypassBodySizeLimit() throws Exception {

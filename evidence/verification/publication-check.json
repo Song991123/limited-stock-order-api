@@ -1,0 +1,10 @@
+{
+  "sourceRun": "20261110-133943",
+  "scope": "Export guard tested with a deliberately incomplete copy; not an application test run",
+  "omitted": "actor-order-journeys.json",
+  "exportExit": 1,
+  "missingActorRejected": true,
+  "publishedFilesBeforeCheck": 14,
+  "publishedFilesUnchanged": true,
+  "includedInJunitCount": false
+}
