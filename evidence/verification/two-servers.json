@@ -1,0 +1,314 @@
+[
+  {
+    "scenario": "same-cancellation",
+    "http": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 1,
+      "requests": 1,
+      "available": 20,
+      "restorations": 1
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  },
+  {
+    "scenario": "same-cancellation",
+    "http": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 1,
+      "requests": 1,
+      "available": 20,
+      "restorations": 1
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  },
+  {
+    "scenario": "same-cancellation",
+    "http": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 1,
+      "requests": 1,
+      "available": 20,
+      "restorations": 1
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  },
+  {
+    "scenario": "last-stock",
+    "http": [
+      201,
+      409
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 1,
+      "requests": 2,
+      "available": 0,
+      "restorations": 0
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  },
+  {
+    "scenario": "last-stock",
+    "http": [
+      409,
+      201
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 1,
+      "requests": 2,
+      "available": 0,
+      "restorations": 0
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  },
+  {
+    "scenario": "last-stock",
+    "http": [
+      409,
+      201
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 1,
+      "requests": 2,
+      "available": 0,
+      "restorations": 0
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  },
+  {
+    "scenario": "same-purchase",
+    "http": [
+      200,
+      200,
+      200,
+      201,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 1,
+      "requests": 1,
+      "available": 19,
+      "restorations": 0
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  },
+  {
+    "scenario": "same-purchase",
+    "http": [
+      201,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 1,
+      "requests": 1,
+      "available": 19,
+      "restorations": 0
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  },
+  {
+    "scenario": "same-purchase",
+    "http": [
+      200,
+      200,
+      201,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 1,
+      "requests": 1,
+      "available": 19,
+      "restorations": 0
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  },
+  {
+    "scenario": "cancel-and-purchase",
+    "http": [
+      200,
+      201
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 2,
+      "requests": 2,
+      "available": 0,
+      "restorations": 1
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  },
+  {
+    "scenario": "cancel-and-purchase",
+    "http": [
+      200,
+      409
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 1,
+      "requests": 2,
+      "available": 1,
+      "restorations": 1
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  },
+  {
+    "scenario": "cancel-and-purchase",
+    "http": [
+      200,
+      201
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 2,
+      "requests": 2,
+      "available": 0,
+      "restorations": 1
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  }
+]

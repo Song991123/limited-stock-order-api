@@ -40,7 +40,17 @@ tasks.named('javadoc') {
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
+    useJUnitPlatform { excludeTags 'database-recovery' }
+    maxParallelForks = 1
+    systemProperty 'stock.test.classpath', sourceSets.test.runtimeClasspath.asPath
+    testLogging { events 'passed', 'failed', 'skipped' }
+}
+
+// DB 프로세스를 중단하는 검사는 일반 검사와 별도로 실행.
+tasks.register('databaseRecoveryTest', Test) {
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform { includeTags 'database-recovery' }
     maxParallelForks = 1
     systemProperty 'stock.test.classpath', sourceSets.test.runtimeClasspath.asPath
     testLogging { events 'passed', 'failed', 'skipped' }

@@ -21,6 +21,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.TransactionSystemException;
 
 /** 오류 응답과 실제 로그 이벤트를 대조하고 민감한 예외 메시지의 노출 여부 확인. */
 class ApiExceptionHandlerTest {
@@ -51,7 +52,7 @@ class ApiExceptionHandlerTest {
     void serverFailureConnectsResponseToSafeLog(Exception failure, int status, String code, String sqlState) {
         ResponseEntity<ErrorResponse> response;
         if (failure instanceof OrderProblem problem) response = handler.handleOrderProblem(problem);
-        else if (failure instanceof DataAccessException) response = handler.handleDatabaseFailure(failure);
+        else if (failure instanceof DataAccessException || failure instanceof TransactionSystemException) response = handler.handleDatabaseFailure(failure);
         else response = handler.handleUnexpectedFailure(failure);
 
         assertThat(response.getStatusCode().value()).isEqualTo(status);
@@ -86,6 +87,10 @@ class ApiExceptionHandlerTest {
     }
 
     private static Stream<Arguments> serverFailures() {
+        var rollback = new TransactionSystemException("Rollback failed", new SQLException("private-test-data", "08006"));
+        rollback.initApplicationException(new SQLException("SELECT password", "08006"));
+        var originalOnly = new TransactionSystemException("Rollback failed");
+        originalOnly.initApplicationException(new SQLException("SELECT password", "08006"));
         return Stream.of(
                 Arguments.of(OrderProblem.invariant(), 500, "INVARIANT_VIOLATION", "none"),
                 Arguments.of(new DataAccessResourceFailureException("private-test-data",
@@ -95,6 +100,10 @@ class ApiExceptionHandlerTest {
                 Arguments.of(new DataIntegrityViolationException("private-test-data",
                         new SQLException("SELECT password", "23514\nprivate-test-data")),
                         500, "INTERNAL_ERROR", "none"),
-                Arguments.of(new IllegalStateException("private-test-data"), 500, "INTERNAL_ERROR", "none"));
+                Arguments.of(new IllegalStateException("private-test-data"), 500, "INTERNAL_ERROR", "none"),
+                Arguments.of(rollback, 503, "DATABASE_UNAVAILABLE", "08006"),
+                Arguments.of(originalOnly, 503, "DATABASE_UNAVAILABLE", "08006"),
+                Arguments.of(new DataAccessResourceFailureException("private-test-data", new SQLException("SELECT password", "57P02")), 503, "DATABASE_UNAVAILABLE", "57P02"),
+                Arguments.of(new DataAccessResourceFailureException("private-test-data", new SQLException("SELECT password", "57P03")), 503, "DATABASE_UNAVAILABLE", "57P03"));
     }
 }

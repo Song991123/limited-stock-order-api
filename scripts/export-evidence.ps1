@@ -5,18 +5,21 @@ $rawRoot = Join-Path $project 'evidence/raw'
 if (-not $RunDirectory) {
     $RunDirectory = (Get-ChildItem -LiteralPath $rawRoot -Directory | Sort-Object Name -Descending | Where-Object {
         $summary = Join-Path $_.FullName 'summary.json'
-        (Test-Path -LiteralPath $summary) -and ((Get-Content -LiteralPath $summary -Raw | ConvertFrom-Json).buildExit -eq 0)
+        if (-not (Test-Path -LiteralPath $summary)) { return $false }
+        $record = Get-Content -LiteralPath $summary -Raw | ConvertFrom-Json
+        $record.buildExit -eq 0 -and -not $record.databaseRecovery
     } | Select-Object -First 1).FullName
 }
 $resolved = (Resolve-Path -LiteralPath $RunDirectory).Path
 if (-not $resolved.StartsWith(([IO.Path]::GetFullPath($rawRoot) + [IO.Path]::DirectorySeparatorChar), [StringComparison]::OrdinalIgnoreCase)) { throw 'Use an evidence/raw run from this project' }
 $summary = Get-Content -LiteralPath (Join-Path $resolved 'summary.json') -Raw | ConvertFrom-Json
+if ($summary.databaseRecovery) { throw 'Use the regular full suite for the main JUnit publication' }
 if ($summary.buildExit -ne 0 -or $summary.failures -ne 0 -or $summary.errors -ne 0 -or $summary.tests -lt 1) { throw 'Only a successful completed run can be exported' }
 $inputFiles = @(Get-Content -LiteralPath (Join-Path $resolved 'source-sha256.json') -Raw | ConvertFrom-Json)
 $current = @(& (Join-Path $PSScriptRoot 'source-snapshot.ps1'))
 if (($inputFiles | ConvertTo-Json -Compress) -ne ($current | ConvertTo-Json -Compress)) { throw 'Sources changed since the recorded test run; run tests again before exporting' }
 $actorFiles = @('actor-order-journeys.json', 'actor-access.json', 'actor-admission.json')
-foreach ($name in @('http-observations.json', 'process-recovery.json', 'normal-startup.json', 'isolated-base-cleanup.json') + $actorFiles) {
+foreach ($name in @('http-observations.json', 'process-recovery.json', 'normal-startup.json', 'isolated-base-cleanup.json', 'two-servers.json') + $actorFiles) {
     if (-not (Test-Path -LiteralPath (Join-Path $resolved $name) -PathType Leaf)) {
         throw "Incomplete full-suite evidence: $name is missing; published evidence was not changed"
     }
@@ -67,6 +70,9 @@ foreach ($name in $actorFiles) {
 $processCases = @(Get-Content -LiteralPath (Join-Path $resolved 'process-recovery.json') -Raw | ConvertFrom-Json | Where-Object { $_.stage -ne 'owned-jvm-terminated' })
 $processCases | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $destination 'process-recovery.json') -Encoding UTF8
 $normalStartup = Get-Content -LiteralPath (Join-Path $resolved 'normal-startup.json') -Raw | ConvertFrom-Json
+@(Get-Content -Raw -LiteralPath (Join-Path $resolved 'two-servers.json') | ConvertFrom-Json) | ForEach-Object {
+    [ordered]@{ scenario=$_.scenario; http=$_.http; database=$_.database; scope=$_.scope }
+} | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $destination 'two-servers.json') -Encoding UTF8
 [ordered]@{ profile=$normalStartup.profile; demoInitializerPresent=[bool]$normalStartup.demoInitializerPresent; buyers=[int]$normalStartup.buyers; products=[int]$normalStartup.products; unauthenticatedHttp=[int]$normalStartup.unauthenticatedHttp } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $destination 'normal-startup.json') -Encoding UTF8
 $clean = Get-Content -LiteralPath (Join-Path $resolved 'isolated-base-cleanup.json') -Raw | ConvertFrom-Json
 $xml = [xml]'<?xml version="1.0" encoding="utf-8"?><testsuites />'
