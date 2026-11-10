@@ -17,6 +17,8 @@
 | [RequestSizeFilter](../src/main/java/dev/mentoring/orders/web/filter/RequestSizeFilter.java) | 다른 필터가 읽기 전 본문 크기 검사 |
 | [TransactionConfiguration](../src/main/java/dev/mentoring/orders/config/TransactionConfiguration.java) | 같은 DataSource의 트랜잭션 관리자 지정, 커밋 오류 보존 |
 | [DatabaseFailures](../src/main/java/dev/mentoring/orders/exception/DatabaseFailures.java) | 인증과 주문에서 공통으로 쓰는 DB 오류 분류 |
+| [CustomerAccountRepository](../src/main/java/dev/mentoring/orders/repository/CustomerAccountRepository.java) | 로그인 계정과 저장된 비밀번호 해시 조회 |
+| [CustomerUserDetailsService](../src/main/java/dev/mentoring/orders/security/CustomerUserDetailsService.java) | 계정 조회 결과를 Spring Security의 로그인 정보로 변환 |
 
 요청과 응답 DTO는 `dto.request`와 `dto.response`, 내부 주문 정보는 `domain`, DB 구매 기록 조회 결과는 `repository.model`에 있습니다. 컨트롤러, 서비스와 저장소도 각각의 패키지로 구분했습니다. [입력 검증과 코드 구성](VALIDATION_AND_STRUCTURE.md)에서 나눈 이유와 입력별 검사 위치를 확인할 수 있습니다.
 
@@ -113,6 +115,12 @@ public OrderPlacement placeOrder(String username, String idempotencyKey, long pr
 
 인증은 MVC 앞의 보안 필터에서 실행됩니다. 따라서 계정 조회 DB가 실패한 응답은 `AuthenticationEntryPoint`에서도 구분합니다. 비밀번호 오류는 401을 유지하고 저장소 연결 장애는 503으로 반환합니다. `DatabaseFailures`가 원인, SQLSTATE와 원래 트랜잭션 예외를 확인하며 예외 원문은 응답하지 않습니다.
 
+계정 SQL은 `CustomerAccountRepository`, 로그인 정보 변환은 `CustomerUserDetailsService`가 맡습니다. `SecurityConfiguration`에는 인증 방식과 오류 응답 설정을 유지합니다. 계정이 없을 때와 DB가 실패했을 때의 예외를 섞지 않으며, 저장된 해시와 CUSTOMER 권한도 바꾸지 않았습니다. `LoginAccount`는 인증용 조회 결과로, 문자열 출력에 계정명과 비밀번호 해시를 넣지 않습니다.
+
+## 구조 검사
+
+`PackageStructureTest`가 ArchUnit으로 제품 클래스 파일을 자동 탐색합니다. 컨트롤러가 저장소를 직접 호출하거나 서비스가 JDBC를 사용하는 경우, 내부 타입이 HTTP DTO를 사용하는 경우 등을 거절합니다. 메서드 안에서만 DTO를 생성하는 위반 예제도 검사해 필드나 메서드 선언만 읽던 누락을 보완했습니다. 검사 전용 예제와 ArchUnit은 실행 JAR에 포함하지 않습니다.
+
 `ApiExceptionHandler`는 Spring의 오류 상태뿐 아니라 `Allow`, `Accept`와 지정된 `Retry-After`도 보존합니다. 상태만 복사하면 클라이언트가 허용 메서드나 지원 형식을 알 수 없었습니다. 본문을 JSON 오류 코드로 바꾸므로 원래 본문의 길이와 형식은 복사하지 않고, 로그에 남긴 오류 번호도 덮어쓰지 않습니다.
 
 ## 고객별 목록 인덱스
@@ -133,6 +141,8 @@ public OrderPlacement placeOrder(String username, String idempotencyKey, long pr
 | 왜 DTO를 나눴나요? | JSON 필드와 내부 주문 자료를 따로 바꾸기 위해서입니다. 컨트롤러가 변환하며 서비스와 SQL 저장소는 HTTP DTO를 받지 않습니다. |
 | DB가 꺼지면 자동으로 주문을 다시 실행하나요? | 자동 실행하지 않습니다. 서버의 연결이 복구된 뒤 고객이 같은 키로 결과를 확인합니다. 확정 여부를 모른다고 새 키를 만들지 않습니다. |
 | 트랜잭션 관리자를 왜 명시했나요? | 실제 DB 중단에서 커밋 오류가 롤백 오류에 가려졌습니다. 표준 DataSourceTransactionManager로 원래 SQL 오류를 보존했습니다. 저장 범위와 격리 수준은 그대로입니다. |
-| 어느 범위까지 확인했나요? | 정규 160건과 별도 DB 중단 15건을 구분합니다. 목록 인덱스는 SQL 실행 계획 24개로 확인했습니다. k6 부하는 헤더 수정 전 버전의 기록이며 이번에 다시 측정하지 않았습니다. |
+| 인증 코드를 왜 나눴나요? | 보안 설정에서 SQL을 제거하고, 저장소는 계정 조회, UserDetailsService는 로그인 정보 변환을 맡게 했습니다. 비밀번호 비교와 인증 응답은 기존 처리를 유지했습니다. |
+| 새 클래스도 구조 검사를 받나요? | 제품 패키지의 컴파일된 클래스 파일을 자동으로 읽고 패키지별 규칙을 적용합니다. 메서드 안에서만 잘못된 타입을 쓰는 경우도 검사합니다. |
+| 어느 범위까지 확인했나요? | 정규 172건과 별도 DB 중단 15건을 구분합니다. 목록 인덱스의 SQL 계획 24개와 k6는 이전 코드의 기록이며 이번에 다시 측정하지 않았습니다. |
 
 [백엔드 점검표](BACKEND_REVIEW.md)에 유지한 구성과 수정 이유, 남은 한계를 모았습니다.

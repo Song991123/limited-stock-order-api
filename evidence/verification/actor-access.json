@@ -149,7 +149,7 @@
           "product_id": 1,
           "kind": "DEBIT",
           "quantity_delta": -2,
-          "created_at": "2026-11-10 21:06:44.036084+09"
+          "created_at": "2026-11-11 02:10:00.195169+09"
         }
       ],
       "orders": [
@@ -160,7 +160,7 @@
           "product_id": 1,
           "quantity": 2,
           "status": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:44.036084+09",
+          "created_at": "2026-11-11 02:10:00.195169+09",
           "cancelled_at": null
         }
       ],
@@ -172,7 +172,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:44.036084+09"
+          "created_at": "2026-11-11 02:10:00.195169+09"
         }
       ],
       "buyers": [
@@ -367,7 +367,7 @@
           "product_id": 1,
           "kind": "DEBIT",
           "quantity_delta": -2,
-          "created_at": "2026-11-10 21:06:41.814042+09"
+          "created_at": "2026-11-11 02:09:58.537396+09"
         },
         {
           "id": 2,
@@ -375,7 +375,7 @@
           "product_id": 1,
           "kind": "RESTORE",
           "quantity_delta": 2,
-          "created_at": "2026-11-10 21:06:42.381946+09"
+          "created_at": "2026-11-11 02:09:58.963344+09"
         },
         {
           "id": 3,
@@ -383,7 +383,7 @@
           "product_id": 1,
           "kind": "DEBIT",
           "quantity_delta": -2,
-          "created_at": "2026-11-10 21:06:42.691814+09"
+          "created_at": "2026-11-11 02:09:59.207646+09"
         }
       ],
       "orders": [
@@ -394,8 +394,8 @@
           "product_id": 1,
           "quantity": 2,
           "status": "CANCELLED",
-          "created_at": "2026-11-10 21:06:41.814042+09",
-          "cancelled_at": "2026-11-10 21:06:42.381946+09"
+          "created_at": "2026-11-11 02:09:58.537396+09",
+          "cancelled_at": "2026-11-11 02:09:58.963344+09"
         },
         {
           "id": 2,
@@ -404,7 +404,7 @@
           "product_id": 1,
           "quantity": 2,
           "status": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:42.691814+09",
+          "created_at": "2026-11-11 02:09:59.207646+09",
           "cancelled_at": null
         }
       ],
@@ -416,7 +416,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:41.814042+09"
+          "created_at": "2026-11-11 02:09:58.537396+09"
         },
         {
           "id": 2,
@@ -425,7 +425,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:42.691814+09"
+          "created_at": "2026-11-11 02:09:59.207646+09"
         }
       ],
       "buyers": [
@@ -536,10 +536,10 @@
     "allStorageComparisonsUnchanged": true,
     "sessionEvents": [
       {
+        "cookiesRemoved": true,
         "cookiesBefore": 1,
         "cookiesAfter": 0,
-        "phase": "delete-session-cookie",
-        "cookiesRemoved": true
+        "phase": "delete-session-cookie"
       },
       {
         "phase": "new-csrf-session",
@@ -557,7 +557,7 @@
           "product_id": 1,
           "kind": "DEBIT",
           "quantity_delta": -2,
-          "created_at": "2026-11-10 21:06:46.063738+09"
+          "created_at": "2026-11-11 02:10:01.631165+09"
         },
         {
           "id": 2,
@@ -565,7 +565,7 @@
           "product_id": 1,
           "kind": "DEBIT",
           "quantity_delta": -1,
-          "created_at": "2026-11-10 21:06:46.230758+09"
+          "created_at": "2026-11-11 02:10:01.753935+09"
         },
         {
           "id": 3,
@@ -573,7 +573,7 @@
           "product_id": 1,
           "kind": "RESTORE",
           "quantity_delta": 2,
-          "created_at": "2026-11-10 21:06:46.383224+09"
+          "created_at": "2026-11-11 02:10:01.869084+09"
         }
       ],
       "orders": [
@@ -584,8 +584,8 @@
           "product_id": 1,
           "quantity": 2,
           "status": "CANCELLED",
-          "created_at": "2026-11-10 21:06:46.063738+09",
-          "cancelled_at": "2026-11-10 21:06:46.383224+09"
+          "created_at": "2026-11-11 02:10:01.631165+09",
+          "cancelled_at": "2026-11-11 02:10:01.869084+09"
         },
         {
           "id": 2,
@@ -594,7 +594,7 @@
           "product_id": 1,
           "quantity": 1,
           "status": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:46.230758+09",
+          "created_at": "2026-11-11 02:10:01.753935+09",
           "cancelled_at": null
         }
       ],
@@ -606,7 +606,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:46.063738+09"
+          "created_at": "2026-11-11 02:10:01.631165+09"
         },
         {
           "id": 2,
@@ -615,7 +615,7 @@
           "product_id": 1,
           "quantity": 1,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:46.230758+09"
+          "created_at": "2026-11-11 02:10:01.753935+09"
         }
       ],
       "buyers": [
@@ -730,7 +730,7 @@
           "product_id": 1,
           "kind": "DEBIT",
           "quantity_delta": -1,
-          "created_at": "2026-11-10 21:06:40.994639+09"
+          "created_at": "2026-11-11 02:09:57.919018+09"
         },
         {
           "id": 2,
@@ -738,7 +738,7 @@
           "product_id": 1,
           "kind": "DEBIT",
           "quantity_delta": -2,
-          "created_at": "2026-11-10 21:06:41.340748+09"
+          "created_at": "2026-11-11 02:09:58.173225+09"
         }
       ],
       "orders": [
@@ -749,7 +749,7 @@
           "product_id": 1,
           "quantity": 1,
           "status": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:40.994639+09",
+          "created_at": "2026-11-11 02:09:57.919018+09",
           "cancelled_at": null
         },
         {
@@ -759,7 +759,7 @@
           "product_id": 1,
           "quantity": 2,
           "status": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:41.340748+09",
+          "created_at": "2026-11-11 02:09:58.173225+09",
           "cancelled_at": null
         }
       ],
@@ -771,7 +771,7 @@
           "product_id": 1,
           "quantity": 1,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:40.994639+09"
+          "created_at": "2026-11-11 02:09:57.919018+09"
         },
         {
           "id": 2,
@@ -780,7 +780,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:41.340748+09"
+          "created_at": "2026-11-11 02:09:58.173225+09"
         }
       ],
       "buyers": [
@@ -920,7 +920,7 @@
           "product_id": 1,
           "kind": "DEBIT",
           "quantity_delta": -2,
-          "created_at": "2026-11-10 21:06:43.33583+09"
+          "created_at": "2026-11-11 02:09:59.669252+09"
         },
         {
           "id": 2,
@@ -928,7 +928,7 @@
           "product_id": 1,
           "kind": "DEBIT",
           "quantity_delta": -1,
-          "created_at": "2026-11-10 21:06:43.546674+09"
+          "created_at": "2026-11-11 02:09:59.813407+09"
         },
         {
           "id": 3,
@@ -936,7 +936,7 @@
           "product_id": 1,
           "kind": "RESTORE",
           "quantity_delta": 2,
-          "created_at": "2026-11-10 21:06:43.644329+09"
+          "created_at": "2026-11-11 02:09:59.874268+09"
         }
       ],
       "orders": [
@@ -947,8 +947,8 @@
           "product_id": 1,
           "quantity": 2,
           "status": "CANCELLED",
-          "created_at": "2026-11-10 21:06:43.33583+09",
-          "cancelled_at": "2026-11-10 21:06:43.644329+09"
+          "created_at": "2026-11-11 02:09:59.669252+09",
+          "cancelled_at": "2026-11-11 02:09:59.874268+09"
         },
         {
           "id": 2,
@@ -957,7 +957,7 @@
           "product_id": 1,
           "quantity": 1,
           "status": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:43.546674+09",
+          "created_at": "2026-11-11 02:09:59.813407+09",
           "cancelled_at": null
         }
       ],
@@ -969,7 +969,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:43.33583+09"
+          "created_at": "2026-11-11 02:09:59.669252+09"
         },
         {
           "id": 2,
@@ -978,7 +978,7 @@
           "product_id": 1,
           "quantity": 1,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:43.546674+09"
+          "created_at": "2026-11-11 02:09:59.813407+09"
         }
       ],
       "buyers": [
@@ -1142,7 +1142,7 @@
           "product_id": 1,
           "kind": "DEBIT",
           "quantity_delta": -2,
-          "created_at": "2026-11-10 21:06:44.895071+09"
+          "created_at": "2026-11-11 02:10:00.817939+09"
         },
         {
           "id": 2,
@@ -1150,7 +1150,7 @@
           "product_id": 1,
           "kind": "DEBIT",
           "quantity_delta": -3,
-          "created_at": "2026-11-10 21:06:44.987871+09"
+          "created_at": "2026-11-11 02:10:00.877716+09"
         },
         {
           "id": 3,
@@ -1158,7 +1158,7 @@
           "product_id": 1,
           "kind": "RESTORE",
           "quantity_delta": 2,
-          "created_at": "2026-11-10 21:06:45.40941+09"
+          "created_at": "2026-11-11 02:10:01.172028+09"
         },
         {
           "id": 4,
@@ -1166,7 +1166,7 @@
           "product_id": 1,
           "kind": "RESTORE",
           "quantity_delta": 3,
-          "created_at": "2026-11-10 21:06:45.648538+09"
+          "created_at": "2026-11-11 02:10:01.348525+09"
         }
       ],
       "orders": [
@@ -1177,8 +1177,8 @@
           "product_id": 1,
           "quantity": 2,
           "status": "CANCELLED",
-          "created_at": "2026-11-10 21:06:44.895071+09",
-          "cancelled_at": "2026-11-10 21:06:45.40941+09"
+          "created_at": "2026-11-11 02:10:00.817939+09",
+          "cancelled_at": "2026-11-11 02:10:01.172028+09"
         },
         {
           "id": 2,
@@ -1187,8 +1187,8 @@
           "product_id": 1,
           "quantity": 3,
           "status": "CANCELLED",
-          "created_at": "2026-11-10 21:06:44.987871+09",
-          "cancelled_at": "2026-11-10 21:06:45.648538+09"
+          "created_at": "2026-11-11 02:10:00.877716+09",
+          "cancelled_at": "2026-11-11 02:10:01.348525+09"
         }
       ],
       "requests": [
@@ -1199,7 +1199,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:44.895071+09"
+          "created_at": "2026-11-11 02:10:00.817939+09"
         },
         {
           "id": 2,
@@ -1208,7 +1208,7 @@
           "product_id": 1,
           "quantity": 3,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 21:06:44.987871+09"
+          "created_at": "2026-11-11 02:10:00.877716+09"
         }
       ],
       "buyers": [
