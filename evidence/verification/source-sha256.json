@@ -193,7 +193,7 @@
   },
   {
     "file": "src/test/java/dev/mentoring/orders/NormalStartupIntegrationTest.java",
-    "sha256Utf8Lf": "6be667aa2c5a5fa42e01684c5e0f0dc59b5a2e2985c4b2e9b65f07c589bd05e4"
+    "sha256Utf8Lf": "027a46ac5d52283a6e74b98b35286999fe88797620b1df69cdc016d2966729f1"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/OrderHttpIntegrationTest.java",

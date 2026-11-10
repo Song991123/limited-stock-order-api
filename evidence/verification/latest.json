@@ -1,5 +1,5 @@
 {
-  "testedOn": "20261110-133943",
+  "testedOn": "20261110-134911",
   "tests": 121,
   "failures": 0,
   "errors": 0,
@@ -13,98 +13,98 @@
       "tests": 6,
       "failures": 0,
       "errors": 0,
-      "seconds": 4.702
+      "seconds": 4.603
     },
     {
       "name": "dev.mentoring.orders.ActorAdmissionIntegrationTest",
       "tests": 2,
       "failures": 0,
       "errors": 0,
-      "seconds": 1.493
+      "seconds": 1.501
     },
     {
       "name": "dev.mentoring.orders.ActorOrderJourneyIntegrationTest",
       "tests": 4,
       "failures": 0,
       "errors": 0,
-      "seconds": 2.874
+      "seconds": 2.868
     },
     {
       "name": "dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest",
       "tests": 7,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.012
+      "seconds": 0.011
     },
     {
       "name": "dev.mentoring.orders.dto.response.ResponseMappingTest",
       "tests": 3,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.003
+      "seconds": 0.004
     },
     {
       "name": "dev.mentoring.orders.exception.ApiExceptionHandlerTest",
       "tests": 7,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.005
+      "seconds": 0.007
     },
     {
       "name": "dev.mentoring.orders.NormalStartupIntegrationTest",
       "tests": 1,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.017
+      "seconds": 0.016
     },
     {
       "name": "dev.mentoring.orders.OrderHttpIntegrationTest",
       "tests": 50,
       "failures": 0,
       "errors": 0,
-      "seconds": 20.304
+      "seconds": 20.216
     },
     {
       "name": "dev.mentoring.orders.OrderProcessRecoveryTest",
       "tests": 1,
       "failures": 0,
       "errors": 0,
-      "seconds": 16.668
+      "seconds": 16.388
     },
     {
       "name": "dev.mentoring.orders.PackageStructureTest",
       "tests": 2,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.006
+      "seconds": 0.005
     },
     {
       "name": "dev.mentoring.orders.service.OrderServiceTest",
       "tests": 22,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.479
+      "seconds": 0.422
     },
     {
       "name": "dev.mentoring.orders.service.ProductServiceTest",
       "tests": 4,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.011
+      "seconds": 0.01
     },
     {
       "name": "dev.mentoring.orders.web.admission.WriteAdmissionTest",
       "tests": 7,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.021
+      "seconds": 0.018
     },
     {
       "name": "dev.mentoring.orders.web.filter.RequestSizeFilterTest",
       "tests": 5,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.048
+      "seconds": 0.042
     }
   ],
   "scope": [

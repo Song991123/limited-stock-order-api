@@ -20,7 +20,7 @@
       429
     ],
     "scenario": "customer-rate-limit",
-    "retryAfterSeconds": 48,
+    "retryAfterSeconds": 21,
     "rejectedHttp": 429,
     "otherCustomerHttp": 201,
     "available": 8

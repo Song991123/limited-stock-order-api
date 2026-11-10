@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.sql.DriverManager;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +32,8 @@ import org.springframework.test.context.DynamicPropertySource;
 @ActiveProfiles("standard")
 @DirtiesContext
 class NormalStartupIntegrationTest {
-    private static final String SCHEMA = "normal_startup_test";
+    private static final String SCHEMA = "normal_startup_test_" + UUID.randomUUID().toString().replace("-", "");
+    private static boolean schemaCreated;
     @LocalServerPort int port;
     @Autowired ApplicationContext context;
     @Autowired JdbcTemplate jdbc;
@@ -46,11 +49,30 @@ class NormalStartupIntegrationTest {
                 System.getenv("STOCK_DB_USER"), System.getenv("STOCK_DB_PASSWORD"));
                 var statement = connection.createStatement()) {
             statement.execute("CREATE SCHEMA " + SCHEMA);
+            schemaCreated = true;
         }
         registry.add("spring.datasource.url", () -> url);
         registry.add("spring.datasource.hikari.schema", () -> SCHEMA);
         registry.add("spring.flyway.schemas", () -> SCHEMA);
         registry.add("spring.flyway.default-schema", () -> SCHEMA);
+    }
+
+    /** 이번 검사에서 만든 스키마만 제거, 같은 시험 DB에서 다음 실행도 빈 상태로 시작. */
+    @AfterAll
+    static void dropOwnedSchema() throws Exception {
+        if (!schemaCreated) return;
+        try (var connection = DriverManager.getConnection(System.getenv("STOCK_DB_URL"),
+                System.getenv("STOCK_DB_USER"), System.getenv("STOCK_DB_PASSWORD"));
+                var statement = connection.createStatement()) {
+            statement.execute("DROP SCHEMA " + SCHEMA + " CASCADE");
+            try (var remaining = connection.prepareStatement("SELECT count(*) FROM pg_namespace WHERE nspname=?")) {
+                remaining.setString(1, SCHEMA);
+                try (var rows = remaining.executeQuery()) {
+                    rows.next();
+                    assertThat(rows.getLong(1)).isZero();
+                }
+            }
+        }
     }
 
     @Test

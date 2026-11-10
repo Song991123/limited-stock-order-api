@@ -142,6 +142,16 @@
     "requestViolations": 0,
     "orderViolations": 0,
     "finalDatabase": {
+      "movements": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:49:34.392062+09"
+        }
+      ],
       "orders": [
         {
           "id": 1,
@@ -150,7 +160,7 @@
           "product_id": 1,
           "quantity": 2,
           "status": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:07.015048+09",
+          "created_at": "2026-11-10 13:49:34.392062+09",
           "cancelled_at": null
         }
       ],
@@ -162,7 +172,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:07.015048+09"
+          "created_at": "2026-11-10 13:49:34.392062+09"
         }
       ],
       "buyers": [
@@ -186,16 +196,6 @@
         {
           "id": 1,
           "name": "Actor access notebook"
-        }
-      ],
-      "movements": [
-        {
-          "id": 1,
-          "order_id": 1,
-          "product_id": 1,
-          "kind": "DEBIT",
-          "quantity_delta": -2,
-          "created_at": "2026-11-10 13:40:07.015048+09"
         }
       ]
     }
@@ -360,6 +360,32 @@
     "requestViolations": 0,
     "orderViolations": 0,
     "finalDatabase": {
+      "movements": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:49:32.838773+09"
+        },
+        {
+          "id": 2,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "RESTORE",
+          "quantity_delta": 2,
+          "created_at": "2026-11-10 13:49:33.255129+09"
+        },
+        {
+          "id": 3,
+          "order_id": 2,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:49:33.488122+09"
+        }
+      ],
       "orders": [
         {
           "id": 1,
@@ -368,8 +394,8 @@
           "product_id": 1,
           "quantity": 2,
           "status": "CANCELLED",
-          "created_at": "2026-11-10 13:40:05.43724+09",
-          "cancelled_at": "2026-11-10 13:40:05.860679+09"
+          "created_at": "2026-11-10 13:49:32.838773+09",
+          "cancelled_at": "2026-11-10 13:49:33.255129+09"
         },
         {
           "id": 2,
@@ -378,7 +404,7 @@
           "product_id": 1,
           "quantity": 2,
           "status": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:06.093608+09",
+          "created_at": "2026-11-10 13:49:33.488122+09",
           "cancelled_at": null
         }
       ],
@@ -390,7 +416,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:05.43724+09"
+          "created_at": "2026-11-10 13:49:32.838773+09"
         },
         {
           "id": 2,
@@ -399,7 +425,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:06.093608+09"
+          "created_at": "2026-11-10 13:49:33.488122+09"
         }
       ],
       "buyers": [
@@ -423,32 +449,6 @@
         {
           "id": 1,
           "name": "Actor access notebook"
-        }
-      ],
-      "movements": [
-        {
-          "id": 1,
-          "order_id": 1,
-          "product_id": 1,
-          "kind": "DEBIT",
-          "quantity_delta": -2,
-          "created_at": "2026-11-10 13:40:05.43724+09"
-        },
-        {
-          "id": 2,
-          "order_id": 1,
-          "product_id": 1,
-          "kind": "RESTORE",
-          "quantity_delta": 2,
-          "created_at": "2026-11-10 13:40:05.860679+09"
-        },
-        {
-          "id": 3,
-          "order_id": 2,
-          "product_id": 1,
-          "kind": "DEBIT",
-          "quantity_delta": -2,
-          "created_at": "2026-11-10 13:40:06.093608+09"
         }
       ]
     }
@@ -542,14 +542,40 @@
         "cookiesRemoved": true
       },
       {
-        "sessionReplaced": true,
-        "phase": "new-csrf-session"
+        "phase": "new-csrf-session",
+        "sessionReplaced": true
       }
     ],
     "inventoryViolations": 0,
     "requestViolations": 0,
     "orderViolations": 0,
     "finalDatabase": {
+      "movements": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:49:35.745898+09"
+        },
+        {
+          "id": 2,
+          "order_id": 2,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -1,
+          "created_at": "2026-11-10 13:49:35.862422+09"
+        },
+        {
+          "id": 3,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "RESTORE",
+          "quantity_delta": 2,
+          "created_at": "2026-11-10 13:49:35.974124+09"
+        }
+      ],
       "orders": [
         {
           "id": 1,
@@ -558,8 +584,8 @@
           "product_id": 1,
           "quantity": 2,
           "status": "CANCELLED",
-          "created_at": "2026-11-10 13:40:08.380269+09",
-          "cancelled_at": "2026-11-10 13:40:08.609628+09"
+          "created_at": "2026-11-10 13:49:35.745898+09",
+          "cancelled_at": "2026-11-10 13:49:35.974124+09"
         },
         {
           "id": 2,
@@ -568,7 +594,7 @@
           "product_id": 1,
           "quantity": 1,
           "status": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:08.498788+09",
+          "created_at": "2026-11-10 13:49:35.862422+09",
           "cancelled_at": null
         }
       ],
@@ -580,7 +606,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:08.380269+09"
+          "created_at": "2026-11-10 13:49:35.745898+09"
         },
         {
           "id": 2,
@@ -589,7 +615,7 @@
           "product_id": 1,
           "quantity": 1,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:08.498788+09"
+          "created_at": "2026-11-10 13:49:35.862422+09"
         }
       ],
       "buyers": [
@@ -613,32 +639,6 @@
         {
           "id": 1,
           "name": "Actor access notebook"
-        }
-      ],
-      "movements": [
-        {
-          "id": 1,
-          "order_id": 1,
-          "product_id": 1,
-          "kind": "DEBIT",
-          "quantity_delta": -2,
-          "created_at": "2026-11-10 13:40:08.380269+09"
-        },
-        {
-          "id": 2,
-          "order_id": 2,
-          "product_id": 1,
-          "kind": "DEBIT",
-          "quantity_delta": -1,
-          "created_at": "2026-11-10 13:40:08.498788+09"
-        },
-        {
-          "id": 3,
-          "order_id": 1,
-          "product_id": 1,
-          "kind": "RESTORE",
-          "quantity_delta": 2,
-          "created_at": "2026-11-10 13:40:08.609628+09"
         }
       ]
     }
@@ -723,6 +723,24 @@
     "requestViolations": 0,
     "orderViolations": 0,
     "finalDatabase": {
+      "movements": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -1,
+          "created_at": "2026-11-10 13:49:32.274926+09"
+        },
+        {
+          "id": 2,
+          "order_id": 2,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:49:32.499521+09"
+        }
+      ],
       "orders": [
         {
           "id": 1,
@@ -731,7 +749,7 @@
           "product_id": 1,
           "quantity": 1,
           "status": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:04.875715+09",
+          "created_at": "2026-11-10 13:49:32.274926+09",
           "cancelled_at": null
         },
         {
@@ -741,7 +759,7 @@
           "product_id": 1,
           "quantity": 2,
           "status": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:05.103205+09",
+          "created_at": "2026-11-10 13:49:32.499521+09",
           "cancelled_at": null
         }
       ],
@@ -753,7 +771,7 @@
           "product_id": 1,
           "quantity": 1,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:04.875715+09"
+          "created_at": "2026-11-10 13:49:32.274926+09"
         },
         {
           "id": 2,
@@ -762,7 +780,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:05.103205+09"
+          "created_at": "2026-11-10 13:49:32.499521+09"
         }
       ],
       "buyers": [
@@ -786,24 +804,6 @@
         {
           "id": 1,
           "name": "Actor access notebook"
-        }
-      ],
-      "movements": [
-        {
-          "id": 1,
-          "order_id": 1,
-          "product_id": 1,
-          "kind": "DEBIT",
-          "quantity_delta": -1,
-          "created_at": "2026-11-10 13:40:04.875715+09"
-        },
-        {
-          "id": 2,
-          "order_id": 2,
-          "product_id": 1,
-          "kind": "DEBIT",
-          "quantity_delta": -2,
-          "created_at": "2026-11-10 13:40:05.103205+09"
         }
       ]
     }
@@ -905,14 +905,40 @@
     "allStorageComparisonsUnchanged": true,
     "sessionEvents": [
       {
-        "differentSessions": true,
-        "phase": "independent-sessions"
+        "phase": "independent-sessions",
+        "differentSessions": true
       }
     ],
     "inventoryViolations": 0,
     "requestViolations": 0,
     "orderViolations": 0,
     "finalDatabase": {
+      "movements": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:49:33.927273+09"
+        },
+        {
+          "id": 2,
+          "order_id": 2,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -1,
+          "created_at": "2026-11-10 13:49:34.068727+09"
+        },
+        {
+          "id": 3,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "RESTORE",
+          "quantity_delta": 2,
+          "created_at": "2026-11-10 13:49:34.125929+09"
+        }
+      ],
       "orders": [
         {
           "id": 1,
@@ -921,8 +947,8 @@
           "product_id": 1,
           "quantity": 2,
           "status": "CANCELLED",
-          "created_at": "2026-11-10 13:40:06.541232+09",
-          "cancelled_at": "2026-11-10 13:40:06.747094+09"
+          "created_at": "2026-11-10 13:49:33.927273+09",
+          "cancelled_at": "2026-11-10 13:49:34.125929+09"
         },
         {
           "id": 2,
@@ -931,7 +957,7 @@
           "product_id": 1,
           "quantity": 1,
           "status": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:06.688743+09",
+          "created_at": "2026-11-10 13:49:34.068727+09",
           "cancelled_at": null
         }
       ],
@@ -943,7 +969,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:06.541232+09"
+          "created_at": "2026-11-10 13:49:33.927273+09"
         },
         {
           "id": 2,
@@ -952,7 +978,7 @@
           "product_id": 1,
           "quantity": 1,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:06.688743+09"
+          "created_at": "2026-11-10 13:49:34.068727+09"
         }
       ],
       "buyers": [
@@ -976,32 +1002,6 @@
         {
           "id": 1,
           "name": "Actor access notebook"
-        }
-      ],
-      "movements": [
-        {
-          "id": 1,
-          "order_id": 1,
-          "product_id": 1,
-          "kind": "DEBIT",
-          "quantity_delta": -2,
-          "created_at": "2026-11-10 13:40:06.541232+09"
-        },
-        {
-          "id": 2,
-          "order_id": 2,
-          "product_id": 1,
-          "kind": "DEBIT",
-          "quantity_delta": -1,
-          "created_at": "2026-11-10 13:40:06.688743+09"
-        },
-        {
-          "id": 3,
-          "order_id": 1,
-          "product_id": 1,
-          "kind": "RESTORE",
-          "quantity_delta": 2,
-          "created_at": "2026-11-10 13:40:06.747094+09"
         }
       ]
     }
@@ -1135,6 +1135,40 @@
     "requestViolations": 0,
     "orderViolations": 0,
     "finalDatabase": {
+      "movements": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:49:34.974831+09"
+        },
+        {
+          "id": 2,
+          "order_id": 2,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -3,
+          "created_at": "2026-11-10 13:49:35.034045+09"
+        },
+        {
+          "id": 3,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "RESTORE",
+          "quantity_delta": 2,
+          "created_at": "2026-11-10 13:49:35.310193+09"
+        },
+        {
+          "id": 4,
+          "order_id": 2,
+          "product_id": 1,
+          "kind": "RESTORE",
+          "quantity_delta": 3,
+          "created_at": "2026-11-10 13:49:35.48162+09"
+        }
+      ],
       "orders": [
         {
           "id": 1,
@@ -1143,8 +1177,8 @@
           "product_id": 1,
           "quantity": 2,
           "status": "CANCELLED",
-          "created_at": "2026-11-10 13:40:07.607916+09",
-          "cancelled_at": "2026-11-10 13:40:07.947065+09"
+          "created_at": "2026-11-10 13:49:34.974831+09",
+          "cancelled_at": "2026-11-10 13:49:35.310193+09"
         },
         {
           "id": 2,
@@ -1153,8 +1187,8 @@
           "product_id": 1,
           "quantity": 3,
           "status": "CANCELLED",
-          "created_at": "2026-11-10 13:40:07.666563+09",
-          "cancelled_at": "2026-11-10 13:40:08.116842+09"
+          "created_at": "2026-11-10 13:49:35.034045+09",
+          "cancelled_at": "2026-11-10 13:49:35.48162+09"
         }
       ],
       "requests": [
@@ -1165,7 +1199,7 @@
           "product_id": 1,
           "quantity": 2,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:07.607916+09"
+          "created_at": "2026-11-10 13:49:34.974831+09"
         },
         {
           "id": 2,
@@ -1174,7 +1208,7 @@
           "product_id": 1,
           "quantity": 3,
           "outcome": "ACCEPTED",
-          "created_at": "2026-11-10 13:40:07.666563+09"
+          "created_at": "2026-11-10 13:49:35.034045+09"
         }
       ],
       "buyers": [
@@ -1198,40 +1232,6 @@
         {
           "id": 1,
           "name": "Actor access notebook"
-        }
-      ],
-      "movements": [
-        {
-          "id": 1,
-          "order_id": 1,
-          "product_id": 1,
-          "kind": "DEBIT",
-          "quantity_delta": -2,
-          "created_at": "2026-11-10 13:40:07.607916+09"
-        },
-        {
-          "id": 2,
-          "order_id": 2,
-          "product_id": 1,
-          "kind": "DEBIT",
-          "quantity_delta": -3,
-          "created_at": "2026-11-10 13:40:07.666563+09"
-        },
-        {
-          "id": 3,
-          "order_id": 1,
-          "product_id": 1,
-          "kind": "RESTORE",
-          "quantity_delta": 2,
-          "created_at": "2026-11-10 13:40:07.947065+09"
-        },
-        {
-          "id": 4,
-          "order_id": 2,
-          "product_id": 1,
-          "kind": "RESTORE",
-          "quantity_delta": 3,
-          "created_at": "2026-11-10 13:40:08.116842+09"
         }
       ]
     }
