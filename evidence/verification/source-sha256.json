@@ -1,11 +1,11 @@
 [
   {
     "file": ".github/workflows/verify.yml",
-    "sha256Utf8Lf": "2b1204e15fdcb902885ea1787a46c514bdf405af5b1aa1c75f421b823de20cc6"
+    "sha256Utf8Lf": "044959939e6e9a91394aed25e473819a83432c9cbba3f917f3edb2961013b287"
   },
   {
     "file": "build.gradle",
-    "sha256Utf8Lf": "282e59fefc48192073d3ff9d0e23d8498b4ff67b34ca7fe7731cc482ddc9fada"
+    "sha256Utf8Lf": "bceee69688acd4009fe86b3deb697830769c5751e6e4a8706067ba2c2daf2db7"
   },
   {
     "file": "gradle.properties",
@@ -77,7 +77,7 @@
   },
   {
     "file": "src/main/java/dev/mentoring/orders/config/SecurityConfiguration.java",
-    "sha256Utf8Lf": "bb2044dcb6c338faab304d53e62c419c3e021d0056516ec91319c1f5cff5b8d6"
+    "sha256Utf8Lf": "4723739c357b247184147518a5882cbfbd92c9291459f19d9a2bfce44ae2c39f"
   },
   {
     "file": "src/main/java/dev/mentoring/orders/config/TransactionConfiguration.java",
@@ -156,6 +156,14 @@
     "sha256Utf8Lf": "95467c2dfb4d0ec1b9a5ee553a0904eccecc4320d092cd96783f58a2c77459ad"
   },
   {
+    "file": "src/main/java/dev/mentoring/orders/repository/CustomerAccountRepository.java",
+    "sha256Utf8Lf": "4894a4f51cdb8135c6226d285fb9123c1ed7ae29ddf83b2d11b5fb7f028554ce"
+  },
+  {
+    "file": "src/main/java/dev/mentoring/orders/repository/model/LoginAccount.java",
+    "sha256Utf8Lf": "26537ea57ad7f4705dcae044940213e2517f815d949b45f6c651e5570cb39fad"
+  },
+  {
     "file": "src/main/java/dev/mentoring/orders/repository/model/RecordedPurchase.java",
     "sha256Utf8Lf": "acf48fc3784e6b35cb27bd917aebe0088f61cd9bae2cbea5fc3b7e60f6b1874d"
   },
@@ -166,6 +174,10 @@
   {
     "file": "src/main/java/dev/mentoring/orders/repository/ProductRepository.java",
     "sha256Utf8Lf": "d77c289ef112f790113f2e7a7ff2c44a4e3cd8dc714c8a7f96bf4f18bc245e60"
+  },
+  {
+    "file": "src/main/java/dev/mentoring/orders/security/CustomerUserDetailsService.java",
+    "sha256Utf8Lf": "99da5eb930a0297258cc2b2ae7a8c9c0be6a77b53328c64f2d9c2ce03ea3e9d7"
   },
   {
     "file": "src/main/java/dev/mentoring/orders/service/OrderService.java",
@@ -198,6 +210,14 @@
   {
     "file": "src/main/resources/db/migration/V1__orders_and_inventory.sql",
     "sha256Utf8Lf": "2d8beaca2bce26e57a7dbb3aa21aea6912fa31538778fa3f4ec71f664df25ff3"
+  },
+  {
+    "file": "src/test/java/architecturefixtures/controller/ControllerWithRepositoryDependency.java",
+    "sha256Utf8Lf": "4c8fb6a3a34f5103556f79a0bc5ce067c1819b0803a5087995a67f2498d330ab"
+  },
+  {
+    "file": "src/test/java/architecturefixtures/service/ServiceWithDtoDependency.java",
+    "sha256Utf8Lf": "a72870e2ea6156fb24b4d46530adbe3cb1a99f66393857f7e3b85fab1821dd5e"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/ActorAccessIntegrationTest.java",
@@ -237,7 +257,7 @@
   },
   {
     "file": "src/test/java/dev/mentoring/orders/OrderHttpIntegrationTest.java",
-    "sha256Utf8Lf": "91a91988e8df28e75803aee83b0bd33fc400f5aa01b92798b8cc722d0aac4e41"
+    "sha256Utf8Lf": "9374b2ed9267335a19ce5f163ce018c664addfb41c69c691fc51509a8ec9aed4"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/OrderProcessRecoveryTest.java",
@@ -245,7 +265,15 @@
   },
   {
     "file": "src/test/java/dev/mentoring/orders/PackageStructureTest.java",
-    "sha256Utf8Lf": "db5ddbeff25310bf05d1c9a8f5248dc66b7992c29f8e962132dd0ffad7004408"
+    "sha256Utf8Lf": "d0f0b89019b6235f03152a868069f94cfe92e492a6fb3602e0e3fbd2dfa90909"
+  },
+  {
+    "file": "src/test/java/dev/mentoring/orders/repository/model/LoginAccountTest.java",
+    "sha256Utf8Lf": "2024bd0776749fd35ce17c4d122d97fc0d0c25259a70fd79aefbc683e810e468"
+  },
+  {
+    "file": "src/test/java/dev/mentoring/orders/security/CustomerUserDetailsServiceTest.java",
+    "sha256Utf8Lf": "3b627080d89cec062f8cbcc9620eed9b499cd1c36f716db447f5418bcdb66c62"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/service/OrderServiceTest.java",

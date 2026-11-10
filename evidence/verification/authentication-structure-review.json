@@ -1,0 +1,374 @@
+{
+  "baselineCommit": "89286fe",
+  "retainedBaselineCases": 160,
+  "addedCases": [
+    "dev.mentoring.orders.OrderHttpIntegrationTest::unknownAndSqlLikeAccountsCannotAuthenticate()",
+    "dev.mentoring.orders.PackageStructureTest::configurationClassesDoNotContainJdbcQueries()",
+    "dev.mentoring.orders.PackageStructureTest::automaticallyDiscoveredServiceWithBodyOnlyDtoUseIsRejected()",
+    "dev.mentoring.orders.PackageStructureTest::controllersAndServicesDoNotExecuteSql()",
+    "dev.mentoring.orders.PackageStructureTest::automaticallyDiscoveredControllerWithRepositoryUseIsRejected()",
+    "dev.mentoring.orders.PackageStructureTest::controllersCallServicesInsteadOfRepositories()",
+    "dev.mentoring.orders.PackageStructureTest::repositoriesDoNotDependOnServicesOrAuthenticationFramework()",
+    "dev.mentoring.orders.PackageStructureTest::domainTypesDoNotDependOnFrameworkOrStorage()",
+    "dev.mentoring.orders.repository.model.LoginAccountTest::printingAccountDoesNotExposeCredentials()",
+    "dev.mentoring.orders.security.CustomerUserDetailsServiceTest::returnsStoredCredentialsAndCustomerAuthority()",
+    "dev.mentoring.orders.security.CustomerUserDetailsServiceTest::storageFailureIsNotConvertedToMissingAccount()",
+    "dev.mentoring.orders.security.CustomerUserDetailsServiceTest::missingAccountIsRejectedAsUnknownCustomer()"
+  ],
+  "regular": {
+    "tests": 172,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "regularRun": "20261111-020931",
+  "architecture": {
+    "library": "ArchUnit 1.5.1 (test scope)",
+    "tests": 9,
+    "cases": [
+      "configurationClassesDoNotContainJdbcQueries()",
+      "automaticallyDiscoveredServiceWithBodyOnlyDtoUseIsRejected()",
+      "controllersAndServicesDoNotExecuteSql()",
+      "internalTypesDoNotExposeHttpDtosInTheirSignatures()",
+      "automaticallyDiscoveredControllerWithRepositoryUseIsRejected()",
+      "controllersCallServicesInsteadOfRepositories()",
+      "repositoriesDoNotDependOnServicesOrAuthenticationFramework()",
+      "controllersKeepRequestValidationAndReturnResponseDtos()",
+      "domainTypesDoNotDependOnFrameworkOrStorage()"
+    ],
+    "testOnlyJarEntries": 0
+  },
+  "accountQuery": {
+    "unchangedStatement": "SELECT username, password_hash FROM buyers WHERE username = :username",
+    "usernameParameterBinding": true
+  },
+  "http": [
+    {
+      "scenario": "account-query-parameter-binding",
+      "observations": {
+        "available": 10,
+        "authenticatedHttp": 200,
+        "rejectedStatuses": [
+          401,
+          401,
+          401
+        ],
+        "orders": 0
+      }
+    }
+  ],
+  "databaseRecovery": {
+    "run": "20261111-021311",
+    "summary": {
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "events": [
+      {
+        "scenario": "cancel-before-commit",
+        "failureHttp": 503,
+        "retryHttp": 200,
+        "returnedId": 1,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        }
+      },
+      {
+        "scenario": "cancel-before-commit",
+        "failureHttp": 503,
+        "retryHttp": 200,
+        "returnedId": 1,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        }
+      },
+      {
+        "scenario": "cancel-before-commit",
+        "failureHttp": 503,
+        "retryHttp": 200,
+        "returnedId": 1,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        }
+      },
+      {
+        "scenario": "purchase-before-commit",
+        "failureHttp": 503,
+        "retryHttp": 201,
+        "returnedId": 34,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        }
+      },
+      {
+        "scenario": "purchase-before-commit",
+        "failureHttp": 503,
+        "retryHttp": 201,
+        "returnedId": 1,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        }
+      },
+      {
+        "scenario": "purchase-before-commit",
+        "failureHttp": 503,
+        "retryHttp": 201,
+        "returnedId": 34,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        }
+      },
+      {
+        "scenario": "cancel-after-commit-lost-response",
+        "returnedId": 1,
+        "returnedStatus": "CANCELLED",
+        "committedId": 1,
+        "upstreamHttp": 200,
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        }
+      },
+      {
+        "scenario": "cancel-after-commit-lost-response",
+        "returnedId": 1,
+        "returnedStatus": "CANCELLED",
+        "committedId": 1,
+        "upstreamHttp": 200,
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        }
+      },
+      {
+        "scenario": "cancel-after-commit-lost-response",
+        "returnedId": 1,
+        "returnedStatus": "CANCELLED",
+        "committedId": 1,
+        "upstreamHttp": 200,
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        }
+      },
+      {
+        "scenario": "purchase-after-commit-lost-response",
+        "returnedId": 1,
+        "returnedStatus": "ACCEPTED",
+        "committedId": 1,
+        "upstreamHttp": 201,
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        }
+      },
+      {
+        "scenario": "purchase-after-commit-lost-response",
+        "returnedId": 1,
+        "returnedStatus": "ACCEPTED",
+        "committedId": 1,
+        "upstreamHttp": 201,
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        }
+      },
+      {
+        "scenario": "purchase-after-commit-lost-response",
+        "returnedId": 1,
+        "returnedStatus": "ACCEPTED",
+        "committedId": 1,
+        "upstreamHttp": 201,
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        }
+      },
+      {
+        "scenario": "authentication-db-down",
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        }
+      },
+      {
+        "scenario": "authentication-db-down",
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        }
+      },
+      {
+        "scenario": "authentication-db-down",
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        }
+      }
+    ]
+  },
+  "scope": [
+    "Role separation and regression guards, not new authentication behavior or a performance claim.",
+    "Regular tests and separate database-crash tests have matching current source hashes.",
+    "Architecture checks cover specified package/dependency rules, not arbitrary business correctness.",
+    "Earlier k6 and query-plan records were not rerun or reclassified as current performance results."
+  ]
+}

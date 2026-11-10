@@ -1,36 +1,39 @@
 [
   {
+    "orderId": 1,
+    "cancellationHttp": 200,
     "available": 10,
     "phase": "first-cancellation",
     "orders": 1,
     "scenario": "purchase-limit-does-not-block-cancellation",
-    "purchaseHttp": 429,
-    "orderId": 1,
-    "cancellationHttp": 200
+    "purchaseHttp": 429
   },
   {
+    "restorations": 1,
+    "available": 10,
+    "purchaseHttp": 429,
     "phase": "final",
     "returnedStatus": "CANCELLED",
     "orderId": 1,
     "cancellationHttp": 200,
     "scenario": "purchase-limit-does-not-block-cancellation",
-    "cancelLimitHttp": 429,
-    "restorations": 1,
-    "available": 10,
-    "purchaseHttp": 429
+    "cancelLimitHttp": 429
   },
   {
+    "rejectedHttp": 429,
+    "available": 8,
     "readHttp": 200,
     "orders": 2,
     "unreservedRequests": 0,
     "retryHttp": 201,
     "scenario": "concurrent-write-limit",
     "firstHttp": 201,
-    "retryAfter": "1",
-    "rejectedHttp": 429,
-    "available": 8
+    "retryAfter": "1"
   },
   {
+    "rejectedHttp": 429,
+    "otherCustomerHttp": 201,
+    "available": 8,
     "orders": 2,
     "ownListHttp": 200,
     "originalOrderId": 1,
@@ -40,9 +43,6 @@
       429
     ],
     "scenario": "customer-rate-limit",
-    "retryAfterSeconds": 5,
-    "rejectedHttp": 429,
-    "otherCustomerHttp": 201,
-    "available": 8
+    "retryAfterSeconds": 52
   }
 ]

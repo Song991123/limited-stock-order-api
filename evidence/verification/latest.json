@@ -1,6 +1,6 @@
 {
-  "testedOn": "20261110-210602",
-  "tests": 160,
+  "testedOn": "20261111-020931",
+  "tests": 172,
   "failures": 0,
   "errors": 0,
   "skipped": 0,
@@ -13,112 +13,126 @@
       "tests": 6,
       "failures": 0,
       "errors": 0,
-      "seconds": 7.047
+      "seconds": 5.027
     },
     {
       "name": "dev.mentoring.orders.ActorAdmissionIntegrationTest",
       "tests": 3,
       "failures": 0,
       "errors": 0,
-      "seconds": 4.185
+      "seconds": 2.738
     },
     {
       "name": "dev.mentoring.orders.ActorOrderJourneyIntegrationTest",
       "tests": 4,
       "failures": 0,
       "errors": 0,
-      "seconds": 3.929
+      "seconds": 3.057
     },
     {
       "name": "dev.mentoring.orders.config.AuthenticationFailureTest",
       "tests": 3,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.027
+      "seconds": 0.015
     },
     {
       "name": "dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest",
       "tests": 7,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.026
+      "seconds": 0.015
     },
     {
       "name": "dev.mentoring.orders.dto.response.ResponseMappingTest",
       "tests": 3,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.008
+      "seconds": 0.006
     },
     {
       "name": "dev.mentoring.orders.exception.ApiExceptionHandlerTest",
       "tests": 14,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.033
+      "seconds": 0.016
     },
     {
       "name": "dev.mentoring.orders.NormalStartupIntegrationTest",
       "tests": 1,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.03
+      "seconds": 0.024
     },
     {
       "name": "dev.mentoring.orders.OrderHttpIntegrationTest",
-      "tests": 56,
+      "tests": 57,
       "failures": 0,
       "errors": 0,
-      "seconds": 32.038
+      "seconds": 23.497
     },
     {
       "name": "dev.mentoring.orders.OrderProcessRecoveryTest",
       "tests": 1,
       "failures": 0,
       "errors": 0,
-      "seconds": 22.694
+      "seconds": 17.78
     },
     {
       "name": "dev.mentoring.orders.PackageStructureTest",
-      "tests": 2,
+      "tests": 9,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.011
+      "seconds": 0.258
+    },
+    {
+      "name": "dev.mentoring.orders.repository.model.LoginAccountTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.0
+    },
+    {
+      "name": "dev.mentoring.orders.security.CustomerUserDetailsServiceTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "seconds": 0.364
     },
     {
       "name": "dev.mentoring.orders.service.OrderServiceTest",
       "tests": 22,
       "failures": 0,
       "errors": 0,
-      "seconds": 2.061
+      "seconds": 0.251
     },
     {
       "name": "dev.mentoring.orders.service.ProductServiceTest",
       "tests": 4,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.085
+      "seconds": 0.009
     },
     {
       "name": "dev.mentoring.orders.TwoServerIntegrationTest",
       "tests": 12,
       "failures": 0,
       "errors": 0,
-      "seconds": 12.25
+      "seconds": 8.294
     },
     {
       "name": "dev.mentoring.orders.web.admission.WriteAdmissionTest",
       "tests": 11,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.178
+      "seconds": 0.065
     },
     {
       "name": "dev.mentoring.orders.web.filter.RequestSizeFilterTest",
       "tests": 11,
       "failures": 0,
       "errors": 0,
-      "seconds": 0.16
+      "seconds": 0.028
     }
   ],
   "scope": [
