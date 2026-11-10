@@ -8,6 +8,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import dev.mentoring.orders.dto.response.ErrorResponse;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
@@ -21,7 +22,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.TransactionSystemException;
+import org.springframework.web.ErrorResponseException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 /** 오류 응답과 실제 로그 이벤트를 대조하고 민감한 예외 메시지의 노출 여부 확인. */
 class ApiExceptionHandlerTest {
@@ -84,6 +91,49 @@ class ApiExceptionHandlerTest {
         assertThat(response.getStatusCode().value()).isEqualTo(409);
         assertThat(response.getBody()).isEqualTo(new ErrorResponse("OUT_OF_STOCK"));
         assertThat(events.list).isEmpty();
+    }
+
+    @Test
+    void unsupportedMethodKeepsAllowedMethods() {
+        var response = handler.handleUnexpectedFailure(
+                new HttpRequestMethodNotSupportedException("PUT", List.of("GET", "HEAD")));
+
+        assertThat(response.getStatusCode().value()).isEqualTo(405);
+        assertThat(response.getHeaders().getAllow()).containsExactlyInAnyOrder(HttpMethod.GET, HttpMethod.HEAD);
+        assertThat(response.getBody()).isEqualTo(new ErrorResponse("REQUEST_REJECTED"));
+        assertThat(events.list).isEmpty();
+    }
+
+    @Test
+    void unsupportedBodyTypeKeepsAcceptedMediaTypes() {
+        var response = handler.handleUnexpectedFailure(new HttpMediaTypeNotSupportedException(
+                MediaType.TEXT_PLAIN, List.of(MediaType.APPLICATION_JSON)));
+
+        assertThat(response.getStatusCode().value()).isEqualTo(415);
+        assertThat(response.getHeaders().getAccept()).containsExactly(MediaType.APPLICATION_JSON);
+        assertThat(response.getBody()).isEqualTo(new ErrorResponse("REQUEST_REJECTED"));
+    }
+
+    @Test
+    void frameworkRetryTimeAndGeneratedErrorReferenceArePreserved() {
+        var error = new ErrorResponseException(HttpStatus.SERVICE_UNAVAILABLE);
+        error.getHeaders().set("Retry-After", "45");
+        error.getHeaders().set("X-Error-Id", "not-the-logged-reference");
+        // 원래 예외 본문 대신 JSON 오류 코드를 반환하므로 원문 길이와 형식은 재사용하지 않음.
+        error.getHeaders().setContentType(MediaType.TEXT_PLAIN);
+        error.getHeaders().setContentLength(1234);
+
+        var response = handler.handleUnexpectedFailure(error);
+
+        assertThat(response.getStatusCode().value()).isEqualTo(503);
+        assertThat(response.getHeaders().getFirst("Retry-After")).isEqualTo("45");
+        assertThat(response.getHeaders().getContentLength()).isEqualTo(-1);
+        assertThat(response.getHeaders().getContentType()).isNull();
+        assertThat(response.getBody()).isEqualTo(new ErrorResponse("REQUEST_REJECTED"));
+        String reference = response.getHeaders().getFirst("X-Error-Id");
+        assertThat(UUID.fromString(reference).toString()).isEqualTo(reference);
+        assertThat(events.list).singleElement().satisfies(event ->
+                assertThat(event.getFormattedMessage()).contains(reference).doesNotContain("not-the-logged-reference"));
     }
 
     private static Stream<Arguments> serverFailures() {

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.transaction.TransactionException;
@@ -72,7 +73,7 @@ public class ApiExceptionHandler {
     }
 
     /**
-     * 나머지 오류 처리. Spring이 반환한 404, 405, 415 등의 상태는 그대로 사용.
+     * 나머지 오류 처리. Spring의 상태와 Allow, Accept, Retry-After 등의 응답 안내 유지.
      *
      * <p>서버 오류는 응답 헤더와 로그에 같은 오류 번호 기록. 상세 메시지와 SQL 원문은 기록하지 않음.
      */
@@ -80,9 +81,16 @@ public class ApiExceptionHandler {
     public ResponseEntity<ErrorResponse> handleUnexpectedFailure(Exception error) {
         if (error instanceof org.springframework.web.ErrorResponse rejection) {
             HttpStatusCode status = rejection.getStatusCode();
-            return status.is5xxServerError()
+            var response = status.is5xxServerError()
                     ? buildServerError(status, "REQUEST_REJECTED", error)
                     : buildErrorResponse(status, "REQUEST_REJECTED");
+            return ResponseEntity.status(status).headers(response.getHeaders())
+                    .headers(headers -> rejection.getHeaders().forEach((name, values) -> {
+                        // 오류 본문은 JSON으로 교체. 본문 길이/형식과 로그에 연결한 오류 번호는 덮어쓰지 않음.
+                        if (!HttpHeaders.CONTENT_TYPE.equalsIgnoreCase(name)
+                                && !HttpHeaders.CONTENT_LENGTH.equalsIgnoreCase(name)
+                                && !"X-Error-Id".equalsIgnoreCase(name)) headers.put(name, values);
+                    })).body(response.getBody());
         }
         return buildServerError(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", error);
     }
