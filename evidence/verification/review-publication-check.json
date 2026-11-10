@@ -1,0 +1,7 @@
+{
+  "smokeRejected": true,
+  "changedCollectorRejected": true,
+  "publicResultUnchanged": true,
+  "junit": false,
+  "scope": "Publication guard test only; original raw runs unchanged"
+}

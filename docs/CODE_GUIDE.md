@@ -15,6 +15,8 @@
 | [WriteAdmission](../src/main/java/dev/mentoring/orders/web/admission/WriteAdmission.java) | 구매/취소 횟수는 고객별로 분리, 전체 동시 쓰기는 함께 제한 |
 | [RequestBodyConfiguration](../src/main/java/dev/mentoring/orders/config/RequestBodyConfiguration.java) | 헤더 검사 전에 본문 전송을 허용하지 않도록 100 Continue 응답 시점 지정 |
 | [RequestSizeFilter](../src/main/java/dev/mentoring/orders/web/filter/RequestSizeFilter.java) | 다른 필터가 읽기 전 본문 크기 검사 |
+| [TransactionConfiguration](../src/main/java/dev/mentoring/orders/config/TransactionConfiguration.java) | 같은 DataSource의 트랜잭션 관리자 지정, 커밋 오류 보존 |
+| [DatabaseFailures](../src/main/java/dev/mentoring/orders/exception/DatabaseFailures.java) | 인증과 주문에서 공통으로 쓰는 DB 오류 분류 |
 
 요청과 응답 DTO는 `dto.request`와 `dto.response`, 내부 주문 정보는 `domain`, DB 구매 기록 조회 결과는 `repository.model`에 있습니다. 컨트롤러, 서비스와 저장소도 각각의 패키지로 구분했습니다. [입력 검증과 코드 구성](VALIDATION_AND_STRUCTURE.md)에서 나눈 이유와 입력별 검사 위치를 확인할 수 있습니다.
 
@@ -108,3 +110,21 @@ public OrderPlacement placeOrder(String username, String idempotencyKey, long pr
 주문 컨트롤러의 정상 응답은 `ResponseEntity<OrderResponse>`입니다. 오류 응답은 `ApiExceptionHandler`가 `ErrorResponse`로 변환합니다. 재고 부족을 서비스 안에서 예외로 던지면 저장한 거절 결과까지 롤백되므로, 커밋 후 컨트롤러에서 오류로 바꿉니다.
 
 공통 오류 처리기의 500과 503 응답에는 `X-Error-Id`가 있습니다. 같은 번호와 오류 코드, 예외 종류, 허용한 SQLSTATE만 로그로 남깁니다. 비밀번호, 요청 원문과 SQL이 담길 수 있는 예외 메시지와 전체 예외 객체는 기록하지 않습니다. 이 검사는 오류 번호 연결과 노출 여부 확인이며 전체 서비스의 추적 시스템을 검증한 것은 아닙니다.
+
+인증은 MVC 앞의 보안 필터에서 실행됩니다. 따라서 계정 조회 DB가 실패한 응답은 `AuthenticationEntryPoint`에서도 구분합니다. 비밀번호 오류는 401을 유지하고 저장소 연결 장애는 503으로 반환합니다. `DatabaseFailures`가 원인, SQLSTATE와 원래 트랜잭션 예외를 확인하며 예외 원문은 응답하지 않습니다.
+
+## 멘토링 핵심 답변
+
+| 질문 | 짧은 답변과 근거 |
+| --- | --- |
+| 왜 JDBC를 골랐나요? | 수량 조건을 둔 SQL과 실제 변경 건수가 핵심입니다. JdbcClient로 그 조건을 직접 표현했습니다. JPA가 느리다고 판단한 것은 아닙니다. |
+| 트랜잭션만 붙이면 되나요? | 부분 저장은 막지만 같은 수량을 읽는 경쟁을 없애지는 않습니다. 재고 조건부 UPDATE와 구매 키 UNIQUE가 각각 필요합니다. |
+| 조건부 UPDATE는 락이 없나요? | 같은 재고 기록을 바꾸는 요청은 DB에서 기다립니다. 먼저 요청이 끝나면 바뀐 수량으로 조건을 다시 검사합니다. |
+| 같은 구매 키가 동시에 오면요? | 한 요청만 등록하고, 충돌한 요청은 확정 결과를 새 SELECT로 읽습니다. 다른 상품이나 수량이면 거절합니다. |
+| 취소는 왜 한 번만 복구되나요? | ACCEPTED를 CANCELLED로 실제 바꾼 요청만 저장된 수량을 더합니다. 상태와 복구 이력도 같은 트랜잭션입니다. |
+| 왜 DTO를 나눴나요? | JSON 필드와 내부 주문 자료를 따로 바꾸기 위해서입니다. 컨트롤러가 변환하며 서비스와 SQL 저장소는 HTTP DTO를 받지 않습니다. |
+| DB가 꺼지면 자동으로 주문을 다시 실행하나요? | 자동 실행하지 않습니다. 서버의 연결이 복구된 뒤 고객이 같은 키로 결과를 확인합니다. 확정 여부를 모른다고 새 키를 만들지 않습니다. |
+| 트랜잭션 관리자를 왜 명시했나요? | 실제 DB 중단에서 커밋 오류가 롤백 오류에 가려졌습니다. 표준 DataSourceTransactionManager로 원래 SQL 오류를 보존했습니다. 저장 범위와 격리 수준은 그대로입니다. |
+| 어느 범위까지 확인했나요? | 일반 154건, 별도 DB 중단 15건과 k6 기초 부하를 구분합니다. 두 JVM 검사는 DB 중복 방지이고 여러 서버의 공통 한도 검사는 아닙니다. |
+
+[백엔드 점검표](BACKEND_REVIEW.md)에 유지한 구성과 수정 이유, 남은 한계를 모았습니다.
