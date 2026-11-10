@@ -1,24 +1,19 @@
 [
   {
-    "available": 8,
-    "otherAvailable": 3,
-    "database": {
-      "acceptedRequests": 4,
-      "quantityDelta": -4,
-      "rejectedRequests": 1,
-      "requests": 5,
-      "orders": 4,
-      "restores": 1,
-      "debits": 4,
-      "totalAvailable": 11
-    },
     "scenario": "owned-order-pages",
-    "allOwnedIds": [
-      4,
-      3,
-      1
-    ],
-    "foreignOrderId": 2,
+    "database": {
+      "quantityDelta": -4,
+      "acceptedRequests": 4,
+      "totalAvailable": 11,
+      "debits": 4,
+      "restores": 1,
+      "orders": 4,
+      "requests": 5,
+      "rejectedRequests": 1
+    },
+    "otherAvailable": 3,
+    "available": 8,
+    "lastPageCount": 0,
     "pageIds": [
       [
         4
@@ -30,67 +25,72 @@
         1
       ]
     ],
-    "lastPageCount": 0
+    "foreignOrderId": 2,
+    "allOwnedIds": [
+      4,
+      3,
+      1
+    ]
   },
   {
-    "returnedCount": 100,
-    "missingHttp": 404,
-    "database": {
-      "acceptedRequests": 0,
-      "quantityDelta": 0,
-      "rejectedRequests": 0,
-      "requests": 0,
-      "orders": 0,
-      "restores": 0,
-      "debits": 0,
-      "totalAvailable": 101
-    },
     "outsidePageHttp": 200,
-    "emptyCount": 0,
-    "lastListedId": 100,
-    "storedProducts": 101,
+    "database": {
+      "quantityDelta": 0,
+      "acceptedRequests": 0,
+      "totalAvailable": 101,
+      "debits": 0,
+      "restores": 0,
+      "orders": 0,
+      "requests": 0,
+      "rejectedRequests": 0
+    },
+    "missingHttp": 404,
+    "returnedCount": 100,
+    "outsidePageId": 101,
     "scenario": "catalog-empty-and-limit",
-    "outsidePageId": 101
+    "storedProducts": 101,
+    "lastListedId": 100,
+    "emptyCount": 0
   },
   {
-    "replayedCancelledStatus": "CANCELLED",
-    "newPurchaseHttp": 201,
-    "cancelledStatus": "CANCELLED",
-    "database": {
-      "acceptedRequests": 2,
-      "quantityDelta": -3,
-      "rejectedRequests": 0,
-      "requests": 2,
-      "orders": 2,
-      "restores": 1,
-      "debits": 2,
-      "totalAvailable": 12
-    },
     "changedInputHttp": 409,
-    "scenario": "purchase-retry-cancel-repurchase",
-    "newOrderId": 2,
-    "available": 7,
+    "database": {
+      "quantityDelta": -3,
+      "acceptedRequests": 2,
+      "totalAvailable": 12,
+      "debits": 2,
+      "restores": 1,
+      "orders": 2,
+      "requests": 2,
+      "rejectedRequests": 0
+    },
+    "cancelledStatus": "CANCELLED",
+    "newPurchaseHttp": 201,
+    "replayedCancelledStatus": "CANCELLED",
+    "replayedOrderId": 1,
     "originalOrderId": 1,
-    "replayedOrderId": 1
+    "available": 7,
+    "newOrderId": 2,
+    "scenario": "purchase-retry-cancel-repurchase"
   },
   {
-    "firstRejectionCode": "OUT_OF_STOCK",
-    "replayedRejectionCode": "OUT_OF_STOCK",
-    "changedInputCode": "IDEMPOTENCY_KEY_REUSED",
-    "newPurchaseHttp": 201,
     "database": {
-      "acceptedRequests": 2,
       "quantityDelta": -2,
-      "rejectedRequests": 1,
-      "requests": 3,
-      "orders": 2,
-      "restores": 1,
+      "acceptedRequests": 2,
+      "totalAvailable": 13,
       "debits": 2,
-      "totalAvailable": 13
+      "restores": 1,
+      "orders": 2,
+      "requests": 3,
+      "rejectedRequests": 1
     },
-    "available": 8,
-    "newOrderId": 2,
+    "newPurchaseHttp": 201,
+    "changedInputCode": "IDEMPOTENCY_KEY_REUSED",
+    "replayedRejectionCode": "OUT_OF_STOCK",
+    "firstRejectionCode": "OUT_OF_STOCK",
+    "firstOrderId": 1,
     "scenario": "out-of-stock-restore-new-purchase",
-    "firstOrderId": 1
+    "newOrderId": 2,
+    "available": 8
   }
 ]

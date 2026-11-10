@@ -124,8 +124,8 @@
   {
     "scenario": "last-stock",
     "http": [
-      409,
-      201
+      201,
+      409
     ],
     "database": {
       "inventoryViolations": 0,
@@ -141,8 +141,8 @@
   {
     "scenario": "last-stock",
     "http": [
-      409,
-      201
+      201,
+      409
     ],
     "database": {
       "inventoryViolations": 0,
@@ -161,8 +161,43 @@
       200,
       200,
       200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
       201,
       200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "database": {
+      "inventoryViolations": 0,
+      "requestViolations": 0,
+      "orderViolations": 0,
+      "orders": 1,
+      "requests": 1,
+      "available": 19,
+      "restorations": 0
+    },
+    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
+  },
+  {
+    "scenario": "same-purchase",
+    "http": [
+      200,
+      200,
+      200,
+      200,
+      201,
       200,
       200,
       200,
@@ -196,41 +231,6 @@
       201,
       200,
       200,
-      200,
-      200,
-      200,
-      200,
-      200,
-      200,
-      200,
-      200,
-      200,
-      200,
-      200,
-      200,
-      200,
-      200,
-      200,
-      200,
-      200
-    ],
-    "database": {
-      "inventoryViolations": 0,
-      "requestViolations": 0,
-      "orderViolations": 0,
-      "orders": 1,
-      "requests": 1,
-      "available": 19,
-      "restorations": 0
-    },
-    "scope": "DB invariants only; admission counters remain per JVM; pool size 4 per JVM"
-  },
-  {
-    "scenario": "same-purchase",
-    "http": [
-      200,
-      200,
-      201,
       200,
       200,
       200,
