@@ -1,6 +1,6 @@
 # 한정 재고 상품의 주문 접수 서버
 
-주문 처리의 설계와 흐름입니다. 실제 실행 결과는 [검증 기록](../VERIFICATION.md)에 정리합니다.
+구현한 주문 처리의 상세 흐름입니다. 프로젝트 목적과 코드 구성은 [구현 설명](../IMPLEMENTATION.md), 실제 실행 결과는 [검증 기록](../VERIFICATION.md)에서 확인할 수 있습니다.
 
 ## 사용자와 기능
 
@@ -8,7 +8,7 @@
 
 고객은 상품 한 종류와 수량을 지정해 주문하고, 자기 주문을 조회하거나 취소합니다. 상품과 초기 재고는 시험 데이터로 준비하며 API로 요청합니다.
 
-![고객과 주문 서버의 역할: 설계안](diagrams/01-actors.png)
+![고객과 주문 서버의 역할](diagrams/01-actors.png)
 
 재고는 주문을 저장할 때 확보합니다. 조회 이후 다른 고객이 먼저 주문하면 재고가 부족할 수 있습니다.
 
@@ -25,19 +25,19 @@
 
 ## 마지막 재고 처리
 
-![마지막 재고를 두 고객이 주문하는 순서: 설계안](diagrams/02-last-stock.png)
+![마지막 재고를 두 고객이 주문하는 순서](diagrams/02-last-stock.png)
 
 서버는 `남은 수량 >= 주문 수량`인 경우에만 차감하는 조건부 UPDATE를 사용합니다. 같은 상품의 차감이 겹치면 PostgreSQL에서 기다린 뒤 조건을 다시 확인합니다. 차감한 요청만 주문을 만들고 함께 커밋합니다.
 
 ## 주문 재전송 처리
 
-![주문 재전송과 새 구매의 구분: 설계안](diagrams/03-request-retry.png)
+![주문 재전송과 새 구매의 구분](diagrams/03-request-retry.png)
 
 클라이언트는 한 번의 구매에 요청 키를 만들고, 응답을 못 받아 다시 보낼 때도 같은 키를 사용합니다. 서버는 인증된 고객과 요청 키의 조합으로 앞선 결과를 찾습니다. 상품이나 수량이 다르면 거절합니다. 같은 상품을 별도로 더 사려는 행동은 새 키를 쓰는 새 주문입니다.
 
 ## 주문 취소와 재고 복구
 
-![주문 상태와 취소 시 저장 범위: 설계안](diagrams/04-cancellation-state.png)
+![주문 상태와 취소 시 저장 범위](diagrams/04-cancellation-state.png)
 
 서버는 접수된 주문만 취소 상태로 바꿉니다. 상태를 바꾼 요청만 재고를 복구하며, 취소 상태와 복구 이력도 함께 커밋합니다. 중간 저장이 실패하면 모두 되돌려 주문은 접수 상태로 남습니다. 이미 취소된 주문에는 다시 수량을 더하지 않습니다.
 
@@ -49,9 +49,15 @@
 
 접수한 주문의 수량은 고객이 취소할 때까지 확보한 상태로 유지합니다.
 
+## 코드 구성
+
+![주문 요청과 로그인 계정 조회의 역할](diagrams/05-http-and-storage.png)
+
+인증은 MVC 컨트롤러에 도달하기 전에 실행합니다. 계정 SQL, 로그인 정보 변환과 보안 설정을 나눴으며, 주문 처리에서는 Controller가 HTTP 입력과 응답을, Service가 주문 규칙과 트랜잭션을, Repository가 SQL을 맡습니다. 이 그림은 호출 관계를 요약하며 SQL 실행 순서 전체를 나타내지는 않습니다.
+
 ## 상세 설계
 
 - [처리 규칙과 API 명세](RULES_AND_API_SPEC.md): 요청 키, 오류 응답, 저장 대상과 재시도 규칙.
 - [기술 선택과 비용](TECHNICAL_DECISIONS.md): 잠금 방식 비교, 함께 저장할 데이터와 선택 이유.
 - [구현과 검증 계획](IMPLEMENTATION_PLAN.md): 구현 순서, 실제 DB에서 확인할 조건과 측정 범위.
-- 그림 원문: [액터](diagrams/01-actors.puml), [재고 경쟁](diagrams/02-last-stock.puml), [재전송](diagrams/03-request-retry.puml), [취소와 상태](diagrams/04-cancellation-state.puml).
+- 그림 원문: [액터](diagrams/01-actors.puml), [재고 경쟁](diagrams/02-last-stock.puml), [재전송](diagrams/03-request-retry.puml), [취소와 상태](diagrams/04-cancellation-state.puml), [요청 처리와 계정 조회](diagrams/05-http-and-storage.puml).

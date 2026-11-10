@@ -4,6 +4,8 @@
 
 ## 코드를 나눈 기준
 
+Spring MVC로 요청을 받는 REST API입니다. `@RestController`는 화면 템플릿 대신 응답 DTO를 JSON으로 반환합니다. Controller, Service와 Repository는 HTTP 처리, 주문 규칙과 SQL을 나눈 구성입니다.
+
 ```text
 dev.mentoring.orders
   OrdersApplication
@@ -31,9 +33,9 @@ dev.mentoring.orders
 
 ## 인증 조회의 역할 분리
 
-`SecurityConfiguration`에 있던 계정 조회 SQL을 `CustomerAccountRepository`로 옮겼습니다. 같은 SQL과 계정명 매개변수 바인딩을 유지하며, 조회 결과는 HTTP 응답용 DTO가 아닌 `LoginAccount`로 받습니다. 이 객체를 문자열로 출력해도 계정명과 비밀번호 해시는 포함하지 않습니다.
+인증 방식 설정을 바꿀 때 계정 조회 SQL까지 함께 다루지 않도록 역할을 나눴습니다. `SecurityConfiguration`에 있던 계정 SQL은 `CustomerAccountRepository`가 실행합니다. 같은 SQL과 계정명 매개변수 바인딩을 유지하며, 조회 결과는 HTTP 응답용 DTO가 아닌 `LoginAccount`로 받습니다. 이 객체를 문자열로 출력해도 계정명과 비밀번호 해시는 포함하지 않습니다.
 
-`CustomerUserDetailsService`는 저장소의 계정 정보를 Spring Security의 `UserDetails`로 바꿉니다. 비밀번호 비교는 기존 BCrypt와 인증 제공자가 담당합니다. 계정이 없으면 `UsernameNotFoundException`, DB가 실패하면 원래 저장소 예외를 전달해 401과 503을 구분하는 기존 응답을 유지합니다. [Spring Security 계정 조회](https://docs.spring.io/spring-security/reference/6.5/servlet/authentication/passwords/user-details-service.html)
+`CustomerUserDetailsService`는 저장소의 계정 정보를 Spring Security의 `UserDetails`로 바꿉니다. 비밀번호 비교는 기존 BCrypt와 인증 제공자가 담당합니다. 계정이 없으면 `UsernameNotFoundException`, DB가 실패하면 원래 저장소 예외를 전달합니다. 보안 오류 처리기는 로그인 거절(401), 일시적 DB 장애(503)와 그 밖의 인증 서비스 오류(500)를 구분합니다. [Spring Security 계정 조회](https://docs.spring.io/spring-security/reference/6.5/servlet/authentication/passwords/user-details-service.html)
 
 보안 설정은 인증 방식과 오류 응답 설정을 맡고, 계정 조회와 로그인 정보 변환은 각각의 클래스가 맡습니다. 주문과 취소의 SQL, 트랜잭션과 저장 순서는 그대로입니다.
 
