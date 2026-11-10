@@ -193,6 +193,52 @@ class ActorAdmissionIntegrationTest {
                 "available", available()));
     }
 
+    /** 구매 횟수 한도를 채워도 자기 주문 취소는 별도 횟수로 처리, 반복 복구는 방지. */
+    @Test
+    void exhaustedPurchaseBudgetStillAllowsCancellationWithItsOwnBudget() throws Exception {
+        var first = alice.buy("cancel-after-order-limit");
+        assertThat(first.statusCode()).isEqualTo(201);
+        long orderId = json(first).path("id").asLong();
+        HttpResponse<String> rejectedPurchase = null;
+        for (int attempt = 0; attempt < 5; attempt++) {
+            var response = alice.buy("cancel-after-order-limit");
+            if (response.statusCode() == 429) {
+                rejectedPurchase = response;
+                break;
+            }
+            assertThat(response.statusCode()).isEqualTo(200);
+        }
+        assertThat(rejectedPurchase).isNotNull();
+
+        var cancellation = alice.send("POST", "/orders/" + orderId + "/cancel", null, null);
+        observations.add(Map.of("scenario", "purchase-limit-does-not-block-cancellation", "phase", "first-cancellation",
+                "purchaseHttp", rejectedPurchase.statusCode(), "cancellationHttp", cancellation.statusCode(),
+                "orderId", orderId, "available", available(), "orders", count("orders")));
+        assertThat(cancellation.statusCode()).isEqualTo(200);
+        assertThat(json(cancellation).path("id").asLong()).isEqualTo(orderId);
+        assertThat(json(cancellation).path("status").asText()).isEqualTo("CANCELLED");
+        HttpResponse<String> rejectedCancellation = null;
+        for (int attempt = 0; attempt < 5; attempt++) {
+            var response = alice.send("POST", "/orders/" + orderId + "/cancel", null, null);
+            if (response.statusCode() == 429) {
+                rejectedCancellation = response;
+                break;
+            }
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(json(response).path("status").asText()).isEqualTo("CANCELLED");
+        }
+        assertThat(rejectedCancellation).isNotNull();
+        assertThat(count("orders")).isEqualTo(1);
+        assertThat(count("order_requests")).isEqualTo(1);
+        long restores = jdbc.queryForObject("SELECT count(*) FROM inventory_movements WHERE kind='RESTORE'", Long.class);
+        assertThat(restores).isEqualTo(1);
+        assertThat(available()).isEqualTo(10);
+        observations.add(Map.of("scenario", "purchase-limit-does-not-block-cancellation", "phase", "final",
+                "purchaseHttp", rejectedPurchase.statusCode(), "cancellationHttp", cancellation.statusCode(),
+                "cancelLimitHttp", rejectedCancellation.statusCode(), "returnedStatus", json(cancellation).path("status").asText(),
+                "orderId", orderId, "restorations", restores, "available", available()));
+    }
+
     private int available() {
         return jdbc.queryForObject("SELECT available_quantity FROM inventories WHERE product_id=?", Integer.class, productId);
     }

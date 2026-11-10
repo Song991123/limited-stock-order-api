@@ -1,15 +1,21 @@
 [
   {
+    "foreignOrderId": 2,
+    "allOwnedIds": [
+      4,
+      3,
+      1
+    ],
     "scenario": "owned-order-pages",
     "database": {
-      "quantityDelta": -4,
-      "acceptedRequests": 4,
-      "totalAvailable": 11,
-      "debits": 4,
       "restores": 1,
       "orders": 4,
       "requests": 5,
-      "rejectedRequests": 1
+      "rejectedRequests": 1,
+      "quantityDelta": -4,
+      "acceptedRequests": 4,
+      "totalAvailable": 11,
+      "debits": 4
     },
     "otherAvailable": 3,
     "available": 8,
@@ -24,73 +30,67 @@
       [
         1
       ]
-    ],
-    "foreignOrderId": 2,
-    "allOwnedIds": [
-      4,
-      3,
-      1
     ]
   },
   {
+    "emptyCount": 0,
     "outsidePageHttp": 200,
     "database": {
-      "quantityDelta": 0,
-      "acceptedRequests": 0,
-      "totalAvailable": 101,
-      "debits": 0,
       "restores": 0,
       "orders": 0,
       "requests": 0,
-      "rejectedRequests": 0
+      "rejectedRequests": 0,
+      "quantityDelta": 0,
+      "acceptedRequests": 0,
+      "totalAvailable": 101,
+      "debits": 0
     },
     "missingHttp": 404,
     "returnedCount": 100,
     "outsidePageId": 101,
     "scenario": "catalog-empty-and-limit",
     "storedProducts": 101,
-    "lastListedId": 100,
-    "emptyCount": 0
+    "lastListedId": 100
   },
   {
+    "originalOrderId": 1,
+    "available": 7,
+    "newOrderId": 2,
+    "scenario": "purchase-retry-cancel-repurchase",
     "changedInputHttp": 409,
     "database": {
-      "quantityDelta": -3,
-      "acceptedRequests": 2,
-      "totalAvailable": 12,
-      "debits": 2,
       "restores": 1,
       "orders": 2,
       "requests": 2,
-      "rejectedRequests": 0
+      "rejectedRequests": 0,
+      "quantityDelta": -3,
+      "acceptedRequests": 2,
+      "totalAvailable": 12,
+      "debits": 2
     },
     "cancelledStatus": "CANCELLED",
     "newPurchaseHttp": 201,
     "replayedCancelledStatus": "CANCELLED",
-    "replayedOrderId": 1,
-    "originalOrderId": 1,
-    "available": 7,
-    "newOrderId": 2,
-    "scenario": "purchase-retry-cancel-repurchase"
+    "replayedOrderId": 1
   },
   {
+    "newOrderId": 2,
+    "available": 8,
     "database": {
-      "quantityDelta": -2,
-      "acceptedRequests": 2,
-      "totalAvailable": 13,
-      "debits": 2,
       "restores": 1,
       "orders": 2,
       "requests": 3,
-      "rejectedRequests": 1
+      "rejectedRequests": 1,
+      "quantityDelta": -2,
+      "acceptedRequests": 2,
+      "totalAvailable": 13,
+      "debits": 2
     },
     "newPurchaseHttp": 201,
     "changedInputCode": "IDEMPOTENCY_KEY_REUSED",
     "replayedRejectionCode": "OUT_OF_STOCK",
     "firstRejectionCode": "OUT_OF_STOCK",
     "firstOrderId": 1,
-    "scenario": "out-of-stock-restore-new-purchase",
-    "newOrderId": 2,
-    "available": 8
+    "scenario": "out-of-stock-restore-new-purchase"
   }
 ]

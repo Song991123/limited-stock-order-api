@@ -1,0 +1,96 @@
+{
+  "before": {
+    "cancellation": [
+      {
+        "cancellationHttp": 429,
+        "orderId": 1,
+        "purchaseHttp": 429,
+        "scenario": "purchase-limit-does-not-block-cancellation",
+        "orders": 1,
+        "phase": "first-cancellation",
+        "available": 9
+      }
+    ],
+    "largeRequest": {
+      "bodySubscriptions": 1,
+      "declaredBytes": 8221,
+      "available": 10,
+      "http": 413,
+      "orders": 0
+    },
+    "failures": 4,
+    "tests": 130,
+    "run": "20261110-141351",
+    "failedChecks": [
+      "dev.mentoring.orders.ActorAdmissionIntegrationTest|exhaustedPurchaseBudgetStillAllowsCancellationWithItsOwnBudget()",
+      "dev.mentoring.orders.OrderHttpIntegrationTest|knownOversizedExpectContinueRequestDoesNotStartBodyTransmission()",
+      "dev.mentoring.orders.web.filter.RequestSizeFilterTest|oversizedDeclaredLengthIsRejectedWithoutOpeningBody(long) [1] contentLength=8193",
+      "dev.mentoring.orders.web.filter.RequestSizeFilterTest|oversizedDeclaredLengthIsRejectedWithoutOpeningBody(long) [2] contentLength=9223372036854775807"
+    ]
+  },
+  "after": {
+    "commonFailures": 0,
+    "additionalChecks": [
+      "dev.mentoring.orders.OrderHttpIntegrationTest|allowedExpectContinueRequestStillTransmitsBodyAndCreatesOrder()",
+      "dev.mentoring.orders.web.admission.WriteAdmissionTest|orderAndCancellationShareTheSameConcurrentWriteSlots()",
+      "dev.mentoring.orders.web.admission.WriteAdmissionTest|failedCancellationCountsOnlyAgainstCancellationAndReleasesItsSlot()",
+      "dev.mentoring.orders.web.admission.WriteAdmissionTest|concurrentRateChecksDoNotExceedTheWindowLimit()",
+      "dev.mentoring.orders.web.admission.WriteAdmissionTest|orderAndCancellationHaveIndependentCustomerLimits()"
+    ],
+    "failures": 0,
+    "cancellation": [
+      {
+        "purchaseHttp": 429,
+        "orderId": 1,
+        "cancellationHttp": 200,
+        "available": 10,
+        "phase": "first-cancellation",
+        "orders": 1,
+        "scenario": "purchase-limit-does-not-block-cancellation"
+      },
+      {
+        "restorations": 1,
+        "available": 10,
+        "purchaseHttp": 429,
+        "phase": "final",
+        "returnedStatus": "CANCELLED",
+        "orderId": 1,
+        "cancellationHttp": 200,
+        "scenario": "purchase-limit-does-not-block-cancellation",
+        "cancelLimitHttp": 429
+      }
+    ],
+    "exactLimit": {
+      "bytes": 8192,
+      "orders": 2,
+      "unknownLengthHttp": 201,
+      "fixedHttp": 201,
+      "available": 8
+    },
+    "commonChecks": 130,
+    "tests": 135,
+    "run": "20261110-142000",
+    "largeRequest": {
+      "orders": 0,
+      "http": 413,
+      "available": 10,
+      "declaredBytes": 8221,
+      "bodySubscriptions": 0
+    },
+    "allowedRequest": {
+      "orders": 1,
+      "http": 201,
+      "available": 9,
+      "declaredBytes": 28,
+      "bodySubscriptions": 1
+    }
+  },
+  "scope": "Same 130 checks before/after; 5 additional checks reported separately. Local HTTP, PostgreSQL and unit tests; not a performance benchmark.",
+  "baselineProductionCommit": "22b9aa3e4652b579c7077b5eab824bdd9852c1a9",
+  "notClaimed": [
+    "Measured latency or throughput improvement",
+    "Zero network bytes for every client",
+    "Full denial-of-service protection",
+    "Multi-server shared quotas"
+  ]
+}
