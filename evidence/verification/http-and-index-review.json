@@ -1,0 +1,1654 @@
+{
+  "baselineCommit": "5e5fcec",
+  "baselineChecks": 154,
+  "retainedBaselineChecks": 154,
+  "regular": {
+    "run": "20261110-210602",
+    "tests": 160,
+    "addedChecks": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "reproduction": [
+    {
+      "run": "20261110-205900",
+      "summary": {
+        "tests": 14,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      },
+      "failures": [
+        {
+          "name": "dev.mentoring.orders.exception.ApiExceptionHandlerTest::unsupportedBodyTypeKeepsAcceptedMediaTypes()",
+          "message": "org.opentest4j.AssertionFailedError: \r\nExpecting actual:\r\n  []\r\nto contain exactly (and in same order):\r\n  [application/json]\r\nbut could not find the following elements:\r\n  [application/json]\r\n"
+        },
+        {
+          "name": "dev.mentoring.orders.exception.ApiExceptionHandlerTest::frameworkRetryTimeAndGeneratedErrorReferenceArePreserved()",
+          "message": "org.opentest4j.AssertionFailedError: \r\nexpected: \"45\"\r\n but was: \"1\""
+        },
+        {
+          "name": "dev.mentoring.orders.exception.ApiExceptionHandlerTest::unsupportedMethodKeepsAllowedMethods()",
+          "message": "java.lang.AssertionError: \r\nExpecting actual:\r\n  []\r\nto contain exactly in any order:\r\n  [GET, HEAD]\r\nbut could not find the following elements:\r\n  [GET, HEAD]\r\n"
+        }
+      ]
+    },
+    {
+      "run": "20261110-210040",
+      "summary": {
+        "tests": 56,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      "failures": [
+        {
+          "name": "dev.mentoring.orders.OrderHttpIntegrationTest::bodyTypeRejectionIncludesAcceptedMediaTypes()",
+          "message": "java.lang.AssertionError: \r\nExpecting actual:\r\n  \"\"\r\nto contain:\r\n  \"application/json\" "
+        },
+        {
+          "name": "dev.mentoring.orders.OrderHttpIntegrationTest::methodRejectionIncludesAllowHeader()",
+          "message": "java.lang.AssertionError: \r\nExpecting ListN:\r\n  [\"\"]\r\nto contain:\r\n  [\"GET\"]\r\nbut could not find the following element(s):\r\n  [\"GET\"]\r\n"
+        }
+      ]
+    }
+  ],
+  "http": [
+    {
+      "observations": {
+        "orders": 0,
+        "accept": "application/json, application/*+json",
+        "http": 415,
+        "available": 10,
+        "code": "REQUEST_REJECTED"
+      },
+      "scenario": "body-type-accept-header"
+    },
+    {
+      "observations": {
+        "orders": 0,
+        "http": 405,
+        "available": 10,
+        "allow": "GET",
+        "code": "REQUEST_REJECTED"
+      },
+      "scenario": "method-allow-header"
+    },
+    {
+      "observations": {
+        "cancelledReplayHttp": 200,
+        "createdHttp": 201,
+        "originalId": 1,
+        "available": 10,
+        "acceptedReplayHttp": 200,
+        "orders": 1,
+        "status": "CANCELLED",
+        "replayedId": 1
+      },
+      "scenario": "aged-key-cancelled-replay"
+    }
+  ],
+  "databaseRecovery": {
+    "run": "20261110-210845",
+    "tests": 15,
+    "failures": 0,
+    "events": [
+      {
+        "sameJvm": true,
+        "returnedId": 1,
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "failureHttp": 503,
+        "scenario": "cancel-before-commit",
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "retryHttp": 200
+      },
+      {
+        "sameJvm": true,
+        "returnedId": 1,
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "failureHttp": 503,
+        "scenario": "cancel-before-commit",
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "retryHttp": 200
+      },
+      {
+        "sameJvm": true,
+        "returnedId": 1,
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "failureHttp": 503,
+        "scenario": "cancel-before-commit",
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "retryHttp": 200
+      },
+      {
+        "sameJvm": true,
+        "returnedId": 1,
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "failureHttp": 503,
+        "scenario": "purchase-before-commit",
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "retryHttp": 201
+      },
+      {
+        "sameJvm": true,
+        "returnedId": 34,
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "failureHttp": 503,
+        "scenario": "purchase-before-commit",
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "retryHttp": 201
+      },
+      {
+        "sameJvm": true,
+        "returnedId": 1,
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "failureHttp": 503,
+        "scenario": "purchase-before-commit",
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "retryHttp": 201
+      },
+      {
+        "upstreamHttp": 200,
+        "returnedStatus": "CANCELLED",
+        "scenario": "cancel-after-commit-lost-response",
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "returnedId": 1,
+        "committedId": 1
+      },
+      {
+        "upstreamHttp": 200,
+        "returnedStatus": "CANCELLED",
+        "scenario": "cancel-after-commit-lost-response",
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "returnedId": 1,
+        "committedId": 1
+      },
+      {
+        "upstreamHttp": 200,
+        "returnedStatus": "CANCELLED",
+        "scenario": "cancel-after-commit-lost-response",
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "returnedId": 1,
+        "committedId": 1
+      },
+      {
+        "upstreamHttp": 201,
+        "returnedStatus": "ACCEPTED",
+        "scenario": "purchase-after-commit-lost-response",
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "returnedId": 1,
+        "committedId": 1
+      },
+      {
+        "upstreamHttp": 201,
+        "returnedStatus": "ACCEPTED",
+        "scenario": "purchase-after-commit-lost-response",
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "returnedId": 1,
+        "committedId": 1
+      },
+      {
+        "upstreamHttp": 201,
+        "returnedStatus": "ACCEPTED",
+        "scenario": "purchase-after-commit-lost-response",
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "returnedId": 1,
+        "committedId": 1
+      },
+      {
+        "body": "{\"code\":\"DATABASE_UNAVAILABLE\"}",
+        "sameJvm": true,
+        "http": 503,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "scenario": "authentication-db-down"
+      },
+      {
+        "body": "{\"code\":\"DATABASE_UNAVAILABLE\"}",
+        "sameJvm": true,
+        "http": 503,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "scenario": "authentication-db-down"
+      },
+      {
+        "body": "{\"code\":\"DATABASE_UNAVAILABLE\"}",
+        "sameJvm": true,
+        "http": 503,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "scenario": "authentication-db-down"
+      }
+    ]
+  },
+  "query": {
+    "run": "query-2026-11-10T12-01-49-087Z",
+    "environment": {
+      "postgres": "postgres (PostgreSQL) 16.15",
+      "node": "v24.14.1",
+      "platform": "win32",
+      "cpu": "12th Gen Intel(R) Core(TM) i7-12700",
+      "settings": {
+        "fsync": "on",
+        "synchronous_commit": "on",
+        "shared_buffers": "32MB"
+      },
+      "scope": "Equivalent repository list SQL on synthetic rows, not HTTP latency or a production capacity test. No planner options forced."
+    },
+    "results": {
+      "datasets": [
+        {
+          "buyers": 2,
+          "before": {
+            "orders": 100000,
+            "requests": 100000,
+            "movements": 100000,
+            "inventoryViolations": 0,
+            "requestViolations": 0,
+            "orderViolations": 0
+          },
+          "after": {
+            "orders": 100000,
+            "requests": 100000,
+            "movements": 100000,
+            "inventoryViolations": 0,
+            "requestViolations": 0,
+            "orderViolations": 0
+          },
+          "relationBytes": [
+            {
+              "name": "buyers",
+              "bytes": 8192
+            },
+            {
+              "name": "buyers_pkey",
+              "bytes": 16384
+            },
+            {
+              "name": "buyers_username_key",
+              "bytes": 16384
+            },
+            {
+              "name": "inventories",
+              "bytes": 8192
+            },
+            {
+              "name": "inventories_pkey",
+              "bytes": 16384
+            },
+            {
+              "name": "inventory_movements",
+              "bytes": 7659520
+            },
+            {
+              "name": "inventory_movements_order_id_kind_key",
+              "bytes": 3162112
+            },
+            {
+              "name": "inventory_movements_pkey",
+              "bytes": 2260992
+            },
+            {
+              "name": "order_requests",
+              "bytes": 9314304
+            },
+            {
+              "name": "order_requests_buyer_id_request_key_key",
+              "bytes": 7004160
+            },
+            {
+              "name": "order_requests_pkey",
+              "bytes": 2260992
+            },
+            {
+              "name": "orders",
+              "bytes": 8445952
+            },
+            {
+              "name": "orders_buyer_page",
+              "bytes": 3178496
+            },
+            {
+              "name": "orders_pkey",
+              "bytes": 2260992
+            },
+            {
+              "name": "orders_product_status",
+              "bytes": 671744
+            },
+            {
+              "name": "orders_request_id_key",
+              "bytes": 2260992
+            },
+            {
+              "name": "products",
+              "bytes": 8192
+            },
+            {
+              "name": "products_pkey",
+              "bytes": 16384
+            }
+          ]
+        },
+        {
+          "buyers": 1000,
+          "before": {
+            "orders": 100000,
+            "requests": 100000,
+            "movements": 100000,
+            "inventoryViolations": 0,
+            "requestViolations": 0,
+            "orderViolations": 0
+          },
+          "after": {
+            "orders": 100000,
+            "requests": 100000,
+            "movements": 100000,
+            "inventoryViolations": 0,
+            "requestViolations": 0,
+            "orderViolations": 0
+          },
+          "relationBytes": [
+            {
+              "name": "buyers",
+              "bytes": 81920
+            },
+            {
+              "name": "buyers_pkey",
+              "bytes": 40960
+            },
+            {
+              "name": "buyers_username_key",
+              "bytes": 65536
+            },
+            {
+              "name": "inventories",
+              "bytes": 8192
+            },
+            {
+              "name": "inventories_pkey",
+              "bytes": 16384
+            },
+            {
+              "name": "inventory_movements",
+              "bytes": 7659520
+            },
+            {
+              "name": "inventory_movements_order_id_kind_key",
+              "bytes": 3162112
+            },
+            {
+              "name": "inventory_movements_pkey",
+              "bytes": 2260992
+            },
+            {
+              "name": "order_requests",
+              "bytes": 9314304
+            },
+            {
+              "name": "order_requests_buyer_id_request_key_key",
+              "bytes": 4784128
+            },
+            {
+              "name": "order_requests_pkey",
+              "bytes": 2260992
+            },
+            {
+              "name": "orders",
+              "bytes": 8445952
+            },
+            {
+              "name": "orders_buyer_page",
+              "bytes": 3178496
+            },
+            {
+              "name": "orders_pkey",
+              "bytes": 2260992
+            },
+            {
+              "name": "orders_product_status",
+              "bytes": 671744
+            },
+            {
+              "name": "orders_request_id_key",
+              "bytes": 2260992
+            },
+            {
+              "name": "products",
+              "bytes": 8192
+            },
+            {
+              "name": "products_pkey",
+              "bytes": 16384
+            }
+          ]
+        }
+      ],
+      "plans": [
+        {
+          "buyerCount": 2,
+          "orderCount": 100000,
+          "beforeId": "9223372036854775807",
+          "indexPresent": true,
+          "repetition": 1,
+          "returnedIds": [
+            99999,
+            99997,
+            99995,
+            99993,
+            99991,
+            99989,
+            99987,
+            99985,
+            99983,
+            99981,
+            99979,
+            99977,
+            99975,
+            99973,
+            99971,
+            99969,
+            99967,
+            99965,
+            99963,
+            99961
+          ],
+          "executionMs": 0.05,
+          "sharedHitBlocks": 3,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 20,
+              "indexCondition": "(id < '9223372036854775807'::bigint)"
+            }
+          ],
+          "rawPlan": "2-buyers-before-9223372036854775807-index-1.json"
+        },
+        {
+          "buyerCount": 2,
+          "orderCount": 100000,
+          "beforeId": "9223372036854775807",
+          "indexPresent": false,
+          "repetition": 1,
+          "returnedIds": [
+            99999,
+            99997,
+            99995,
+            99993,
+            99991,
+            99989,
+            99987,
+            99985,
+            99983,
+            99981,
+            99979,
+            99977,
+            99975,
+            99973,
+            99971,
+            99969,
+            99967,
+            99965,
+            99963,
+            99961
+          ],
+          "executionMs": 0.05,
+          "sharedHitBlocks": 3,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 20,
+              "indexCondition": "(id < '9223372036854775807'::bigint)"
+            }
+          ],
+          "rawPlan": "2-buyers-before-9223372036854775807-no-index-1.json"
+        },
+        {
+          "buyerCount": 2,
+          "orderCount": 100000,
+          "beforeId": "9223372036854775807",
+          "indexPresent": false,
+          "repetition": 2,
+          "returnedIds": [
+            99999,
+            99997,
+            99995,
+            99993,
+            99991,
+            99989,
+            99987,
+            99985,
+            99983,
+            99981,
+            99979,
+            99977,
+            99975,
+            99973,
+            99971,
+            99969,
+            99967,
+            99965,
+            99963,
+            99961
+          ],
+          "executionMs": 0.047,
+          "sharedHitBlocks": 3,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 20,
+              "indexCondition": "(id < '9223372036854775807'::bigint)"
+            }
+          ],
+          "rawPlan": "2-buyers-before-9223372036854775807-no-index-2.json"
+        },
+        {
+          "buyerCount": 2,
+          "orderCount": 100000,
+          "beforeId": "9223372036854775807",
+          "indexPresent": true,
+          "repetition": 2,
+          "returnedIds": [
+            99999,
+            99997,
+            99995,
+            99993,
+            99991,
+            99989,
+            99987,
+            99985,
+            99983,
+            99981,
+            99979,
+            99977,
+            99975,
+            99973,
+            99971,
+            99969,
+            99967,
+            99965,
+            99963,
+            99961
+          ],
+          "executionMs": 0.049,
+          "sharedHitBlocks": 3,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 20,
+              "indexCondition": "(id < '9223372036854775807'::bigint)"
+            }
+          ],
+          "rawPlan": "2-buyers-before-9223372036854775807-index-2.json"
+        },
+        {
+          "buyerCount": 2,
+          "orderCount": 100000,
+          "beforeId": "9223372036854775807",
+          "indexPresent": true,
+          "repetition": 3,
+          "returnedIds": [
+            99999,
+            99997,
+            99995,
+            99993,
+            99991,
+            99989,
+            99987,
+            99985,
+            99983,
+            99981,
+            99979,
+            99977,
+            99975,
+            99973,
+            99971,
+            99969,
+            99967,
+            99965,
+            99963,
+            99961
+          ],
+          "executionMs": 0.054,
+          "sharedHitBlocks": 3,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 20,
+              "indexCondition": "(id < '9223372036854775807'::bigint)"
+            }
+          ],
+          "rawPlan": "2-buyers-before-9223372036854775807-index-3.json"
+        },
+        {
+          "buyerCount": 2,
+          "orderCount": 100000,
+          "beforeId": "9223372036854775807",
+          "indexPresent": false,
+          "repetition": 3,
+          "returnedIds": [
+            99999,
+            99997,
+            99995,
+            99993,
+            99991,
+            99989,
+            99987,
+            99985,
+            99983,
+            99981,
+            99979,
+            99977,
+            99975,
+            99973,
+            99971,
+            99969,
+            99967,
+            99965,
+            99963,
+            99961
+          ],
+          "executionMs": 0.049,
+          "sharedHitBlocks": 3,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 20,
+              "indexCondition": "(id < '9223372036854775807'::bigint)"
+            }
+          ],
+          "rawPlan": "2-buyers-before-9223372036854775807-no-index-3.json"
+        },
+        {
+          "buyerCount": 2,
+          "orderCount": 100000,
+          "beforeId": "90000",
+          "indexPresent": true,
+          "repetition": 1,
+          "returnedIds": [
+            89999,
+            89997,
+            89995,
+            89993,
+            89991,
+            89989,
+            89987,
+            89985,
+            89983,
+            89981,
+            89979,
+            89977,
+            89975,
+            89973,
+            89971,
+            89969,
+            89967,
+            89965,
+            89963,
+            89961
+          ],
+          "executionMs": 0.068,
+          "sharedHitBlocks": 6,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 19,
+              "indexCondition": "(id < 90000)"
+            }
+          ],
+          "rawPlan": "2-buyers-before-90000-index-1.json"
+        },
+        {
+          "buyerCount": 2,
+          "orderCount": 100000,
+          "beforeId": "90000",
+          "indexPresent": false,
+          "repetition": 1,
+          "returnedIds": [
+            89999,
+            89997,
+            89995,
+            89993,
+            89991,
+            89989,
+            89987,
+            89985,
+            89983,
+            89981,
+            89979,
+            89977,
+            89975,
+            89973,
+            89971,
+            89969,
+            89967,
+            89965,
+            89963,
+            89961
+          ],
+          "executionMs": 0.068,
+          "sharedHitBlocks": 6,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 19,
+              "indexCondition": "(id < 90000)"
+            }
+          ],
+          "rawPlan": "2-buyers-before-90000-no-index-1.json"
+        },
+        {
+          "buyerCount": 2,
+          "orderCount": 100000,
+          "beforeId": "90000",
+          "indexPresent": false,
+          "repetition": 2,
+          "returnedIds": [
+            89999,
+            89997,
+            89995,
+            89993,
+            89991,
+            89989,
+            89987,
+            89985,
+            89983,
+            89981,
+            89979,
+            89977,
+            89975,
+            89973,
+            89971,
+            89969,
+            89967,
+            89965,
+            89963,
+            89961
+          ],
+          "executionMs": 0.064,
+          "sharedHitBlocks": 6,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 19,
+              "indexCondition": "(id < 90000)"
+            }
+          ],
+          "rawPlan": "2-buyers-before-90000-no-index-2.json"
+        },
+        {
+          "buyerCount": 2,
+          "orderCount": 100000,
+          "beforeId": "90000",
+          "indexPresent": true,
+          "repetition": 2,
+          "returnedIds": [
+            89999,
+            89997,
+            89995,
+            89993,
+            89991,
+            89989,
+            89987,
+            89985,
+            89983,
+            89981,
+            89979,
+            89977,
+            89975,
+            89973,
+            89971,
+            89969,
+            89967,
+            89965,
+            89963,
+            89961
+          ],
+          "executionMs": 0.062,
+          "sharedHitBlocks": 6,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 19,
+              "indexCondition": "(id < 90000)"
+            }
+          ],
+          "rawPlan": "2-buyers-before-90000-index-2.json"
+        },
+        {
+          "buyerCount": 2,
+          "orderCount": 100000,
+          "beforeId": "90000",
+          "indexPresent": true,
+          "repetition": 3,
+          "returnedIds": [
+            89999,
+            89997,
+            89995,
+            89993,
+            89991,
+            89989,
+            89987,
+            89985,
+            89983,
+            89981,
+            89979,
+            89977,
+            89975,
+            89973,
+            89971,
+            89969,
+            89967,
+            89965,
+            89963,
+            89961
+          ],
+          "executionMs": 0.068,
+          "sharedHitBlocks": 6,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 19,
+              "indexCondition": "(id < 90000)"
+            }
+          ],
+          "rawPlan": "2-buyers-before-90000-index-3.json"
+        },
+        {
+          "buyerCount": 2,
+          "orderCount": 100000,
+          "beforeId": "90000",
+          "indexPresent": false,
+          "repetition": 3,
+          "returnedIds": [
+            89999,
+            89997,
+            89995,
+            89993,
+            89991,
+            89989,
+            89987,
+            89985,
+            89983,
+            89981,
+            89979,
+            89977,
+            89975,
+            89973,
+            89971,
+            89969,
+            89967,
+            89965,
+            89963,
+            89961
+          ],
+          "executionMs": 0.067,
+          "sharedHitBlocks": 6,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 19,
+              "indexCondition": "(id < 90000)"
+            }
+          ],
+          "rawPlan": "2-buyers-before-90000-no-index-3.json"
+        },
+        {
+          "buyerCount": 1000,
+          "orderCount": 100000,
+          "beforeId": "9223372036854775807",
+          "indexPresent": true,
+          "repetition": 1,
+          "returnedIds": [
+            99001,
+            98001,
+            97001,
+            96001,
+            95001,
+            94001,
+            93001,
+            92001,
+            91001,
+            90001,
+            89001,
+            88001,
+            87001,
+            86001,
+            85001,
+            84001,
+            83001,
+            82001,
+            81001,
+            80001
+          ],
+          "executionMs": 0.118,
+          "sharedHitBlocks": 26,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_buyer_page",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 0,
+              "indexCondition": "((buyer_id = 1) AND (id < '9223372036854775807'::bigint))"
+            }
+          ],
+          "rawPlan": "1000-buyers-before-9223372036854775807-index-1.json"
+        },
+        {
+          "buyerCount": 1000,
+          "orderCount": 100000,
+          "beforeId": "9223372036854775807",
+          "indexPresent": false,
+          "repetition": 1,
+          "returnedIds": [
+            99001,
+            98001,
+            97001,
+            96001,
+            95001,
+            94001,
+            93001,
+            92001,
+            91001,
+            90001,
+            89001,
+            88001,
+            87001,
+            86001,
+            85001,
+            84001,
+            83001,
+            82001,
+            81001,
+            80001
+          ],
+          "executionMs": 2.178,
+          "sharedHitBlocks": 319,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 19980,
+              "indexCondition": "(id < '9223372036854775807'::bigint)"
+            }
+          ],
+          "rawPlan": "1000-buyers-before-9223372036854775807-no-index-1.json"
+        },
+        {
+          "buyerCount": 1000,
+          "orderCount": 100000,
+          "beforeId": "9223372036854775807",
+          "indexPresent": false,
+          "repetition": 2,
+          "returnedIds": [
+            99001,
+            98001,
+            97001,
+            96001,
+            95001,
+            94001,
+            93001,
+            92001,
+            91001,
+            90001,
+            89001,
+            88001,
+            87001,
+            86001,
+            85001,
+            84001,
+            83001,
+            82001,
+            81001,
+            80001
+          ],
+          "executionMs": 1.963,
+          "sharedHitBlocks": 319,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 19980,
+              "indexCondition": "(id < '9223372036854775807'::bigint)"
+            }
+          ],
+          "rawPlan": "1000-buyers-before-9223372036854775807-no-index-2.json"
+        },
+        {
+          "buyerCount": 1000,
+          "orderCount": 100000,
+          "beforeId": "9223372036854775807",
+          "indexPresent": true,
+          "repetition": 2,
+          "returnedIds": [
+            99001,
+            98001,
+            97001,
+            96001,
+            95001,
+            94001,
+            93001,
+            92001,
+            91001,
+            90001,
+            89001,
+            88001,
+            87001,
+            86001,
+            85001,
+            84001,
+            83001,
+            82001,
+            81001,
+            80001
+          ],
+          "executionMs": 0.137,
+          "sharedHitBlocks": 26,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_buyer_page",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 0,
+              "indexCondition": "((buyer_id = 1) AND (id < '9223372036854775807'::bigint))"
+            }
+          ],
+          "rawPlan": "1000-buyers-before-9223372036854775807-index-2.json"
+        },
+        {
+          "buyerCount": 1000,
+          "orderCount": 100000,
+          "beforeId": "9223372036854775807",
+          "indexPresent": true,
+          "repetition": 3,
+          "returnedIds": [
+            99001,
+            98001,
+            97001,
+            96001,
+            95001,
+            94001,
+            93001,
+            92001,
+            91001,
+            90001,
+            89001,
+            88001,
+            87001,
+            86001,
+            85001,
+            84001,
+            83001,
+            82001,
+            81001,
+            80001
+          ],
+          "executionMs": 0.11,
+          "sharedHitBlocks": 26,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_buyer_page",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 0,
+              "indexCondition": "((buyer_id = 1) AND (id < '9223372036854775807'::bigint))"
+            }
+          ],
+          "rawPlan": "1000-buyers-before-9223372036854775807-index-3.json"
+        },
+        {
+          "buyerCount": 1000,
+          "orderCount": 100000,
+          "beforeId": "9223372036854775807",
+          "indexPresent": false,
+          "repetition": 3,
+          "returnedIds": [
+            99001,
+            98001,
+            97001,
+            96001,
+            95001,
+            94001,
+            93001,
+            92001,
+            91001,
+            90001,
+            89001,
+            88001,
+            87001,
+            86001,
+            85001,
+            84001,
+            83001,
+            82001,
+            81001,
+            80001
+          ],
+          "executionMs": 1.986,
+          "sharedHitBlocks": 319,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 19980,
+              "indexCondition": "(id < '9223372036854775807'::bigint)"
+            }
+          ],
+          "rawPlan": "1000-buyers-before-9223372036854775807-no-index-3.json"
+        },
+        {
+          "buyerCount": 1000,
+          "orderCount": 100000,
+          "beforeId": "90000",
+          "indexPresent": true,
+          "repetition": 1,
+          "returnedIds": [
+            89001,
+            88001,
+            87001,
+            86001,
+            85001,
+            84001,
+            83001,
+            82001,
+            81001,
+            80001,
+            79001,
+            78001,
+            77001,
+            76001,
+            75001,
+            74001,
+            73001,
+            72001,
+            71001,
+            70001
+          ],
+          "executionMs": 0.115,
+          "sharedHitBlocks": 26,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_buyer_page",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 0,
+              "indexCondition": "((buyer_id = 1) AND (id < 90000))"
+            }
+          ],
+          "rawPlan": "1000-buyers-before-90000-index-1.json"
+        },
+        {
+          "buyerCount": 1000,
+          "orderCount": 100000,
+          "beforeId": "90000",
+          "indexPresent": false,
+          "repetition": 1,
+          "returnedIds": [
+            89001,
+            88001,
+            87001,
+            86001,
+            85001,
+            84001,
+            83001,
+            82001,
+            81001,
+            80001,
+            79001,
+            78001,
+            77001,
+            76001,
+            75001,
+            74001,
+            73001,
+            72001,
+            71001,
+            70001
+          ],
+          "executionMs": 2.432,
+          "sharedHitBlocks": 320,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 19979,
+              "indexCondition": "(id < 90000)"
+            }
+          ],
+          "rawPlan": "1000-buyers-before-90000-no-index-1.json"
+        },
+        {
+          "buyerCount": 1000,
+          "orderCount": 100000,
+          "beforeId": "90000",
+          "indexPresent": false,
+          "repetition": 2,
+          "returnedIds": [
+            89001,
+            88001,
+            87001,
+            86001,
+            85001,
+            84001,
+            83001,
+            82001,
+            81001,
+            80001,
+            79001,
+            78001,
+            77001,
+            76001,
+            75001,
+            74001,
+            73001,
+            72001,
+            71001,
+            70001
+          ],
+          "executionMs": 2.028,
+          "sharedHitBlocks": 320,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 19979,
+              "indexCondition": "(id < 90000)"
+            }
+          ],
+          "rawPlan": "1000-buyers-before-90000-no-index-2.json"
+        },
+        {
+          "buyerCount": 1000,
+          "orderCount": 100000,
+          "beforeId": "90000",
+          "indexPresent": true,
+          "repetition": 2,
+          "returnedIds": [
+            89001,
+            88001,
+            87001,
+            86001,
+            85001,
+            84001,
+            83001,
+            82001,
+            81001,
+            80001,
+            79001,
+            78001,
+            77001,
+            76001,
+            75001,
+            74001,
+            73001,
+            72001,
+            71001,
+            70001
+          ],
+          "executionMs": 0.111,
+          "sharedHitBlocks": 26,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_buyer_page",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 0,
+              "indexCondition": "((buyer_id = 1) AND (id < 90000))"
+            }
+          ],
+          "rawPlan": "1000-buyers-before-90000-index-2.json"
+        },
+        {
+          "buyerCount": 1000,
+          "orderCount": 100000,
+          "beforeId": "90000",
+          "indexPresent": true,
+          "repetition": 3,
+          "returnedIds": [
+            89001,
+            88001,
+            87001,
+            86001,
+            85001,
+            84001,
+            83001,
+            82001,
+            81001,
+            80001,
+            79001,
+            78001,
+            77001,
+            76001,
+            75001,
+            74001,
+            73001,
+            72001,
+            71001,
+            70001
+          ],
+          "executionMs": 0.122,
+          "sharedHitBlocks": 26,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_buyer_page",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 0,
+              "indexCondition": "((buyer_id = 1) AND (id < 90000))"
+            }
+          ],
+          "rawPlan": "1000-buyers-before-90000-index-3.json"
+        },
+        {
+          "buyerCount": 1000,
+          "orderCount": 100000,
+          "beforeId": "90000",
+          "indexPresent": false,
+          "repetition": 3,
+          "returnedIds": [
+            89001,
+            88001,
+            87001,
+            86001,
+            85001,
+            84001,
+            83001,
+            82001,
+            81001,
+            80001,
+            79001,
+            78001,
+            77001,
+            76001,
+            75001,
+            74001,
+            73001,
+            72001,
+            71001,
+            70001
+          ],
+          "executionMs": 2.011,
+          "sharedHitBlocks": 320,
+          "sharedReadBlocks": 0,
+          "scans": [
+            {
+              "type": "Index Scan",
+              "index": "orders_pkey",
+              "rows": 20,
+              "loops": 1,
+              "removedByFilter": 19979,
+              "indexCondition": "(id < 90000)"
+            }
+          ],
+          "rawPlan": "1000-buyers-before-90000-no-index-3.json"
+        }
+      ],
+      "scope": [
+        "Same 100000 orders per distribution; first page and beforeId=90000; three repetitions per condition.",
+        "Index present/absent order alternates. Warmup, DDL and fixture insertion are outside plan execution time.",
+        "Same returned IDs and quantity/request/ledger counts checked. Only orders_buyer_page is removed in this owned DB.",
+        "No claim about write cost, cold cache, arbitrary customer skew, maximum capacity or best locking method."
+      ]
+    },
+    "stopped": true
+  },
+  "scope": [
+    "Latest source snapshot belongs to the 160-case suite and 15 separate DB-crash checks.",
+    "Query plans use matching schema/repository/query collector; unrelated HTTP handler differs from query-run snapshot.",
+    "backend-review.json retains the earlier 154-case and k6 source version; load was not rerun for the header fix.",
+    "No record deletion/expiry, multi-server shared limiter, production capacity or locking-method comparison added."
+  ]
+}

@@ -24,6 +24,10 @@
     "sha256Utf8Lf": "29378ac6bf8b93ab16be4147599588bf18bb70856e5c2ff549355ec3547a8f30"
   },
   {
+    "file": "scripts/export-followup.ps1",
+    "sha256Utf8Lf": "75af60377d6fd442f4891c65cffbe6006c09db5508307ad995450f15d73be421"
+  },
+  {
     "file": "scripts/export-review.ps1",
     "sha256Utf8Lf": "9fdf04abbc90f591c756911270821cf72390138bef64e282caf5e9d37e0ec4bc"
   },
@@ -34,6 +38,10 @@
   {
     "file": "scripts/local-db.cjs",
     "sha256Utf8Lf": "99c7ff16449da098ff9ae2ecdce9feb6a8a1dbe94864431890360247d17fe3b3"
+  },
+  {
+    "file": "scripts/query-index.cjs",
+    "sha256Utf8Lf": "07012ec85f05d7799e0f7181999c8352f03039c20ade49229c6e6d6522f1f283"
   },
   {
     "file": "scripts/review-load.cjs",
@@ -133,7 +141,7 @@
   },
   {
     "file": "src/main/java/dev/mentoring/orders/exception/ApiExceptionHandler.java",
-    "sha256Utf8Lf": "26df9e616f5d328a181ffdbc579e21f31009d7e971687021b44cb7c69855e489"
+    "sha256Utf8Lf": "a1e9f530b47a65436d27fe19a73b3d81c8696ee00f41d4b92d8abc769ee214c2"
   },
   {
     "file": "src/main/java/dev/mentoring/orders/exception/DatabaseFailures.java",
@@ -221,7 +229,7 @@
   },
   {
     "file": "src/test/java/dev/mentoring/orders/exception/ApiExceptionHandlerTest.java",
-    "sha256Utf8Lf": "a94d948ba0a7ed8f79de5b7101eb52b7f9211dc6243c82f3d97d19315ba18ad7"
+    "sha256Utf8Lf": "783a467e0316188e7f58d7d216dfd319a84ed55b4dcdc0c079b9ba53da5762e0"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/NormalStartupIntegrationTest.java",
@@ -229,7 +237,7 @@
   },
   {
     "file": "src/test/java/dev/mentoring/orders/OrderHttpIntegrationTest.java",
-    "sha256Utf8Lf": "4f2cc6644e01f69dbf7e3359fa2b68b6f389ab637da60bcc1a152d4a24b9b523"
+    "sha256Utf8Lf": "91a91988e8df28e75803aee83b0bd33fc400f5aa01b92798b8cc722d0aac4e41"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/OrderProcessRecoveryTest.java",
