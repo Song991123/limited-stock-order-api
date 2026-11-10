@@ -5,23 +5,23 @@
     "available": 10
   },
   {
+    "available": 8,
     "orders": 1,
     "stage": "purchase-restarted-after-commit",
-    "replayHttp": 200,
-    "available": 8
+    "replayHttp": 200
   },
   {
+    "acceptedOrders": 1,
     "available": 8,
-    "stage": "cancel-killed-before-commit",
-    "acceptedOrders": 1
+    "stage": "cancel-killed-before-commit"
   },
   {
+    "http": 200,
     "restorations": 1,
     "expectedOrderId": 1,
     "returnedStatus": "CANCELLED",
     "returnedOrderId": 1,
     "stage": "cancel-restarted-after-commit",
-    "available": 10,
-    "http": 200
+    "available": 10
   }
 ]

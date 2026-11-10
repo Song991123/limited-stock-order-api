@@ -19,7 +19,6 @@
     "tests": 109,
     "httpIntegrationTests": 50,
     "failures": 0,
-    "evidence": "observations.json",
     "observations": [
       {"scenario": "encoded-order-path-body-limit", "http": 413, "orders": 0, "available": 10},
       {"scenario": "same-key-unknown-product", "http": 409, "code": "IDEMPOTENCY_KEY_REUSED", "orders": 1, "available": 9},

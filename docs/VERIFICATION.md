@@ -4,9 +4,11 @@
 
 ## 실행 결과
 
-최종 JUnit 실행은 109건이며 반복과 매개변수별 검사를 포함합니다. 실제 HTTP/DB 51건, 별도 JVM 종료/재시작 1건과 단위 검사 57건이 모두 통과했습니다. 단위 검사에는 서비스 26건, 입력 객체 7건, DTO 변환 3건, 자료형 분리 2건, 오류 처리 7건, 요청 한도 7건과 경로 선택 5건이 포함됩니다. 정확한 실행 시각은 [JUnit 요약](../evidence/verification/junit-summary.xml), [실행 요약](../evidence/verification/latest.json)에서 확인할 수 있습니다.
+최종 실행 `20261110-133309`의 JUnit 121건이 모두 통과했습니다. 기존 주문 HTTP 50건, 새 사용자 행동 HTTP 12건, 일반 실행 HTTP 1건, 별도 JVM 종료/재시작 1건과 단위 검사 57건입니다. 반복과 매개변수별 실행을 포함한 수입니다. 단위 검사에는 서비스 26건, 입력 객체 7건, DTO 변환 3건, 자료형 분리 2건, 오류 처리 7건, 요청 한도 7건과 경로 선택 5건이 포함됩니다. [JUnit 요약](../evidence/verification/junit-summary.xml)과 [실행 요약](../evidence/verification/latest.json)에 클래스별 수와 실패 여부를 확인할 수 있습니다.
 
-[입력 수정 전후 비교](../evidence/verification/order-safety-comparison.json)는 주문 HTTP 검사 50건씩을 대조합니다. 수정 전 실패 3건은 수정 후 0건입니다. 전체 109건은 일반 실행과 단위 검사 등을 포함한 별도 집계입니다. 반복 검사와 매개변수 검사 이름에도 시나리오명을 넣어 같은 회차끼리 구별되도록 했습니다.
+[입력 수정 전후 비교](../evidence/verification/order-safety-comparison.json)는 당시 주문 HTTP 검사 50건씩을 대조합니다. 수정 전 실패 3건은 수정 후 0건입니다. 그때의 전체 109건과 사용자 행동 12건을 추가한 현재 121건은 별도 집계이며, 검사 수 증가를 개선율로 계산하지 않습니다. 반복 검사와 매개변수 검사 이름에도 시나리오명을 넣어 같은 회차끼리 구별되도록 했습니다.
+
+같은 코드의 새 전용 DB 실행 `20261110-122502`에서도 109건이 모두 통과했습니다. JUnit XML의 실제 항목 수와 요약 수가 같고, 클래스와 검사명을 함께 비교한 중복도 없었습니다. 취소 커밋 뒤 재시작한 응답은 원래 주문 ID 1, 반환 ID 1, CANCELLED, HTTP 200이며 재고 10과 복구 이력 1건을 유지했습니다. [재검토 결과](../evidence/verification/recheck-20261110.json)는 사용자 여정 검사를 추가하기 전 실행으로 보존합니다.
 
 11월 4일에는 48건에서 60건으로, 11월 9일에는 DTO 검사 등을 포함해 66건으로 늘렸습니다. 11월 10일 수정 직전에도 66건을 다시 통과한 뒤 서비스와 오류 처리, 일반 실행 검사를 추가했습니다. 검사 수 증가를 같은 수의 결함 수정으로 계산하지 않습니다. 재고 SQL, 트랜잭션 설정과 DB 스키마는 유지했습니다.
 
@@ -54,6 +56,14 @@
 
 20건은 검사용 동시 출발 수입니다. 서버 최대 처리량이나 실제 고객 수를 뜻하지 않습니다. 장벽을 함께 해제하고 `pg_stat_activity`에서 잠금 대기 2건 이상을 확인한 뒤 잠금을 풀었습니다. 같은 상품의 모든 요청이 한순간에 모두 DB에 들어갔다는 뜻도 아닙니다.
 
+## 사용자 행동별 검사
+
+고객의 상품 조회부터 주문 재전송, 취소와 새 키 재구매까지 4개 여정으로 검사했습니다. 품절 뒤 재고가 복구돼도 기존 키의 거절은 유지되고 새 키는 접수됐습니다. 취소 주문이 섞인 자기 목록, 마지막 빈 페이지와 상품 목록의 100개 제한도 확인했습니다.
+
+미인증, 잘못된 비밀번호, 다른 고객의 주문 접근, 고객 ID 조작, CSRF 누락/다른 세션 토큰과 쿠키 삭제는 6개 검사로 확인했습니다. 거절 전후 주문, 구매 기록, 재고와 이력 비교 34회가 모두 일치했습니다. 요청 한도 2개 검사에서는 실제 HTTP 429, 조회 허용, 거절된 키의 재사용과 다른 고객의 독립 구매를 확인했습니다. 동시 쓰기 1건과 고객별 분당 2건으로 한도를 줄인 분기 검사이며 기본 설정의 운영 수용량 측정은 아닙니다.
+
+개별 실행 뒤 전체 121건을 다시 실행했으며 JAR 빌드와 Javadoc도 통과했습니다. [액터별 범위와 실행 방법](ACTOR_VERIFICATION.md), [고객 여정 결과](../evidence/verification/actor-order-journeys.json), [접근 결과](../evidence/verification/actor-access.json), [요청 한도 결과](../evidence/verification/actor-admission.json)를 연결했습니다. 전체 원시 요청과 중간 저장 값은 로컬에 두고 공개 기록에는 대표 결과를 보존합니다. 제품 코드와 재고/취소 SQL은 변경하지 않았습니다.
+
 ## 프로세스 종료와 재시작
 
 별도 JVM을 실행해 주문과 취소 각각 커밋 전/후를 나눠 종료했습니다.
@@ -73,7 +83,7 @@
 
 `scripts/test.ps1 -IsolatedDatabase`가 입력 소스 해시, JUnit 원문, HTTP 관찰 값과 JVM 로그를 `evidence/raw`에 보관합니다. 공개 요약은 `scripts/export-evidence.ps1`로 만들며, 검사 뒤 소스가 달라지면 내보내기를 거절합니다.
 
-관찰 값은 [HTTP/DB 결과](../evidence/verification/observations.json)와 [재시작 결과](../evidence/verification/process-recovery.json), 검사 입력은 [소스 해시](../evidence/verification/source-sha256.json)로 대조합니다. 원시 로그와 실행 비밀 값은 로컬에 보관합니다.
+관찰 값은 [HTTP/DB 결과](../evidence/verification/observations.json)와 [재시작 결과](../evidence/verification/process-recovery.json), 검사 입력은 [소스 해시](../evidence/verification/source-sha256.json)로 대조합니다. 기존 HTTP 기록의 일부 값은 단언 통과 뒤 예상 상수로 저장하므로 독립 측정값과 구분합니다. 새 사용자 검사에는 응답에서 읽은 값과 DB 조회값을 기록합니다. 원시 로그와 실행 비밀 값은 로컬에 보관합니다.
 
 GitHub Actions는 별도 Linux 실행기와 임시 PostgreSQL 16으로 같은 JUnit 검사, JAR 빌드와 Javadoc을 실행합니다. 이 문서의 로컬 결과와 CI 실행 결과는 구분하며 PR의 검사와 보고서에서 해당 커밋의 실제 통과 여부를 확인할 수 있습니다. CI에는 서버 배포 단계가 없습니다.
 

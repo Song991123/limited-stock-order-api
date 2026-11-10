@@ -1,7 +1,7 @@
 [
   {
     "file": ".github/workflows/verify.yml",
-    "sha256Utf8Lf": "1e2f220c2599c9286221015e00efe9541031c130e92a0d153923bf26e6c84102"
+    "sha256Utf8Lf": "d84d7ee566fded20d566b9c6e24e3ad676e1756ff95277bdae08879066606a4e"
   },
   {
     "file": "build.gradle",
@@ -21,7 +21,7 @@
   },
   {
     "file": "scripts/export-evidence.ps1",
-    "sha256Utf8Lf": "cea0cb32d3f743e34680c016a6ed4fa96cce292b3a19fafb792dcce3856967b3"
+    "sha256Utf8Lf": "22a3cb8fecb0c782019304a60986beb3628fcd95a113de5eac36c60de028aba3"
   },
   {
     "file": "scripts/local-db.cjs",
@@ -166,6 +166,18 @@
   {
     "file": "src/main/resources/db/migration/V1__orders_and_inventory.sql",
     "sha256Utf8Lf": "2d8beaca2bce26e57a7dbb3aa21aea6912fa31538778fa3f4ec71f664df25ff3"
+  },
+  {
+    "file": "src/test/java/dev/mentoring/orders/ActorAccessIntegrationTest.java",
+    "sha256Utf8Lf": "fec6f9960cfe49e5504983dcb368a036d1b1b0699bf32161699661d59f41074b"
+  },
+  {
+    "file": "src/test/java/dev/mentoring/orders/ActorAdmissionIntegrationTest.java",
+    "sha256Utf8Lf": "f4be7ad1bc1eb6c79f5d70d545d03d050a90d92333c85c5eab11abdfb3879eec"
+  },
+  {
+    "file": "src/test/java/dev/mentoring/orders/ActorOrderJourneyIntegrationTest.java",
+    "sha256Utf8Lf": "1584e31a5364e97899a8e3587970bc21614a4f82fcce4975ba298ee6eb2592e2"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/dto/request/CreateOrderRequestValidationTest.java",

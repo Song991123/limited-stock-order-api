@@ -1,0 +1,28 @@
+[
+  {
+    "available": 8,
+    "rejectedHttp": 429,
+    "retryAfter": "1",
+    "firstHttp": 201,
+    "scenario": "concurrent-write-limit",
+    "retryHttp": 201,
+    "unreservedRequests": 0,
+    "orders": 2,
+    "readHttp": 200
+  },
+  {
+    "available": 8,
+    "otherCustomerHttp": 201,
+    "rejectedHttp": 429,
+    "retryAfterSeconds": 22,
+    "scenario": "customer-rate-limit",
+    "httpStatuses": [
+      201,
+      200,
+      429
+    ],
+    "originalOrderId": 1,
+    "ownListHttp": 200,
+    "orders": 2
+  }
+]

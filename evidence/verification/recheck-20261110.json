@@ -1,0 +1,31 @@
+{
+  "reviewedCommit": "be528f171e5240c87044d6947a6506823d1b7934",
+  "run": "20261110-122502",
+  "scope": "Independent code/evidence review and a fresh isolated PostgreSQL full-suite run; before actor-journey additions",
+  "tests": 109,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "counts": {
+    "orderHttpIntegration": 50,
+    "normalStartup": 1,
+    "processRecovery": 1,
+    "unitAndStructure": 57
+  },
+  "restartAfterCancellationCommit": {
+    "expectedOrderId": 1,
+    "returnedOrderId": 1,
+    "returnedStatus": "CANCELLED",
+    "http": 200,
+    "available": 10,
+    "restorations": 1
+  },
+  "sourceFilesMatchedPublishedEvidence": 53,
+  "trackedFilesUnchanged": 92,
+  "notClaimed": [
+    "Every possible actor operation covered",
+    "Production capacity",
+    "Long-running load",
+    "Database server crash recovery"
+  ]
+}

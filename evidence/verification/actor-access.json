@@ -1,0 +1,1239 @@
+[
+  {
+    "scenario": "anonymousAndWrongPasswordCannotUseAnyApi",
+    "requests": [
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders",
+        "http": 201,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "anonymous",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 401,
+        "tokenIssued": false
+      },
+      {
+        "actor": "anonymous",
+        "method": "GET",
+        "path": "/products",
+        "http": 401,
+        "status": 401
+      },
+      {
+        "actor": "anonymous",
+        "method": "GET",
+        "path": "/products/1",
+        "http": 401,
+        "status": 401
+      },
+      {
+        "actor": "anonymous",
+        "method": "GET",
+        "path": "/orders",
+        "http": 401,
+        "status": 401
+      },
+      {
+        "actor": "anonymous",
+        "method": "GET",
+        "path": "/orders/1",
+        "http": 401,
+        "status": 401
+      },
+      {
+        "actor": "anonymous",
+        "method": "POST",
+        "path": "/orders",
+        "http": 403,
+        "status": 403
+      },
+      {
+        "actor": "anonymous",
+        "method": "POST",
+        "path": "/orders/1/cancel",
+        "http": 403,
+        "status": 403
+      },
+      {
+        "actor": "wrong-password",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 401,
+        "tokenIssued": false
+      },
+      {
+        "actor": "wrong-password",
+        "method": "GET",
+        "path": "/products",
+        "http": 401,
+        "status": 401
+      },
+      {
+        "actor": "wrong-password",
+        "method": "GET",
+        "path": "/products/1",
+        "http": 401,
+        "status": 401
+      },
+      {
+        "actor": "wrong-password",
+        "method": "GET",
+        "path": "/orders",
+        "http": 401,
+        "status": 401
+      },
+      {
+        "actor": "wrong-password",
+        "method": "GET",
+        "path": "/orders/1",
+        "http": 401,
+        "status": 401
+      },
+      {
+        "actor": "wrong-password",
+        "method": "POST",
+        "path": "/orders",
+        "http": 403,
+        "status": 403
+      },
+      {
+        "actor": "wrong-password",
+        "method": "POST",
+        "path": "/orders/1/cancel",
+        "http": 403,
+        "status": 403
+      },
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/orders/1",
+        "http": 200,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "ACCEPTED"
+      }
+    ],
+    "storageComparisons": 14,
+    "allStorageComparisonsUnchanged": true,
+    "sessionEvents": [],
+    "inventoryViolations": 0,
+    "requestViolations": 0,
+    "orderViolations": 0,
+    "finalDatabase": {
+      "products": [
+        {
+          "id": 1,
+          "name": "Actor access notebook"
+        }
+      ],
+      "inventories": [
+        {
+          "product_id": 1,
+          "initial_quantity": 10,
+          "available_quantity": 8
+        }
+      ],
+      "buyers": [
+        {
+          "id": 1,
+          "username": "alice"
+        },
+        {
+          "id": 2,
+          "username": "bob"
+        }
+      ],
+      "requests": [
+        {
+          "id": 1,
+          "buyer_id": 1,
+          "request_key": "access-owner",
+          "product_id": 1,
+          "quantity": 2,
+          "outcome": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:33.1835+09"
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "request_id": 1,
+          "buyer_id": 1,
+          "product_id": 1,
+          "quantity": 2,
+          "status": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:33.1835+09",
+          "cancelled_at": null
+        }
+      ],
+      "movements": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:33:33.1835+09"
+        }
+      ]
+    }
+  },
+  {
+    "scenario": "anotherCustomerCannotAccessAcceptedOrCancelledOrderEvenWithItsKey",
+    "requests": [
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders",
+        "http": 201,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/orders",
+        "http": 200,
+        "returnedCount": 0,
+        "returnedIds": []
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/orders/1",
+        "http": 404,
+        "code": "NOT_FOUND"
+      },
+      {
+        "actor": "bob",
+        "method": "POST",
+        "path": "/orders/1/cancel",
+        "http": 404,
+        "code": "NOT_FOUND"
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/products/9223372036854775807",
+        "http": 404,
+        "code": "NOT_FOUND"
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/orders/9223372036854775807",
+        "http": 404,
+        "code": "NOT_FOUND"
+      },
+      {
+        "actor": "bob",
+        "method": "POST",
+        "path": "/orders/9223372036854775807/cancel",
+        "http": 404,
+        "code": "NOT_FOUND"
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders/1/cancel",
+        "http": 200,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "CANCELLED"
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/orders/1",
+        "http": 404,
+        "code": "NOT_FOUND"
+      },
+      {
+        "actor": "bob",
+        "method": "POST",
+        "path": "/orders/1/cancel",
+        "http": 404,
+        "code": "NOT_FOUND"
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/orders",
+        "http": 200,
+        "returnedCount": 0,
+        "returnedIds": []
+      },
+      {
+        "actor": "bob",
+        "method": "POST",
+        "path": "/orders",
+        "http": 201,
+        "id": 2,
+        "productId": 1,
+        "quantity": 2,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/orders",
+        "http": 200,
+        "returnedCount": 1,
+        "returnedIds": [
+          2
+        ]
+      },
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/orders",
+        "http": 200,
+        "returnedCount": 1,
+        "returnedIds": [
+          1
+        ]
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/orders/2",
+        "http": 200,
+        "id": 2,
+        "productId": 1,
+        "quantity": 2,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/orders/1",
+        "http": 200,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "CANCELLED"
+      }
+    ],
+    "storageComparisons": 9,
+    "allStorageComparisonsUnchanged": true,
+    "sessionEvents": [],
+    "inventoryViolations": 0,
+    "requestViolations": 0,
+    "orderViolations": 0,
+    "finalDatabase": {
+      "products": [
+        {
+          "id": 1,
+          "name": "Actor access notebook"
+        }
+      ],
+      "inventories": [
+        {
+          "product_id": 1,
+          "initial_quantity": 10,
+          "available_quantity": 8
+        }
+      ],
+      "buyers": [
+        {
+          "id": 1,
+          "username": "alice"
+        },
+        {
+          "id": 2,
+          "username": "bob"
+        }
+      ],
+      "requests": [
+        {
+          "id": 1,
+          "buyer_id": 1,
+          "request_key": "known-alice-key",
+          "product_id": 1,
+          "quantity": 2,
+          "outcome": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:31.606651+09"
+        },
+        {
+          "id": 2,
+          "buyer_id": 2,
+          "request_key": "known-alice-key",
+          "product_id": 1,
+          "quantity": 2,
+          "outcome": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:32.262779+09"
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "request_id": 1,
+          "buyer_id": 1,
+          "product_id": 1,
+          "quantity": 2,
+          "status": "CANCELLED",
+          "created_at": "2026-11-10 13:33:31.606651+09",
+          "cancelled_at": "2026-11-10 13:33:32.02434+09"
+        },
+        {
+          "id": 2,
+          "request_id": 2,
+          "buyer_id": 2,
+          "product_id": 1,
+          "quantity": 2,
+          "status": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:32.262779+09",
+          "cancelled_at": null
+        }
+      ],
+      "movements": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:33:31.606651+09"
+        },
+        {
+          "id": 2,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "RESTORE",
+          "quantity_delta": 2,
+          "created_at": "2026-11-10 13:33:32.02434+09"
+        },
+        {
+          "id": 3,
+          "order_id": 2,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:33:32.262779+09"
+        }
+      ]
+    }
+  },
+  {
+    "scenario": "deletingSessionCookieRequiresFreshCsrfBeforeRetry",
+    "requests": [
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders",
+        "http": 201,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders",
+        "http": 403,
+        "status": 403
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders/1/cancel",
+        "http": 403,
+        "status": 403
+      },
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders",
+        "http": 201,
+        "id": 2,
+        "productId": 1,
+        "quantity": 1,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/orders/2",
+        "http": 200,
+        "id": 2,
+        "productId": 1,
+        "quantity": 1,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders/1/cancel",
+        "http": 200,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "CANCELLED"
+      }
+    ],
+    "storageComparisons": 2,
+    "allStorageComparisonsUnchanged": true,
+    "sessionEvents": [
+      {
+        "cookiesRemoved": true,
+        "phase": "delete-session-cookie",
+        "cookiesAfter": 0,
+        "cookiesBefore": 1
+      },
+      {
+        "sessionReplaced": true,
+        "phase": "new-csrf-session"
+      }
+    ],
+    "inventoryViolations": 0,
+    "requestViolations": 0,
+    "orderViolations": 0,
+    "finalDatabase": {
+      "products": [
+        {
+          "id": 1,
+          "name": "Actor access notebook"
+        }
+      ],
+      "inventories": [
+        {
+          "product_id": 1,
+          "initial_quantity": 10,
+          "available_quantity": 9
+        }
+      ],
+      "buyers": [
+        {
+          "id": 1,
+          "username": "alice"
+        },
+        {
+          "id": 2,
+          "username": "bob"
+        }
+      ],
+      "requests": [
+        {
+          "id": 1,
+          "buyer_id": 1,
+          "request_key": "cookie-owner",
+          "product_id": 1,
+          "quantity": 2,
+          "outcome": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:34.561596+09"
+        },
+        {
+          "id": 2,
+          "buyer_id": 1,
+          "request_key": "cookie-retry",
+          "product_id": 1,
+          "quantity": 1,
+          "outcome": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:34.686459+09"
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "request_id": 1,
+          "buyer_id": 1,
+          "product_id": 1,
+          "quantity": 2,
+          "status": "CANCELLED",
+          "created_at": "2026-11-10 13:33:34.561596+09",
+          "cancelled_at": "2026-11-10 13:33:34.801282+09"
+        },
+        {
+          "id": 2,
+          "request_id": 2,
+          "buyer_id": 1,
+          "product_id": 1,
+          "quantity": 1,
+          "status": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:34.686459+09",
+          "cancelled_at": null
+        }
+      ],
+      "movements": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:33:34.561596+09"
+        },
+        {
+          "id": 2,
+          "order_id": 2,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -1,
+          "created_at": "2026-11-10 13:33:34.686459+09"
+        },
+        {
+          "id": 3,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "RESTORE",
+          "quantity_delta": 2,
+          "created_at": "2026-11-10 13:33:34.801282+09"
+        }
+      ]
+    }
+  },
+  {
+    "scenario": "forgedBuyerIdIsRejectedThenCorrectedPurchaseBelongsToCaller",
+    "requests": [
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders",
+        "http": 201,
+        "id": 1,
+        "productId": 1,
+        "quantity": 1,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "bob",
+        "method": "POST",
+        "path": "/orders",
+        "http": 400,
+        "code": "INVALID_INPUT"
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/orders",
+        "http": 200,
+        "returnedCount": 0,
+        "returnedIds": []
+      },
+      {
+        "actor": "bob",
+        "method": "POST",
+        "path": "/orders",
+        "http": 201,
+        "id": 2,
+        "productId": 1,
+        "quantity": 2,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/orders",
+        "http": 200,
+        "returnedCount": 1,
+        "returnedIds": [
+          2
+        ]
+      },
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/orders",
+        "http": 200,
+        "returnedCount": 1,
+        "returnedIds": [
+          1
+        ]
+      }
+    ],
+    "storageComparisons": 2,
+    "allStorageComparisonsUnchanged": true,
+    "sessionEvents": [],
+    "inventoryViolations": 0,
+    "requestViolations": 0,
+    "orderViolations": 0,
+    "finalDatabase": {
+      "products": [
+        {
+          "id": 1,
+          "name": "Actor access notebook"
+        }
+      ],
+      "inventories": [
+        {
+          "product_id": 1,
+          "initial_quantity": 10,
+          "available_quantity": 7
+        }
+      ],
+      "buyers": [
+        {
+          "id": 1,
+          "username": "alice"
+        },
+        {
+          "id": 2,
+          "username": "bob"
+        }
+      ],
+      "requests": [
+        {
+          "id": 1,
+          "buyer_id": 1,
+          "request_key": "buyer-field-owner",
+          "product_id": 1,
+          "quantity": 1,
+          "outcome": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:31.021458+09"
+        },
+        {
+          "id": 2,
+          "buyer_id": 2,
+          "request_key": "buyer-field-attempt",
+          "product_id": 1,
+          "quantity": 2,
+          "outcome": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:31.249277+09"
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "request_id": 1,
+          "buyer_id": 1,
+          "product_id": 1,
+          "quantity": 1,
+          "status": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:31.021458+09",
+          "cancelled_at": null
+        },
+        {
+          "id": 2,
+          "request_id": 2,
+          "buyer_id": 2,
+          "product_id": 1,
+          "quantity": 2,
+          "status": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:31.249277+09",
+          "cancelled_at": null
+        }
+      ],
+      "movements": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -1,
+          "created_at": "2026-11-10 13:33:31.021458+09"
+        },
+        {
+          "id": 2,
+          "order_id": 2,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:33:31.249277+09"
+        }
+      ]
+    }
+  },
+  {
+    "scenario": "missingAndIndependentSessionTokensRejectPurchaseAndCancellation",
+    "requests": [
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders",
+        "http": 201,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "alice-independent-session",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders",
+        "http": 403,
+        "status": 403
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders/1/cancel",
+        "http": 403,
+        "status": 403
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders",
+        "http": 403,
+        "status": 403
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders/1/cancel",
+        "http": 403,
+        "status": 403
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders",
+        "http": 201,
+        "id": 2,
+        "productId": 1,
+        "quantity": 1,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders/1/cancel",
+        "http": 200,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "CANCELLED"
+      },
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/orders/2",
+        "http": 200,
+        "id": 2,
+        "productId": 1,
+        "quantity": 1,
+        "status": "ACCEPTED"
+      }
+    ],
+    "storageComparisons": 4,
+    "allStorageComparisonsUnchanged": true,
+    "sessionEvents": [
+      {
+        "differentSessions": true,
+        "phase": "independent-sessions"
+      }
+    ],
+    "inventoryViolations": 0,
+    "requestViolations": 0,
+    "orderViolations": 0,
+    "finalDatabase": {
+      "products": [
+        {
+          "id": 1,
+          "name": "Actor access notebook"
+        }
+      ],
+      "inventories": [
+        {
+          "product_id": 1,
+          "initial_quantity": 10,
+          "available_quantity": 9
+        }
+      ],
+      "buyers": [
+        {
+          "id": 1,
+          "username": "alice"
+        },
+        {
+          "id": 2,
+          "username": "bob"
+        }
+      ],
+      "requests": [
+        {
+          "id": 1,
+          "buyer_id": 1,
+          "request_key": "csrf-owner",
+          "product_id": 1,
+          "quantity": 2,
+          "outcome": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:32.712454+09"
+        },
+        {
+          "id": 2,
+          "buyer_id": 1,
+          "request_key": "csrf-retry",
+          "product_id": 1,
+          "quantity": 1,
+          "outcome": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:32.856564+09"
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "request_id": 1,
+          "buyer_id": 1,
+          "product_id": 1,
+          "quantity": 2,
+          "status": "CANCELLED",
+          "created_at": "2026-11-10 13:33:32.712454+09",
+          "cancelled_at": "2026-11-10 13:33:32.914014+09"
+        },
+        {
+          "id": 2,
+          "request_id": 2,
+          "buyer_id": 1,
+          "product_id": 1,
+          "quantity": 1,
+          "status": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:32.856564+09",
+          "cancelled_at": null
+        }
+      ],
+      "movements": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:33:32.712454+09"
+        },
+        {
+          "id": 2,
+          "order_id": 2,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -1,
+          "created_at": "2026-11-10 13:33:32.856564+09"
+        },
+        {
+          "id": 3,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "RESTORE",
+          "quantity_delta": 2,
+          "created_at": "2026-11-10 13:33:32.914014+09"
+        }
+      ]
+    }
+  },
+  {
+    "scenario": "sameKeyCustomersCancelOnlyTheirOwnOrders",
+    "requests": [
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/csrf",
+        "http": 200,
+        "tokenIssued": true
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders",
+        "http": 201,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "bob",
+        "method": "POST",
+        "path": "/orders",
+        "http": 201,
+        "id": 2,
+        "productId": 1,
+        "quantity": 3,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/orders",
+        "http": 200,
+        "returnedCount": 1,
+        "returnedIds": [
+          1
+        ]
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/orders",
+        "http": 200,
+        "returnedCount": 1,
+        "returnedIds": [
+          2
+        ]
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders/2/cancel",
+        "http": 404,
+        "code": "NOT_FOUND"
+      },
+      {
+        "actor": "bob",
+        "method": "POST",
+        "path": "/orders/1/cancel",
+        "http": 404,
+        "code": "NOT_FOUND"
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders/1/cancel",
+        "http": 200,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "CANCELLED"
+      },
+      {
+        "actor": "bob",
+        "method": "GET",
+        "path": "/orders/2",
+        "http": 200,
+        "id": 2,
+        "productId": 1,
+        "quantity": 3,
+        "status": "ACCEPTED"
+      },
+      {
+        "actor": "alice",
+        "method": "POST",
+        "path": "/orders",
+        "http": 200,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "CANCELLED"
+      },
+      {
+        "actor": "bob",
+        "method": "POST",
+        "path": "/orders/2/cancel",
+        "http": 200,
+        "id": 2,
+        "productId": 1,
+        "quantity": 3,
+        "status": "CANCELLED"
+      },
+      {
+        "actor": "alice",
+        "method": "GET",
+        "path": "/orders/1",
+        "http": 200,
+        "id": 1,
+        "productId": 1,
+        "quantity": 2,
+        "status": "CANCELLED"
+      }
+    ],
+    "storageComparisons": 3,
+    "allStorageComparisonsUnchanged": true,
+    "sessionEvents": [],
+    "inventoryViolations": 0,
+    "requestViolations": 0,
+    "orderViolations": 0,
+    "finalDatabase": {
+      "products": [
+        {
+          "id": 1,
+          "name": "Actor access notebook"
+        }
+      ],
+      "inventories": [
+        {
+          "product_id": 1,
+          "initial_quantity": 10,
+          "available_quantity": 10
+        }
+      ],
+      "buyers": [
+        {
+          "id": 1,
+          "username": "alice"
+        },
+        {
+          "id": 2,
+          "username": "bob"
+        }
+      ],
+      "requests": [
+        {
+          "id": 1,
+          "buyer_id": 1,
+          "request_key": "shared-purchase-key",
+          "product_id": 1,
+          "quantity": 2,
+          "outcome": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:33.784363+09"
+        },
+        {
+          "id": 2,
+          "buyer_id": 2,
+          "request_key": "shared-purchase-key",
+          "product_id": 1,
+          "quantity": 3,
+          "outcome": "ACCEPTED",
+          "created_at": "2026-11-10 13:33:33.842648+09"
+        }
+      ],
+      "orders": [
+        {
+          "id": 1,
+          "request_id": 1,
+          "buyer_id": 1,
+          "product_id": 1,
+          "quantity": 2,
+          "status": "CANCELLED",
+          "created_at": "2026-11-10 13:33:33.784363+09",
+          "cancelled_at": "2026-11-10 13:33:34.126072+09"
+        },
+        {
+          "id": 2,
+          "request_id": 2,
+          "buyer_id": 2,
+          "product_id": 1,
+          "quantity": 3,
+          "status": "CANCELLED",
+          "created_at": "2026-11-10 13:33:33.842648+09",
+          "cancelled_at": "2026-11-10 13:33:34.29665+09"
+        }
+      ],
+      "movements": [
+        {
+          "id": 1,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -2,
+          "created_at": "2026-11-10 13:33:33.784363+09"
+        },
+        {
+          "id": 2,
+          "order_id": 2,
+          "product_id": 1,
+          "kind": "DEBIT",
+          "quantity_delta": -3,
+          "created_at": "2026-11-10 13:33:33.842648+09"
+        },
+        {
+          "id": 3,
+          "order_id": 1,
+          "product_id": 1,
+          "kind": "RESTORE",
+          "quantity_delta": 2,
+          "created_at": "2026-11-10 13:33:34.126072+09"
+        },
+        {
+          "id": 4,
+          "order_id": 2,
+          "product_id": 1,
+          "kind": "RESTORE",
+          "quantity_delta": 3,
+          "created_at": "2026-11-10 13:33:34.29665+09"
+        }
+      ]
+    }
+  }
+]
