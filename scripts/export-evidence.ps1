@@ -20,6 +20,44 @@ New-Item -ItemType Directory -Path $destination -Force | Out-Null
 $inputFiles | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $destination 'source-sha256.json') -Encoding UTF8
 $observations = Get-Content -LiteralPath (Join-Path $resolved 'http-observations.json') -Raw | ConvertFrom-Json
 $observations | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $destination 'observations.json') -Encoding UTF8
+foreach ($name in @('actor-order-journeys.json', 'actor-access.json', 'actor-admission.json')) {
+    $actorEvidence = Join-Path $resolved $name
+    if (Test-Path -LiteralPath $actorEvidence) {
+        $actorRows = @(Get-Content -LiteralPath $actorEvidence -Raw | ConvertFrom-Json)
+        if ($name -eq 'actor-access.json') {
+            $actorRows = @($actorRows | Group-Object scenario | ForEach-Object {
+                $events = @($_.Group | ForEach-Object { $_.observations })
+                $checks = @($events | Where-Object phase -eq 'storage-check')
+                $final = @($events | Where-Object phase -eq 'after-each')
+                if ($final.Count -ne 1) { throw 'Each access scenario must have one final storage check' }
+                $requests = @($events | Where-Object phase -eq 'http' | ForEach-Object {
+                    $request = [ordered]@{ actor=$_.actor; method=$_.method; path=$_.path; http=$_.http }
+                    foreach ($field in @('id', 'productId', 'quantity', 'status', 'code', 'tokenIssued')) {
+                        if ($_.body -and $_.body.PSObject.Properties[$field]) { $request[$field] = $_.body.$field }
+                    }
+                    if ($_.body -is [array]) {
+                        $request['returnedCount'] = $_.body.Count
+                        $request['returnedIds'] = @($_.body | ForEach-Object { $_.id })
+                    }
+                    $request
+                })
+                [ordered]@{
+                    scenario=$_.Name
+                    requests=$requests
+                    storageComparisons=$checks.Count
+                    allStorageComparisonsUnchanged=($checks.Count -gt 0 -and @($checks | Where-Object { -not $_.unchanged }).Count -eq 0)
+                    sessionEvents=@($events | Where-Object phase -in @('independent-sessions', 'delete-session-cookie', 'new-csrf-session'))
+                    inventoryViolations=$final[0].inventoryViolations
+                    requestViolations=$final[0].requestViolations
+                    orderViolations=$final[0].orderViolations
+                    finalDatabase=$final[0].database
+                }
+            })
+        }
+        ConvertTo-Json -InputObject $actorRows -Depth 12 |
+            Set-Content -LiteralPath (Join-Path $destination $name) -Encoding UTF8
+    }
+}
 $processCases = @(Get-Content -LiteralPath (Join-Path $resolved 'process-recovery.json') -Raw | ConvertFrom-Json | Where-Object { $_.stage -ne 'owned-jvm-terminated' })
 $processCases | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath (Join-Path $destination 'process-recovery.json') -Encoding UTF8
 $normalStartup = Get-Content -LiteralPath (Join-Path $resolved 'normal-startup.json') -Raw | ConvertFrom-Json

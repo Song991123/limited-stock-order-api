@@ -67,5 +67,8 @@ jobs:
             evidence/raw/ci/http-observations.json
             evidence/raw/ci/process-recovery.json
             evidence/raw/ci/normal-startup.json
+            evidence/raw/ci/actor-order-journeys.json
+            evidence/raw/ci/actor-access.json
+            evidence/raw/ci/actor-admission.json
           if-no-files-found: warn
           retention-days: 14
