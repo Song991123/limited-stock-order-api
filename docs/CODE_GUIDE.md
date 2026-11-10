@@ -12,14 +12,15 @@
 | [OrderRepository](../src/main/java/dev/mentoring/orders/repository/OrderRepository.java) | 실제 SQL, 재고와 상태를 바꾸는 조건 |
 | [OrderResponse](../src/main/java/dev/mentoring/orders/dto/response/OrderResponse.java) | 내부 주문 정보를 기존 JSON 필드로 변환 |
 | [V1 마이그레이션](../src/main/resources/db/migration/V1__orders_and_inventory.sql) | 중복 키, 수량 범위와 미완료 요청 커밋 제한 |
-| [WriteAdmission](../src/main/java/dev/mentoring/orders/web/admission/WriteAdmission.java) | 동시에 처리할 요청 수와 고객별 분당 요청 수 제한 |
+| [WriteAdmission](../src/main/java/dev/mentoring/orders/web/admission/WriteAdmission.java) | 구매/취소 횟수는 고객별로 분리, 전체 동시 쓰기는 함께 제한 |
+| [RequestBodyConfiguration](../src/main/java/dev/mentoring/orders/config/RequestBodyConfiguration.java) | 헤더 검사 전에 본문 전송을 허용하지 않도록 100 Continue 응답 시점 지정 |
 | [RequestSizeFilter](../src/main/java/dev/mentoring/orders/web/filter/RequestSizeFilter.java) | 다른 필터가 읽기 전 본문 크기 검사 |
 
 요청과 응답 DTO는 `dto.request`와 `dto.response`, 내부 주문 정보는 `domain`, DB 구매 기록 조회 결과는 `repository.model`에 있습니다. 컨트롤러, 서비스와 저장소도 각각의 패키지로 구분했습니다. [입력 검증과 코드 구성](VALIDATION_AND_STRUCTURE.md)에서 나눈 이유와 입력별 검사 위치를 확인할 수 있습니다.
 
 ## 주문 한 건의 처리
 
-1. 크기 필터가 본문을 읽어 8KiB 초과 요청을 거절합니다. 허용한 본문은 뒤에서 읽을 수 있게 보관합니다.
+1. 크기 필터가 알려진 길이로 큰 요청을 먼저 거절하고 나머지는 실제 본문을 읽어 검사합니다. 허용한 본문은 뒤에서 읽을 수 있게 보관합니다.
 2. Spring Security가 계정과 CSRF 헤더를 검사하고, MVC가 상품과 수량의 입력 조건을 검사합니다.
 3. 컨트롤러가 쓰기 한도를 확인한 뒤 상품 ID와 수량으로 서비스의 `placeOrder`를 호출합니다. 서비스도 양수 조건을 검사해 직접 호출된 경우를 보호합니다. 요청 DTO 자체는 서비스에 넘기지 않습니다. 구매자 ID는 로그인 계정에서 구하고, 구매 키는 같은 구매를 다시 요청할 때 유지합니다.
 4. 서비스는 고객과 구매 키의 기존 기록을 먼저 대조합니다. 기록이 없으면 상품을 확인하고 등록합니다. 조회 후 다른 요청이 먼저 등록할 수 있어 DB 유일성 제약은 유지하며, 등록이 생략되면 새 SELECT로 확정된 기록을 읽습니다. 같은 입력에는 원래 주문의 현재 상태 또는 처음의 재고 부족 결과를 반환하고, 다른 입력은 거절합니다.
@@ -92,13 +93,15 @@ public OrderPlacement placeOrder(String username, String idempotencyKey, long pr
 
 취소 API는 MVC의 폼 변환 대신 검사한 원본 본문을 직접 확인합니다. 본문이 한 바이트라도 있으면 400입니다. CSRF 토큰은 세션 쿠키와 요청 헤더로 보내며 폼 본문으로 대신하지 않습니다.
 
+알려진 길이가 큰 경우 스트림을 열기 전에 413을 반환합니다. Tomcat의 100 Continue도 본문 읽기 시점에 보내도록 설정해 전송 허용을 기다리는 큰 요청을 먼저 거절합니다. 크기를 허용한 요청과 chunked는 기존처럼 실제 바이트를 검사합니다.
+
 ## 취소와 재시도
 
 `tryCancelOwnedOrder`는 로그인 고객의 ACCEPTED 주문만 바꿉니다. 상태를 바꾼 요청만 저장된 수량을 복원하고 RESTORE 이력을 저장합니다. 이미 취소된 주문은 현재 결과만 반환합니다.
 
 [이름과 주석의 작성 기준](NAMING_AND_JAVADOC.md)에 변수/메서드의 구분, 실제 바꾼 이름의 이유와 Javadoc을 읽는 방법을 정리했습니다.
 
-동시에 실행할 수 있는 요청 수를 넘으면 429와 `Retry-After: 1`을 반환합니다. 고객별 분당 횟수를 넘으면 횟수가 초기화될 때까지 기다릴 초를 알려줍니다. 시간이 지나도 재고나 서버 상황에 따라 실패할 수 있습니다. DB 연결이나 잠금 문제의 503도 성공으로 처리하지 않습니다. 응답을 받지 못했다면 같은 구매 키, 취소는 같은 주문 ID로 결과를 확인합니다.
+동시에 실행할 수 있는 요청 수를 넘으면 429와 `Retry-After: 1`을 반환합니다. 구매와 취소의 분당 횟수는 각각 계산하며 해당 횟수가 초기화될 때까지 기다릴 초를 알려줍니다. 구매 한도를 소진해도 취소 한도는 별도지만 공통 동시 처리 제한은 유지합니다. DB 연결이나 잠금 문제의 503도 성공으로 처리하지 않습니다. 응답을 받지 못했다면 같은 구매 키, 취소는 같은 주문 ID로 결과를 확인합니다.
 
 ## 오류 응답과 로그
 

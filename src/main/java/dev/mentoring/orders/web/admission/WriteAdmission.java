@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * 주문 접수와 취소 요청의 동시 처리 수, 고객별 분당 요청 수 제한.
+ * 주문 접수와 취소의 고객별 횟수는 따로 세고, 서버의 쓰기 동시 처리 수는 함께 제한.
  *
  * <p>실행 중인 서버 프로그램 하나에만 적용. 한도를 넘으면 대기시키지 않고 거절하며, 재고 중복 차감은 DB에서 별도로 검사.
  */
@@ -18,13 +18,14 @@ public class WriteAdmission {
 
     private final Semaphore writePermits;
     private final int maxRequestsPerCustomerPerMinute;
-    private final ConcurrentHashMap<String, RateWindow> customerRateWindows = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, RateWindow> orderRateWindows = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, RateWindow> cancellationRateWindows = new ConcurrentHashMap<>();
 
     /**
      * 설정값으로 동시 처리 수와 고객별 분당 요청 한도 초기화.
      *
      * @param maxConcurrentWrites 동시에 실행할 최대 쓰기 호출 수
-     * @param maxRequestsPerCustomerPerMinute 1분마다 초기화하는 고객별 최대 요청 횟수
+     * @param maxRequestsPerCustomerPerMinute 주문과 취소 각각에 적용할 고객별 최대 요청 횟수
      * @throws IllegalArgumentException 한도가 양수가 아닌 경우
      */
     public WriteAdmission(@Value("${stock.admission.concurrent-writes}") int maxConcurrentWrites,
@@ -37,21 +38,40 @@ public class WriteAdmission {
     }
 
     /**
-     * 요청 수를 확인한 뒤 주문 접수 또는 취소 실행.
+     * 주문 접수의 고객별 횟수를 확인한 뒤 실행. 취소 횟수에는 영향 없음.
      *
      * <p>성공/실패와 관계없이 finally에서 Semaphore.release() 호출.
-     * 실행 중 실패한 요청도 분당 횟수에 포함. 같은 고객의 요청도 허용된 동시 처리 수 안에서 함께 실행 가능.
+     * 실행 중 실패한 요청도 주문 횟수에 포함. 같은 고객의 요청도 허용된 동시 처리 수 안에서 함께 실행 가능.
      *
      * @param username 인증된 계정명, 고객별 카운터 구분 기준
-     * @param writeOperation 동기 실행할 주문 또는 취소 처리
+     * @param writeOperation 동기 실행할 주문 처리
      * @param <T> 쓰기 작업의 반환 타입
      * @return 쓰기 작업의 결과
      * @throws WriteLimitExceeded 동시 호출 또는 고객별 요청 수가 한도에 도달한 경우
      */
-    public <T> T executeWrite(String username, Supplier<T> writeOperation) {
+    public <T> T executeOrder(String username, Supplier<T> writeOperation) {
+        return executeWrite(username, orderRateWindows, writeOperation);
+    }
+
+    /**
+     * 취소의 고객별 횟수를 확인한 뒤 실행. 구매 한도를 다 썼어도 취소 한도는 별도 유지.
+     *
+     * @param username 인증된 계정명
+     * @param cancellationOperation 동기 실행할 취소 처리
+     * @param <T> 취소 처리의 반환 타입
+     * @return 취소 처리 결과
+     * @throws WriteLimitExceeded 서버의 동시 쓰기 또는 고객별 취소 횟수가 한도에 도달한 경우
+     */
+    public <T> T executeCancellation(String username, Supplier<T> cancellationOperation) {
+        return executeWrite(username, cancellationRateWindows, cancellationOperation);
+    }
+
+    /** 주문과 취소가 같은 Semaphore를 사용. 실패와 거절에도 확보한 실행 자리는 반환. */
+    private <T> T executeWrite(String username, ConcurrentHashMap<String, RateWindow> rateWindows,
+                               Supplier<T> writeOperation) {
         if (!writePermits.tryAcquire()) throw new WriteLimitExceeded(1);
         try {
-            var customerWindow = customerRateWindows.computeIfAbsent(username, ignored -> new RateWindow());
+            var customerWindow = rateWindows.computeIfAbsent(username, ignored -> new RateWindow());
             customerWindow.checkAndCountRequest(System.nanoTime(), maxRequestsPerCustomerPerMinute);
             return writeOperation.get();
         } finally {

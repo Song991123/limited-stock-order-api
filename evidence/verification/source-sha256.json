@@ -52,6 +52,10 @@
     "sha256Utf8Lf": "d5029f9c13497ba810adfe672e023389ed5ba271d2ece4f3ee293b610da8512f"
   },
   {
+    "file": "src/main/java/dev/mentoring/orders/config/RequestBodyConfiguration.java",
+    "sha256Utf8Lf": "1ebb389557babbe13e36c2f91ad4dd07d0ce490d00ae0242ac5c80cdb51620de"
+  },
+  {
     "file": "src/main/java/dev/mentoring/orders/config/SecurityConfiguration.java",
     "sha256Utf8Lf": "b5dbd148751e04ca56ea0736045dfe437a41f99e2bc5e2e352730021c5197fcc"
   },
@@ -61,7 +65,7 @@
   },
   {
     "file": "src/main/java/dev/mentoring/orders/controller/OrderController.java",
-    "sha256Utf8Lf": "45c90787f8189a15f9299fe186e19b27b5fffd23814b4389c9ddea6a134a523d"
+    "sha256Utf8Lf": "4f064c23d41302c917981fe2f9aaa7d49d1e532734d88e01faa82c2d0064288e"
   },
   {
     "file": "src/main/java/dev/mentoring/orders/controller/ProductController.java",
@@ -145,7 +149,7 @@
   },
   {
     "file": "src/main/java/dev/mentoring/orders/web/admission/WriteAdmission.java",
-    "sha256Utf8Lf": "b38e5c562d26b06bf95496a1f52565e8bf355df8b30a74be6aee453178be3df2"
+    "sha256Utf8Lf": "db0e9b306361d6c1c89b1341f072aa780eeeec3faa9c2b06f380ff071dedd6e8"
   },
   {
     "file": "src/main/java/dev/mentoring/orders/web/admission/WriteLimitExceeded.java",
@@ -153,7 +157,7 @@
   },
   {
     "file": "src/main/java/dev/mentoring/orders/web/filter/RequestSizeFilter.java",
-    "sha256Utf8Lf": "58f01695398ff371602f3e78283d0d89fdf58d95ecfd22b51e2e5f489e125b97"
+    "sha256Utf8Lf": "984cc23e832d9d01d8ccc5f13726339e1e5f019401468d73e59d3741696f270b"
   },
   {
     "file": "src/main/resources/application-demo.yml",
@@ -173,7 +177,7 @@
   },
   {
     "file": "src/test/java/dev/mentoring/orders/ActorAdmissionIntegrationTest.java",
-    "sha256Utf8Lf": "f4be7ad1bc1eb6c79f5d70d545d03d050a90d92333c85c5eab11abdfb3879eec"
+    "sha256Utf8Lf": "81b0cbcf3f46fd85ebd677c339fa1581a671582b733c2db451f6c050a863dbd3"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/ActorOrderJourneyIntegrationTest.java",
@@ -197,7 +201,7 @@
   },
   {
     "file": "src/test/java/dev/mentoring/orders/OrderHttpIntegrationTest.java",
-    "sha256Utf8Lf": "0698f319cdc34241ecba33b15c77226e1a573e154fb6563d1d15f5a1d90491b1"
+    "sha256Utf8Lf": "4f2cc6644e01f69dbf7e3359fa2b68b6f389ab637da60bcc1a152d4a24b9b523"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/OrderProcessRecoveryTest.java",
@@ -217,10 +221,10 @@
   },
   {
     "file": "src/test/java/dev/mentoring/orders/web/admission/WriteAdmissionTest.java",
-    "sha256Utf8Lf": "087a819c9adea0a99a207429f69f47a77bcb4d012ea069f7ee22416a9464add2"
+    "sha256Utf8Lf": "1fe9745d66aa354d9c7b09d2dbfc3c47e3e984dc543f332ba8d7e53ae87e38de"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/web/filter/RequestSizeFilterTest.java",
-    "sha256Utf8Lf": "0af7f05e902a7c8b35ce47c67d339b21e8830cae5a64679ab2302835b3cd19a5"
+    "sha256Utf8Lf": "45bafb3893f8c95ffcabdf21a3459390e26c679300fb6997da7484b997564d1d"
   }
 ]

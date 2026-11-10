@@ -478,6 +478,81 @@ class OrderHttpIntegrationTest {
         assertEmptyAndStock(10);
     }
 
+    /** 100-continue를 기다리는 클라이언트에 본문 전송 없이 큰 요청을 거절. */
+    @Test void knownOversizedExpectContinueRequestDoesNotStartBodyTransmission() throws Exception {
+        byte[] bytes = (payload(product, 1) + " ".repeat(8193)).getBytes(StandardCharsets.UTF_8);
+        var delegate = HttpRequest.BodyPublishers.ofByteArray(bytes);
+        var subscriptions = new AtomicInteger();
+        var publisher = new HttpRequest.BodyPublisher() {
+            @Override public long contentLength() { return delegate.contentLength(); }
+            @Override public void subscribe(java.util.concurrent.Flow.Subscriber<? super java.nio.ByteBuffer> subscriber) {
+                subscriptions.incrementAndGet();
+                delegate.subscribe(subscriber);
+            }
+        };
+        var request = HttpRequest.newBuilder(uri(port, "/orders")).timeout(Duration.ofSeconds(10))
+                .header("Authorization", alice.authorization).header(alice.csrfHeader, alice.csrf)
+                .header("Content-Type", "application/json").header("Idempotency-Key", "expect-large")
+                .expectContinue(true).POST(publisher).build();
+
+        var response = alice.http.send(request, HttpResponse.BodyHandlers.ofString());
+
+        observe("expect-continue-body-precheck", Map.of("declaredBytes", bytes.length,
+                "http", response.statusCode(), "bodySubscriptions", subscriptions.get(),
+                "orders", count("orders"), "available", available()));
+        assertThat(response.statusCode()).isEqualTo(413);
+        assertThat(subscriptions.get()).isZero();
+        assertEmptyAndStock(10);
+    }
+
+    /** 한도와 같은 8192바이트의 유효한 JSON은 고정 길이와 chunked 모두 접수. */
+    @Test void exactBodyLimitAcceptsFixedAndUnknownLengthRequests() throws Exception {
+        String base = payload(product, 1);
+        byte[] bytes = (base + " ".repeat(8192 - base.getBytes(StandardCharsets.UTF_8).length))
+                .getBytes(StandardCharsets.UTF_8);
+        assertThat(bytes).hasSize(8192);
+        var fixed = alice.http.send(alice.request(port, "POST", "/orders", "exact-fixed",
+                HttpRequest.BodyPublishers.ofByteArray(bytes)), HttpResponse.BodyHandlers.ofString());
+        var unknown = alice.http.send(alice.request(port, "POST", "/orders", "exact-chunked",
+                HttpRequest.BodyPublishers.ofInputStream(() -> new java.io.ByteArrayInputStream(bytes))),
+                HttpResponse.BodyHandlers.ofString());
+
+        observe("exact-body-limit", Map.of("bytes", bytes.length, "fixedHttp", fixed.statusCode(),
+                "unknownLengthHttp", unknown.statusCode(), "orders", count("orders"), "available", available()));
+        assertThat(fixed.statusCode()).isEqualTo(201);
+        assertThat(unknown.statusCode()).isEqualTo(201);
+        assertThat(json(fixed).path("id").asLong()).isNotEqualTo(json(unknown).path("id").asLong());
+        assertThat(count("orders")).isEqualTo(2);
+        assertThat(available()).isEqualTo(8);
+    }
+
+    /** 허용한 크기의 Expect 요청은 100 Continue 후 정상 전송과 접수 유지. */
+    @Test void allowedExpectContinueRequestStillTransmitsBodyAndCreatesOrder() throws Exception {
+        byte[] bytes = payload(product, 1).getBytes(StandardCharsets.UTF_8);
+        var delegate = HttpRequest.BodyPublishers.ofByteArray(bytes);
+        var subscriptions = new AtomicInteger();
+        var publisher = new HttpRequest.BodyPublisher() {
+            @Override public long contentLength() { return delegate.contentLength(); }
+            @Override public void subscribe(java.util.concurrent.Flow.Subscriber<? super java.nio.ByteBuffer> subscriber) {
+                subscriptions.incrementAndGet();
+                delegate.subscribe(subscriber);
+            }
+        };
+        var request = HttpRequest.newBuilder(uri(port, "/orders")).timeout(Duration.ofSeconds(10))
+                .header("Authorization", alice.authorization).header(alice.csrfHeader, alice.csrf)
+                .header("Content-Type", "application/json").header("Idempotency-Key", "expect-valid")
+                .expectContinue(true).POST(publisher).build();
+
+        var response = alice.http.send(request, HttpResponse.BodyHandlers.ofString());
+
+        observe("expect-continue-allowed", Map.of("declaredBytes", bytes.length, "http", response.statusCode(),
+                "bodySubscriptions", subscriptions.get(), "orders", count("orders"), "available", available()));
+        assertThat(response.statusCode()).isEqualTo(201);
+        assertThat(subscriptions.get()).isEqualTo(1);
+        assertThat(count("orders")).isEqualTo(1);
+        assertThat(available()).isEqualTo(9);
+    }
+
     /** MVC가 같은 주문 경로로 읽는 인코딩 URL에도 본문 제한을 동일하게 적용. */
     @Test void encodedOrderPathCannotBypassRequestBodyLimit() throws Exception {
         String oversized = " ".repeat(9000) + payload(product, 1);

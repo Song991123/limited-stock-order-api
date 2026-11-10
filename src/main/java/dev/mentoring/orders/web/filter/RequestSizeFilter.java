@@ -39,7 +39,8 @@ public class RequestSizeFilter extends OncePerRequestFilter {
     /**
      * 요청 본문이 8KiB를 넘는지 확인.
      *
-     * <p>8KiB보다 한 바이트 더 읽어 확인하므로 Content-Length가 없는 chunked 요청도 검사 가능.
+     * <p>알려진 길이가 크면 스트림을 열기 전에 거절. 나머지는 8KiB보다 한 바이트 더 읽어 확인하므로
+     * Content-Length가 없는 chunked 요청도 검사 가능.
      * 크기를 넘으면 413으로 응답하고 주문 처리는 실행하지 않음.
      *
      * @throws ServletException 뒤의 필터 또는 Servlet 처리 실패
@@ -48,14 +49,23 @@ public class RequestSizeFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
+        if (request.getContentLengthLong() > MAX_REQUEST_BODY_BYTES) {
+            writeRequestTooLarge(response);
+            return;
+        }
         var bodyBytes = request.getInputStream().readNBytes(MAX_REQUEST_BODY_BYTES + 1);
         if (bodyBytes.length > MAX_REQUEST_BODY_BYTES) {
-            response.setStatus(413);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"code\":\"REQUEST_TOO_LARGE\"}");
+            writeRequestTooLarge(response);
             return;
         }
         filterChain.doFilter(new CachedBodyRequest(request, bodyBytes), response);
+    }
+
+    /** 헤더 또는 실제 본문이 한도를 넘었을 때 같은 413 응답 반환. */
+    private static void writeRequestTooLarge(HttpServletResponse response) throws IOException {
+        response.setStatus(413);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"code\":\"REQUEST_TOO_LARGE\"}");
     }
 
     /**
