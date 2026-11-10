@@ -4,7 +4,7 @@
 
 ## 실행 결과
 
-최종 실행 `20261110-133309`의 JUnit 121건이 모두 통과했습니다. 기존 주문 HTTP 50건, 새 사용자 행동 HTTP 12건, 일반 실행 HTTP 1건, 별도 JVM 종료/재시작 1건과 단위 검사 57건입니다. 반복과 매개변수별 실행을 포함한 수입니다. 단위 검사에는 서비스 26건, 입력 객체 7건, DTO 변환 3건, 자료형 분리 2건, 오류 처리 7건, 요청 한도 7건과 경로 선택 5건이 포함됩니다. [JUnit 요약](../evidence/verification/junit-summary.xml)과 [실행 요약](../evidence/verification/latest.json)에 클래스별 수와 실패 여부를 확인할 수 있습니다.
+최종 실행 `20261110-133943`의 JUnit 121건이 모두 통과했습니다. 기존 주문 HTTP 50건, 새 사용자 행동 HTTP 12건, 일반 실행 HTTP 1건, 별도 JVM 종료/재시작 1건과 단위 검사 57건입니다. 반복과 매개변수별 실행을 포함한 수입니다. 단위 검사에는 서비스 26건, 입력 객체 7건, DTO 변환 3건, 자료형 분리 2건, 오류 처리 7건, 요청 한도 7건과 경로 선택 5건이 포함됩니다. [JUnit 요약](../evidence/verification/junit-summary.xml)과 [실행 요약](../evidence/verification/latest.json)에 클래스별 수와 실패 여부를 확인할 수 있습니다.
 
 [입력 수정 전후 비교](../evidence/verification/order-safety-comparison.json)는 당시 주문 HTTP 검사 50건씩을 대조합니다. 수정 전 실패 3건은 수정 후 0건입니다. 그때의 전체 109건과 사용자 행동 12건을 추가한 현재 121건은 별도 집계이며, 검사 수 증가를 개선율로 계산하지 않습니다. 반복 검사와 매개변수 검사 이름에도 시나리오명을 넣어 같은 회차끼리 구별되도록 했습니다.
 
@@ -82,6 +82,8 @@
 ## 기록과 재현 방법
 
 `scripts/test.ps1 -IsolatedDatabase`가 입력 소스 해시, JUnit 원문, HTTP 관찰 값과 JVM 로그를 `evidence/raw`에 보관합니다. 공개 요약은 `scripts/export-evidence.ps1`로 만들며, 검사 뒤 소스가 달라지면 내보내기를 거절합니다.
+
+필수 결과 파일이 빠져도 이전 공개 파일을 남기는 문제가 있어 저장 전에 누락 검사를 추가했습니다. 전체 검사 121건을 다시 통과한 뒤, 완료 결과의 복사본에서 고객 여정 파일을 뺀 조건으로 내보내기를 시도했습니다. 내보내기는 실패했고 기존 공개 파일 14개의 해시는 모두 같았습니다. [내보내기 검사](../evidence/verification/publication-check.json)는 검사 도구의 확인 결과이며 JUnit 121건에 포함하지 않습니다.
 
 관찰 값은 [HTTP/DB 결과](../evidence/verification/observations.json)와 [재시작 결과](../evidence/verification/process-recovery.json), 검사 입력은 [소스 해시](../evidence/verification/source-sha256.json)로 대조합니다. 기존 HTTP 기록의 일부 값은 단언 통과 뒤 예상 상수로 저장하므로 독립 측정값과 구분합니다. 새 사용자 검사에는 응답에서 읽은 값과 DB 조회값을 기록합니다. 원시 로그와 실행 비밀 값은 로컬에 보관합니다.
 

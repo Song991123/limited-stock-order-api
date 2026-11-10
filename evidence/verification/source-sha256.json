@@ -21,7 +21,7 @@
   },
   {
     "file": "scripts/export-evidence.ps1",
-    "sha256Utf8Lf": "22a3cb8fecb0c782019304a60986beb3628fcd95a113de5eac36c60de028aba3"
+    "sha256Utf8Lf": "2e24c8238bd974dbfb36318a4aa4f94f267130a302410547600de45d06d500d7"
   },
   {
     "file": "scripts/local-db.cjs",

@@ -15,12 +15,18 @@ if ($summary.buildExit -ne 0 -or $summary.failures -ne 0 -or $summary.errors -ne
 $inputFiles = @(Get-Content -LiteralPath (Join-Path $resolved 'source-sha256.json') -Raw | ConvertFrom-Json)
 $current = @(& (Join-Path $PSScriptRoot 'source-snapshot.ps1'))
 if (($inputFiles | ConvertTo-Json -Compress) -ne ($current | ConvertTo-Json -Compress)) { throw 'Sources changed since the recorded test run; run tests again before exporting' }
+$actorFiles = @('actor-order-journeys.json', 'actor-access.json', 'actor-admission.json')
+foreach ($name in @('http-observations.json', 'process-recovery.json', 'normal-startup.json', 'isolated-base-cleanup.json') + $actorFiles) {
+    if (-not (Test-Path -LiteralPath (Join-Path $resolved $name) -PathType Leaf)) {
+        throw "Incomplete full-suite evidence: $name is missing; published evidence was not changed"
+    }
+}
 $destination = Join-Path $project 'evidence/verification'
 New-Item -ItemType Directory -Path $destination -Force | Out-Null
 $inputFiles | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $destination 'source-sha256.json') -Encoding UTF8
 $observations = Get-Content -LiteralPath (Join-Path $resolved 'http-observations.json') -Raw | ConvertFrom-Json
 $observations | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $destination 'observations.json') -Encoding UTF8
-foreach ($name in @('actor-order-journeys.json', 'actor-access.json', 'actor-admission.json')) {
+foreach ($name in $actorFiles) {
     $actorEvidence = Join-Path $resolved $name
     if (Test-Path -LiteralPath $actorEvidence) {
         $actorRows = @(Get-Content -LiteralPath $actorEvidence -Raw | ConvertFrom-Json)

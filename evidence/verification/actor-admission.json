@@ -1,28 +1,28 @@
 [
   {
-    "available": 8,
-    "rejectedHttp": 429,
-    "retryAfter": "1",
-    "firstHttp": 201,
-    "scenario": "concurrent-write-limit",
-    "retryHttp": 201,
-    "unreservedRequests": 0,
+    "readHttp": 200,
     "orders": 2,
-    "readHttp": 200
+    "unreservedRequests": 0,
+    "retryHttp": 201,
+    "scenario": "concurrent-write-limit",
+    "firstHttp": 201,
+    "retryAfter": "1",
+    "rejectedHttp": 429,
+    "available": 8
   },
   {
-    "available": 8,
-    "otherCustomerHttp": 201,
-    "rejectedHttp": 429,
-    "retryAfterSeconds": 22,
-    "scenario": "customer-rate-limit",
+    "orders": 2,
+    "ownListHttp": 200,
+    "originalOrderId": 1,
     "httpStatuses": [
       201,
       200,
       429
     ],
-    "originalOrderId": 1,
-    "ownListHttp": 200,
-    "orders": 2
+    "scenario": "customer-rate-limit",
+    "retryAfterSeconds": 48,
+    "rejectedHttp": 429,
+    "otherCustomerHttp": 201,
+    "available": 8
   }
 ]
