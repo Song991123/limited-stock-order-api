@@ -141,7 +141,7 @@
   },
   {
     "file": "src/main/java/dev/mentoring/orders/service/ProductService.java",
-    "sha256Utf8Lf": "0036cc760441433a8e8e678e09585e5826d5727b3c2839f90e5d7116cb5dcddc"
+    "sha256Utf8Lf": "3b1841aed6164917dfbd5375d363b53bb2f5139f096bf1dd3be2b835daa3a5eb"
   },
   {
     "file": "src/main/java/dev/mentoring/orders/web/admission/WriteAdmission.java",
@@ -185,11 +185,11 @@
   },
   {
     "file": "src/test/java/dev/mentoring/orders/OrderHttpIntegrationTest.java",
-    "sha256Utf8Lf": "9a1cc750038f6885faf7b604bc75ac91e61e21c244a3aa3d4ffc777f034a483c"
+    "sha256Utf8Lf": "0698f319cdc34241ecba33b15c77226e1a573e154fb6563d1d15f5a1d90491b1"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/OrderProcessRecoveryTest.java",
-    "sha256Utf8Lf": "35f0b1daf47ab13b6c4eb0f81fa6bb9d1f137a93dac9d1eafe044ed72008dc3c"
+    "sha256Utf8Lf": "6cd96e3f20fcb412379dc85511b3624e0984a6b4dedc554cfe812ce71f48bb31"
   },
   {
     "file": "src/test/java/dev/mentoring/orders/PackageStructureTest.java",

@@ -69,13 +69,25 @@ class OrderProcessRecoveryTest {
             events.add(Map.of("stage","cancel-killed-before-commit","acceptedOrders",1,"available",8));
 
             server.start();
-            assertThat(server.send("POST","/orders/"+id+"/cancel",null,null).statusCode()).isEqualTo(200);
+            var cancelled=server.send("POST","/orders/"+id+"/cancel",null,null);
+            assertThat(cancelled.statusCode()).isEqualTo(200);
+            var cancelledBody=json.readTree(cancelled.body());
+            assertThat(cancelledBody.path("id").asLong()).isEqualTo(id);
+            assertThat(cancelledBody.path("status").asText()).isEqualTo("CANCELLED");
             assertThat(stock()).isEqualTo(10);
             server.kill(); server.start();
-            assertThat(server.send("POST","/orders/"+id+"/cancel",null,null).statusCode()).isEqualTo(200);
+            var repeatedCancellation=server.send("POST","/orders/"+id+"/cancel",null,null);
+            assertThat(repeatedCancellation.statusCode()).isEqualTo(200);
+            var repeatedCancellationBody=json.readTree(repeatedCancellation.body());
+            long returnedOrderId=repeatedCancellationBody.path("id").asLong();
+            String returnedStatus=repeatedCancellationBody.path("status").asText();
+            assertThat(returnedOrderId).isEqualTo(id);
+            assertThat(returnedStatus).isEqualTo("CANCELLED");
             assertThat(stock()).isEqualTo(10);
             assertThat(number("SELECT count(*) FROM inventory_movements WHERE kind='RESTORE'")).isEqualTo(1);
-            events.add(Map.of("stage","cancel-restarted-after-commit","restorations",1,"available",10));
+            events.add(Map.of("stage","cancel-restarted-after-commit","restorations",1,"available",10,
+                    "http",repeatedCancellation.statusCode(),"expectedOrderId",id,
+                    "returnedOrderId",returnedOrderId,"returnedStatus",returnedStatus));
         }
         var directory=Path.of(System.getenv("STOCK_EVIDENCE_DIR"));
         json.writerWithDefaultPrettyPrinter().writeValue(directory.resolve("process-recovery.json").toFile(),events);

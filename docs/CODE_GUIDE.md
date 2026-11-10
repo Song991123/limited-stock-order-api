@@ -53,7 +53,7 @@ public OrderPlacement placeOrder(String username, String idempotencyKey, long pr
 
 - `@Transactional`: 주문 정보, 재고와 이력을 트랜잭션 하나로 저장합니다. 중간에 오류가 나면 함께 되돌리도록 주문 접수와 취소에 각각 적용했습니다.
 - `READ_COMMITTED`: 각 SQL이 시작하기 전에 커밋된 데이터를 읽습니다. 같은 키의 저장을 기다린 뒤 새 SELECT를 실행하면 다른 요청이 커밋한 결과를 읽을 수 있습니다. 재고 경쟁은 조건부 UPDATE로 따로 처리합니다.
-- `rollbackFor = Exception.class`: checked 예외가 발생해도 롤백합니다. 현재 저장 오류는 주로 unchecked 예외라 기본 설정으로도 롤백되지만, checked 예외도 같은 방식으로 처리하도록 적었습니다.
+- `rollbackFor = Exception.class`: 호출자가 처리하거나 `throws`로 전파를 선언해야 하는 checked 예외도 롤백합니다. 현재 JDBC 저장 오류는 주로 `RuntimeException` 계열이라 기본 롤백 대상입니다. 이 설정은 checked 예외까지 포함하려는 정책입니다.
 - `readOnly = true`: 주문 조회에 적용한 읽기 전용 트랜잭션 설정입니다. 고객 소유권은 이 설정이 아니라 SQL의 `buyer_id` 조건으로 검사합니다.
 
 컨트롤러가 Spring이 주입한 서비스를 호출하므로 트랜잭션 프록시를 통과합니다. 서비스 내부의 private 메서드는 이미 열린 트랜잭션 안에서 실행합니다. 내부 메서드에 새 어노테이션을 붙이는 것만으로 별도 트랜잭션이 생기는 것은 아닙니다. 커밋 실패도 호출자에게 예외로 전달돼 성공 응답을 만들지 않습니다. [Spring 트랜잭션 프록시와 기본값](https://docs.spring.io/spring-framework/reference/6.2/data-access/transaction/declarative/annotations.html)
@@ -73,7 +73,7 @@ public OrderPlacement placeOrder(String username, String idempotencyKey, long pr
 | `@Min`, `@Max` | 경로 ID와 목록 개수 범위 검사. Spring MVC의 내장 메서드 검증 사용 |
 | `@Service`, `@Repository` | 주문 처리와 SQL 저장소를 Spring 관리 객체로 등록. 자체적으로 잠금을 걸지는 않음 |
 | `@Component` | 크기 필터, 쓰기 한도와 초기 데이터 등록기를 관리 객체로 등록 |
-| `@Profile("demo")` | 예제 데이터 등록기를 로컬 예제 실행에서만 사용 |
+| `@Profile("demo")` | 로컬 예제용 초기화. demo 프로필이 활성화됐을 때 예제 데이터 등록기 사용 |
 | `@Configuration(proxyBeanMethods = false)`, `@Bean` | 비밀번호 인코더, 계정 조회와 보안 필터 체인 등록. Bean 메서드끼리 직접 호출하지 않아 설정 클래스 프록시는 생략 |
 | `@Value` | 설정 파일의 쓰기 한도와 실행 시 생성한 비밀번호 주입 |
 | `@RestControllerAdvice`, `@ExceptionHandler` | 입력/업무/DB 오류를 같은 API 오류 형식으로 변환 |

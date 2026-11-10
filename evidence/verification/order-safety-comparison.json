@@ -1,8 +1,10 @@
 {
-  "scope": "Actual loopback HTTP and an isolated PostgreSQL database; no production traffic",
+  "scope": "The same 50 HTTP integration cases before and after; full-suite totals are reported separately; no production traffic",
   "before": {
     "run": "20261110-013000",
+    "testScope": "HTTP integration only",
     "tests": 50,
+    "httpIntegrationTests": 50,
     "failures": 3,
     "existingHttpTestsPassed": 47,
     "observations": [
@@ -12,8 +14,10 @@
     ]
   },
   "after": {
-    "run": "20261110-013729",
+    "run": "20261110-120207",
+    "testScope": "Full suite including HTTP integration, process recovery and unit tests",
     "tests": 109,
+    "httpIntegrationTests": 50,
     "failures": 0,
     "evidence": "observations.json",
     "observations": [

@@ -98,7 +98,8 @@ class OrderHttpIntegrationTest {
         observe("existing-page-query-names",Map.of("pageSize",1,"pages",3,"available",7));
     }
 
-    @RepeatedTest(3) void lastStockTwoCustomers(RepetitionInfo repetition) throws Exception {
+    @RepeatedTest(value = 3, name = "{displayName} [{currentRepetition}/{totalRepetitions}]")
+    void lastStockTwoCustomers(RepetitionInfo repetition) throws Exception {
         stock(1);
         var responses = overlap(List.of(() -> alice.buy("last-a", product, 1), () -> bob.buy("last-b", product, 1)));
         assertThat(responses.stream().map(HttpResponse::statusCode)).containsExactlyInAnyOrder(201,409);
@@ -108,7 +109,8 @@ class OrderHttpIntegrationTest {
         observe("last-stock-" + repetition.getCurrentRepetition(), Map.of("requests",2,"accepted",1,"outOfStock",1,"available",0));
     }
 
-    @RepeatedTest(3) void twentyRetriesOnePurchase(RepetitionInfo repetition) throws Exception {
+    @RepeatedTest(value = 3, name = "{displayName} [{currentRepetition}/{totalRepetitions}]")
+    void twentyRetriesOnePurchase(RepetitionInfo repetition) throws Exception {
         var operations = new ArrayList<Callable<HttpResponse<String>>>();
         for (int i=0;i<20;i++) operations.add(() -> alice.buy("same-purchase",product,2));
         var responses = overlap(operations);
@@ -224,7 +226,8 @@ class OrderHttpIntegrationTest {
         assertThat(bob.buy("new-buying-action",product,1).statusCode()).isEqualTo(201);
     }
 
-    @RepeatedTest(3) void twentyCancellationsRestoreOnce(RepetitionInfo repetition) throws Exception {
+    @RepeatedTest(value = 3, name = "{displayName} [{currentRepetition}/{totalRepetitions}]")
+    void twentyCancellationsRestoreOnce(RepetitionInfo repetition) throws Exception {
         long id = json(alice.buy("cancel-once",product,3)).path("id").asLong();
         var operations = new ArrayList<Callable<HttpResponse<String>>>();
         for(int i=0;i<20;i++) operations.add(() -> alice.cancel(id));

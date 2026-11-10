@@ -24,7 +24,7 @@ public class ProductService {
     /**
      * 상품과 현재 수량 조회. 조회한 수량을 주문 때까지 예약하지 않음.
      *
-     * @throws OrderProblem 상품이 없는 경우
+     * @throws OrderProblem 상품 ID가 양수가 아니거나 상품이 없는 경우
      */
     public Product getProduct(long productId) {
         if (productId < 1) throw OrderProblem.invalidInput();
