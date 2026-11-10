@@ -1,0 +1,27 @@
+{
+  "scope": "NormalStartupIntegrationTest twice against the same newly created dedicated PostgreSQL",
+  "includedInFinalJunitCount": false,
+  "attempts": [
+    {
+      "attempt": 1,
+      "run": "20261110-134753",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "leftoverSchemas": 0,
+      "sentinelValue": 777,
+      "sameDatabaseProcess": true
+    },
+    {
+      "attempt": 2,
+      "run": "20261110-134808",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "leftoverSchemas": 0,
+      "sentinelValue": 777,
+      "sameDatabaseProcess": true
+    }
+  ],
+  "databaseStopped": true
+}

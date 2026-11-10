@@ -1,228 +1,319 @@
 [
   {
-    "scenario": "lock-timeout",
     "observations": {
+      "retryHttp": 201,
       "available": 9,
-      "blockedHttp": 503,
-      "retryHttp": 201
-    }
+      "blockedHttp": 503
+    },
+    "scenario": "lock-timeout"
   },
   {
-    "scenario": "existing-page-query-names",
     "observations": {
       "available": 7,
       "pageSize": 1,
       "pages": 3
-    }
+    },
+    "scenario": "existing-page-query-names"
   },
   {
-    "scenario": "commit-then-drop-http-response",
     "observations": {
-      "orders": 1,
-      "replayHttp": 200,
-      "available": 8
-    }
+      "unknownProductHttp": 404,
+      "available": 10,
+      "positiveQuantityHttp": 409
+    },
+    "scenario": "validation-and-stock-decision"
   },
   {
-    "scenario": "form-csrf-body-size-guard",
+    "observations": {
+      "replayHttp": 200,
+      "available": 8,
+      "orders": 1
+    },
+    "scenario": "commit-then-drop-http-response"
+  },
+  {
+    "observations": {
+      "beforeValidCancelAvailable": 8,
+      "rejectedRequests": 8,
+      "afterValidCancelAvailable": 10
+    },
+    "scenario": "invalid-cancellation-inputs"
+  },
+  {
+    "observations": {
+      "available": 10,
+      "http": 413,
+      "orders": 0
+    },
+    "scenario": "encoded-order-path-body-limit"
+  },
+  {
     "observations": {
       "available": 9,
       "http": 413
-    }
+    },
+    "scenario": "form-csrf-body-size-guard"
   },
   {
-    "scenario": "nonempty-form-with-csrf-header",
     "observations": {
       "available": 9,
       "http": 400
-    }
+    },
+    "scenario": "nonempty-form-with-csrf-header"
   },
   {
-    "scenario": "cancel-and-purchase",
     "observations": {
-      "available": 0,
-      "beforeCancelCommitHttp": 409,
-      "afterCancelCommitHttp": 201
-    }
-  },
-  {
-    "scenario": "overlap-barrier",
-    "observations": {
-      "observedPostgresLockWaiters": 3,
-      "clients": 20
-    }
-  },
-  {
-    "scenario": "cancel-once-1",
-    "observations": {
+      "http": 500,
       "available": 10,
-      "requests": 20,
-      "restorations": 1
-    }
+      "referencePresent": true
+    },
+    "scenario": "server-error-reference"
   },
   {
-    "scenario": "overlap-barrier",
+    "observations": {
+      "orders": 1,
+      "code": "IDEMPOTENCY_KEY_REUSED",
+      "available": 9,
+      "http": 409
+    },
+    "scenario": "same-key-unknown-product"
+  },
+  {
+    "observations": {
+      "afterCancelCommitHttp": 201,
+      "available": 0,
+      "beforeCancelCommitHttp": 409
+    },
+    "scenario": "cancel-and-purchase"
+  },
+  {
+    "observations": {
+      "correctedHttp": 201,
+      "available": 9,
+      "rejectedBodies": 16
+    },
+    "scenario": "invalid-bodies-do-not-reserve-key"
+  },
+  {
+    "observations": {
+      "invalidKeys": 4,
+      "shortestAcceptedLength": 1,
+      "longestAcceptedLength": 128
+    },
+    "scenario": "purchase-key-format-and-length"
+  },
+  {
+    "observations": {
+      "observedPostgresLockWaiters": 2,
+      "clients": 20
+    },
+    "scenario": "overlap-barrier"
+  },
+  {
+    "observations": {
+      "restorations": 1,
+      "available": 10,
+      "requests": 20
+    },
+    "scenario": "cancel-once-1"
+  },
+  {
     "observations": {
       "observedPostgresLockWaiters": 4,
       "clients": 20
-    }
+    },
+    "scenario": "overlap-barrier"
   },
   {
-    "scenario": "cancel-once-2",
     "observations": {
+      "restorations": 1,
       "available": 10,
-      "requests": 20,
-      "restorations": 1
-    }
+      "requests": 20
+    },
+    "scenario": "cancel-once-2"
   },
   {
-    "scenario": "overlap-barrier",
     "observations": {
       "observedPostgresLockWaiters": 5,
       "clients": 20
-    }
+    },
+    "scenario": "overlap-barrier"
   },
   {
-    "scenario": "cancel-once-3",
     "observations": {
+      "restorations": 1,
       "available": 10,
-      "requests": 20,
-      "restorations": 1
-    }
+      "requests": 20
+    },
+    "scenario": "cancel-once-3"
   },
   {
-    "scenario": "rollback-after-subtraction",
     "observations": {
-      "orders": 1,
       "retryAvailable": 8,
-      "duringFailureAvailable": 10
-    }
+      "duringFailureAvailable": 10,
+      "orders": 1
+    },
+    "scenario": "rollback-after-subtraction"
   },
   {
-    "scenario": "overlap-barrier",
     "observations": {
       "observedPostgresLockWaiters": 2,
       "clients": 2
-    }
+    },
+    "scenario": "overlap-barrier"
   },
   {
-    "scenario": "overlap-barrier",
     "observations": {
-      "observedPostgresLockWaiters": 5,
+      "observedPostgresLockWaiters": 6,
       "clients": 20
-    }
+    },
+    "scenario": "overlap-barrier"
   },
   {
-    "scenario": "same-purchase-1",
     "observations": {
-      "requests": 20,
-      "available": 8,
       "accepted": 1,
-      "replayed": 19
-    }
+      "replayed": 19,
+      "requests": 20,
+      "available": 8
+    },
+    "scenario": "same-purchase-1"
   },
   {
-    "scenario": "overlap-barrier",
     "observations": {
-      "observedPostgresLockWaiters": 4,
+      "observedPostgresLockWaiters": 8,
       "clients": 20
-    }
+    },
+    "scenario": "overlap-barrier"
   },
   {
-    "scenario": "same-purchase-2",
     "observations": {
-      "requests": 20,
-      "available": 8,
       "accepted": 1,
-      "replayed": 19
-    }
+      "replayed": 19,
+      "requests": 20,
+      "available": 8
+    },
+    "scenario": "same-purchase-2"
   },
   {
-    "scenario": "overlap-barrier",
     "observations": {
-      "observedPostgresLockWaiters": 7,
+      "observedPostgresLockWaiters": 8,
       "clients": 20
-    }
+    },
+    "scenario": "overlap-barrier"
   },
   {
-    "scenario": "same-purchase-3",
     "observations": {
-      "requests": 20,
-      "available": 8,
       "accepted": 1,
-      "replayed": 19
-    }
+      "replayed": 19,
+      "requests": 20,
+      "available": 8
+    },
+    "scenario": "same-purchase-3"
   },
   {
-    "scenario": "mvc-path-and-query-validation",
     "observations": {
-      "invalidRequests": 7,
       "available": 10,
-      "http": 400
-    }
+      "http": 400,
+      "invalidRequests": 7
+    },
+    "scenario": "mvc-path-and-query-validation"
   },
   {
-    "scenario": "overlap-barrier",
     "observations": {
       "observedPostgresLockWaiters": 2,
       "clients": 2
-    }
+    },
+    "scenario": "overlap-barrier"
   },
   {
-    "scenario": "last-stock-1",
     "observations": {
+      "accepted": 1,
       "requests": 2,
       "available": 0,
-      "outOfStock": 1,
-      "accepted": 1
-    }
+      "outOfStock": 1
+    },
+    "scenario": "last-stock-1"
   },
   {
-    "scenario": "overlap-barrier",
     "observations": {
       "observedPostgresLockWaiters": 2,
       "clients": 2
-    }
+    },
+    "scenario": "overlap-barrier"
   },
   {
-    "scenario": "last-stock-2",
     "observations": {
+      "accepted": 1,
       "requests": 2,
       "available": 0,
-      "outOfStock": 1,
-      "accepted": 1
-    }
+      "outOfStock": 1
+    },
+    "scenario": "last-stock-2"
   },
   {
-    "scenario": "overlap-barrier",
     "observations": {
       "observedPostgresLockWaiters": 2,
       "clients": 2
-    }
+    },
+    "scenario": "overlap-barrier"
   },
   {
-    "scenario": "last-stock-3",
     "observations": {
+      "accepted": 1,
       "requests": 2,
       "available": 0,
-      "outOfStock": 1,
-      "accepted": 1
-    }
+      "outOfStock": 1
+    },
+    "scenario": "last-stock-3"
   },
   {
-    "scenario": "mixed-parallel-operations",
     "observations": {
-      "buyingActions": 40,
-      "available": 2,
-      "orders": 26
-    }
+      "available": 10,
+      "http": 400,
+      "orders": 0
+    },
+    "scenario": "duplicate-order-field"
   },
   {
-    "scenario": "create-get-list",
     "observations": {
-      "orders": 1,
+      "available": 10,
+      "http": 400,
+      "orders": 0
+    },
+    "scenario": "duplicate-order-field"
+  },
+  {
+    "observations": {
+      "available": 10,
+      "http": 400,
+      "orders": 0
+    },
+    "scenario": "duplicate-order-field"
+  },
+  {
+    "observations": {
+      "available": 10,
+      "errorFields": 1,
+      "orderFields": 6,
+      "productFields": 3,
+      "csrfFields": 3
+    },
+    "scenario": "dto-response-json-fields"
+  },
+  {
+    "observations": {
+      "available": 1,
+      "orders": 29,
+      "buyingActions": 40
+    },
+    "scenario": "mixed-parallel-operations"
+  },
+  {
+    "observations": {
       "available": 8,
-      "http": 201
-    }
+      "http": 201,
+      "orders": 1
+    },
+    "scenario": "create-get-list"
   }
 ]

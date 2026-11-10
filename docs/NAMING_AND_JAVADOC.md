@@ -57,7 +57,7 @@
 
 ```java
 @GetMapping("/products/{id}")
-public ProductView getProduct(@PathVariable("id") @Min(1) long productId)
+public ProductResponse getProduct(@PathVariable("id") @Min(1) long productId)
 ```
 
 URL의 `{id}`는 그대로 두고 Java에서는 `productId`로 읽습니다. 주문은 `orderId`를 사용합니다. `beforeId`, `limit` 쿼리도 각각 `beforeOrderId`, `pageSize`에 명시적으로 연결했습니다. JSON의 `id`, `productId`, `quantity`와 DB 컬럼명은 유지했습니다.

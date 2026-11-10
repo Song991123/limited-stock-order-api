@@ -69,13 +69,25 @@ class OrderProcessRecoveryTest {
             events.add(Map.of("stage","cancel-killed-before-commit","acceptedOrders",1,"available",8));
 
             server.start();
-            assertThat(server.send("POST","/orders/"+id+"/cancel",null,null).statusCode()).isEqualTo(200);
+            var cancelled=server.send("POST","/orders/"+id+"/cancel",null,null);
+            assertThat(cancelled.statusCode()).isEqualTo(200);
+            var cancelledBody=json.readTree(cancelled.body());
+            assertThat(cancelledBody.path("id").asLong()).isEqualTo(id);
+            assertThat(cancelledBody.path("status").asText()).isEqualTo("CANCELLED");
             assertThat(stock()).isEqualTo(10);
             server.kill(); server.start();
-            assertThat(server.send("POST","/orders/"+id+"/cancel",null,null).statusCode()).isEqualTo(200);
+            var repeatedCancellation=server.send("POST","/orders/"+id+"/cancel",null,null);
+            assertThat(repeatedCancellation.statusCode()).isEqualTo(200);
+            var repeatedCancellationBody=json.readTree(repeatedCancellation.body());
+            long returnedOrderId=repeatedCancellationBody.path("id").asLong();
+            String returnedStatus=repeatedCancellationBody.path("status").asText();
+            assertThat(returnedOrderId).isEqualTo(id);
+            assertThat(returnedStatus).isEqualTo("CANCELLED");
             assertThat(stock()).isEqualTo(10);
             assertThat(number("SELECT count(*) FROM inventory_movements WHERE kind='RESTORE'")).isEqualTo(1);
-            events.add(Map.of("stage","cancel-restarted-after-commit","restorations",1,"available",10));
+            events.add(Map.of("stage","cancel-restarted-after-commit","restorations",1,"available",10,
+                    "http",repeatedCancellation.statusCode(),"expectedOrderId",id,
+                    "returnedOrderId",returnedOrderId,"returnedStatus",returnedStatus));
         }
         var directory=Path.of(System.getenv("STOCK_EVIDENCE_DIR"));
         json.writerWithDefaultPrettyPrinter().writeValue(directory.resolve("process-recovery.json").toFile(),events);
@@ -107,9 +119,11 @@ class OrderProcessRecoveryTest {
             if(process!=null && process.isAlive()) throw new IllegalStateException("Owned server already running");
             try(var socket=new ServerSocket(0,0,InetAddress.getByName("127.0.0.1"))) { port=socket.getLocalPort(); }
             Path log=Path.of(System.getenv("STOCK_EVIDENCE_DIR"),"child-"+events.size()+"-"+port+".log");
-            String java=Path.of(System.getProperty("java.home"),"bin","java.exe").toString();
+            String executable=System.getProperty("os.name").startsWith("Windows") ? "java.exe" : "java";
+            String java=Path.of(System.getProperty("java.home"),"bin",executable).toString();
             process=new ProcessBuilder(java,"-cp",System.getProperty("stock.test.classpath"),OrdersApplication.class.getName(),
-                    "--server.port="+port,"--spring.main.banner-mode=off","--stock.admission.per-customer-per-minute=100000")
+                    "--server.port="+port,"--spring.main.banner-mode=off","--spring.profiles.active=demo",
+                    "--stock.admission.per-customer-per-minute=100000")
                     .redirectErrorStream(true).redirectOutput(log.toFile()).start();
             client=HttpClient.newBuilder().cookieHandler(new CookieManager(null,CookiePolicy.ACCEPT_ALL)).connectTimeout(Duration.ofSeconds(2)).build();
             await().atMost(Duration.ofSeconds(25)).pollInterval(Duration.ofMillis(150)).until(()->{
