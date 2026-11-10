@@ -1,0 +1,1892 @@
+{
+  "baselineCommit": "6e74951",
+  "baselineChecks": 135,
+  "retainedBaselineChecks": 135,
+  "regularSuite": {
+    "run": "20261110-202813",
+    "tests": 154,
+    "additionalChecks": 19,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "databaseRecovery": {
+    "beforeRun": "20261110-194008",
+    "beforeTests": 15,
+    "beforeFailures": 9,
+    "afterRun": "20261110-202548",
+    "afterTests": 15,
+    "afterFailures": 0,
+    "beforeEvents": [
+      {
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "returnedId": 1,
+        "sameJvm": true,
+        "retryHttp": 200,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "scenario": "cancel-before-commit",
+        "failureHttp": 500
+      },
+      {
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "returnedId": 1,
+        "sameJvm": true,
+        "retryHttp": 200,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "scenario": "cancel-before-commit",
+        "failureHttp": 500
+      },
+      {
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "returnedId": 1,
+        "sameJvm": true,
+        "retryHttp": 200,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "scenario": "cancel-before-commit",
+        "failureHttp": 500
+      },
+      {
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "returnedId": 1,
+        "sameJvm": true,
+        "retryHttp": 201,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "scenario": "purchase-before-commit",
+        "failureHttp": 500
+      },
+      {
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "returnedId": 1,
+        "sameJvm": true,
+        "retryHttp": 201,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "scenario": "purchase-before-commit",
+        "failureHttp": 500
+      },
+      {
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "returnedId": 34,
+        "sameJvm": true,
+        "retryHttp": 201,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "scenario": "purchase-before-commit",
+        "failureHttp": 500
+      },
+      {
+        "sameJvm": true,
+        "replayHttp": 200,
+        "scenario": "cancel-after-commit-lost-response",
+        "returnedStatus": "CANCELLED",
+        "upstreamHttp": 200,
+        "committedId": 1,
+        "returnedId": 1,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        }
+      },
+      {
+        "sameJvm": true,
+        "replayHttp": 200,
+        "scenario": "cancel-after-commit-lost-response",
+        "returnedStatus": "CANCELLED",
+        "upstreamHttp": 200,
+        "committedId": 1,
+        "returnedId": 1,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        }
+      },
+      {
+        "sameJvm": true,
+        "replayHttp": 200,
+        "scenario": "cancel-after-commit-lost-response",
+        "returnedStatus": "CANCELLED",
+        "upstreamHttp": 200,
+        "committedId": 1,
+        "returnedId": 1,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        }
+      },
+      {
+        "sameJvm": true,
+        "replayHttp": 200,
+        "scenario": "purchase-after-commit-lost-response",
+        "returnedStatus": "ACCEPTED",
+        "upstreamHttp": 201,
+        "committedId": 1,
+        "returnedId": 1,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        }
+      },
+      {
+        "sameJvm": true,
+        "replayHttp": 200,
+        "scenario": "purchase-after-commit-lost-response",
+        "returnedStatus": "ACCEPTED",
+        "upstreamHttp": 201,
+        "committedId": 1,
+        "returnedId": 1,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        }
+      },
+      {
+        "sameJvm": true,
+        "replayHttp": 200,
+        "scenario": "purchase-after-commit-lost-response",
+        "returnedStatus": "ACCEPTED",
+        "upstreamHttp": 201,
+        "committedId": 1,
+        "returnedId": 1,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        }
+      },
+      {
+        "http": 401,
+        "sameJvm": true,
+        "body": "{\"timestamp\":\"2026-11-10T10:41:07.513+00:00\",\"status\":401,\"error\":\"Unauthorized\",\"path\":\"/products\"}",
+        "scenario": "authentication-db-down",
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        }
+      },
+      {
+        "http": 401,
+        "sameJvm": true,
+        "body": "{\"timestamp\":\"2026-11-10T10:41:09.372+00:00\",\"status\":401,\"error\":\"Unauthorized\",\"path\":\"/products\"}",
+        "scenario": "authentication-db-down",
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        }
+      },
+      {
+        "http": 401,
+        "sameJvm": true,
+        "body": "{\"timestamp\":\"2026-11-10T10:41:11.264+00:00\",\"status\":401,\"error\":\"Unauthorized\",\"path\":\"/products\"}",
+        "scenario": "authentication-db-down",
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        }
+      }
+    ],
+    "afterEvents": [
+      {
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "retryHttp": 200,
+        "sameJvm": true,
+        "returnedId": 1,
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "failureHttp": 503,
+        "scenario": "cancel-before-commit"
+      },
+      {
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "retryHttp": 200,
+        "sameJvm": true,
+        "returnedId": 1,
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "failureHttp": 503,
+        "scenario": "cancel-before-commit"
+      },
+      {
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "retryHttp": 200,
+        "sameJvm": true,
+        "returnedId": 1,
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "failureHttp": 503,
+        "scenario": "cancel-before-commit"
+      },
+      {
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "retryHttp": 201,
+        "sameJvm": true,
+        "returnedId": 1,
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "failureHttp": 503,
+        "scenario": "purchase-before-commit"
+      },
+      {
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "retryHttp": 201,
+        "sameJvm": true,
+        "returnedId": 1,
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "failureHttp": 503,
+        "scenario": "purchase-before-commit"
+      },
+      {
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "retryHttp": 201,
+        "sameJvm": true,
+        "returnedId": 1,
+        "rolledBack": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "failureHttp": 503,
+        "scenario": "purchase-before-commit"
+      },
+      {
+        "upstreamHttp": 200,
+        "returnedStatus": "CANCELLED",
+        "scenario": "cancel-after-commit-lost-response",
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "returnedId": 1,
+        "committedId": 1
+      },
+      {
+        "upstreamHttp": 200,
+        "returnedStatus": "CANCELLED",
+        "scenario": "cancel-after-commit-lost-response",
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "returnedId": 1,
+        "committedId": 1
+      },
+      {
+        "upstreamHttp": 200,
+        "returnedStatus": "CANCELLED",
+        "scenario": "cancel-after-commit-lost-response",
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 10,
+          "restorations": 1
+        },
+        "returnedId": 1,
+        "committedId": 1
+      },
+      {
+        "upstreamHttp": 201,
+        "returnedStatus": "ACCEPTED",
+        "scenario": "purchase-after-commit-lost-response",
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "returnedId": 1,
+        "committedId": 1
+      },
+      {
+        "upstreamHttp": 201,
+        "returnedStatus": "ACCEPTED",
+        "scenario": "purchase-after-commit-lost-response",
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "returnedId": 1,
+        "committedId": 1
+      },
+      {
+        "upstreamHttp": 201,
+        "returnedStatus": "ACCEPTED",
+        "scenario": "purchase-after-commit-lost-response",
+        "replayHttp": 200,
+        "sameJvm": true,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 1,
+          "requests": 1,
+          "available": 9,
+          "restorations": 0
+        },
+        "returnedId": 1,
+        "committedId": 1
+      },
+      {
+        "body": "{\"code\":\"DATABASE_UNAVAILABLE\"}",
+        "sameJvm": true,
+        "http": 503,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "scenario": "authentication-db-down"
+      },
+      {
+        "body": "{\"code\":\"DATABASE_UNAVAILABLE\"}",
+        "sameJvm": true,
+        "http": 503,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "scenario": "authentication-db-down"
+      },
+      {
+        "body": "{\"code\":\"DATABASE_UNAVAILABLE\"}",
+        "sameJvm": true,
+        "http": 503,
+        "database": {
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0,
+          "orders": 0,
+          "requests": 0,
+          "available": 10,
+          "restorations": 0
+        },
+        "scenario": "authentication-db-down"
+      }
+    ],
+    "scope": "New owned PostgreSQL cluster stopped with immediate mode. Same application JVM; fsync and synchronous_commit remain enabled. Local task, not CI."
+  },
+  "load": {
+    "run": "load-2026-11-10T10-59-46-747Z",
+    "publicationScriptChange": {
+      "file": "scripts/export-review.ps1",
+      "recordedSha256": "fa9799bda082d16bebe9bce21916e751f1ffd1493eb08ca802dcd65b423a81a9",
+      "publishedSha256": "9fdf04abbc90f591c756911270821cf72390138bef64e282caf5e9d37e0ec4bc",
+      "reason": "Only the post-processing publisher changed after load execution. Application, measurement collector, k6 script and test inputs are identical. Raw source snapshot is preserved."
+    },
+    "environment": {
+      "k6": "k6.exe v2.3.0 (commit/e088784614, go1.26.8, windows/amd64)",
+      "k6BinarySha256": "efec04c36452cfb9c0ef313082c021e5656caf5004f922c2d8b807fdf4a0e02f",
+      "officialArchiveSha256": "112276d495e5741c968e2bc09ea6196099c1275bd6db9ee0875d173c7148ce43",
+      "node": "v24.14.1",
+      "platform": "win32",
+      "cpu": "12th Gen Intel(R) Core(TM) i7-12700",
+      "cpuCount": 20,
+      "memoryBytes": 34088599552,
+      "postgres": "postgres (PostgreSQL) 16.15",
+      "java": "java 21.0.10 2026-01-20 LTS\r\nJava(TM) SE Runtime Environment (build 21.0.10+8-LTS-217)\r\nJava HotSpot(TM) 64-Bit Server VM (build 21.0.10+8-LTS-217, mixed mode, sharing)",
+      "instance": "isolated-5e083e9520021652",
+      "concurrentWrites": 32,
+      "poolSize": 12,
+      "requestsPerCustomerPerMinute": 100000,
+      "warmupSeconds": 10,
+      "measurementSeconds": 30,
+      "durationScope": "Custom measured_* metrics exclude warmup and CSRF. Same-PC HTTP including Basic authentication, not production capacity."
+    },
+    "runs": [
+      {
+        "workload": "same-product",
+        "vus": 1,
+        "repetition": 1,
+        "createdAll": 426,
+        "database": {
+          "orders": 426,
+          "requests": 426,
+          "available": 999574,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 304,
+              "rate": 7.594289474030003
+            }
+          },
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "avg": 98.4026993421052,
+              "min": 65.3795,
+              "med": 78.71195,
+              "max": 524.4222,
+              "p(95)": 182.79514999999975,
+              "p(99)": 329.86354599999896
+            }
+          },
+          "unexpected_responses": {
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            },
+            "type": "counter",
+            "contains": "default"
+          }
+        }
+      },
+      {
+        "workload": "same-product",
+        "vus": 1,
+        "repetition": 2,
+        "createdAll": 527,
+        "database": {
+          "orders": 527,
+          "requests": 527,
+          "available": 999473,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "avg": 75.47338010075569,
+              "min": 60.2763,
+              "med": 72.7993,
+              "max": 123.6159,
+              "p(95)": 95.56230000000001,
+              "p(99)": 109.03554400000004
+            }
+          },
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 397,
+              "rate": 9.911669919021781
+            }
+          }
+        }
+      },
+      {
+        "workload": "same-product",
+        "vus": 1,
+        "repetition": 3,
+        "createdAll": 518,
+        "database": {
+          "orders": 518,
+          "requests": 518,
+          "available": 999482,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 386,
+              "rate": 9.634113635638242
+            }
+          },
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "med": 73.39685,
+              "max": 154.7399,
+              "p(95)": 102.48864999999999,
+              "p(99)": 115.12483499999996,
+              "avg": 77.58825336787568,
+              "min": 59.8211
+            }
+          },
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "rate": 0,
+              "count": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          }
+        }
+      },
+      {
+        "workload": "same-product",
+        "vus": 8,
+        "repetition": 1,
+        "createdAll": 1759,
+        "database": {
+          "orders": 1759,
+          "requests": 1759,
+          "available": 998241,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "p(99)": 407.05234000000064,
+              "avg": 190.88848119521938,
+              "min": 122.0804,
+              "med": 172.7298,
+              "max": 692.9651,
+              "p(95)": 306.07886
+            }
+          },
+          "unexpected_responses": {
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            },
+            "type": "counter",
+            "contains": "default"
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 1255,
+              "rate": 31.25066119738096
+            }
+          }
+        }
+      },
+      {
+        "workload": "same-product",
+        "vus": 8,
+        "repetition": 2,
+        "createdAll": 2076,
+        "database": {
+          "orders": 2076,
+          "requests": 2076,
+          "available": 997924,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_success_ms": {
+            "values": {
+              "p(99)": 167.70653999999996,
+              "avg": 139.80235560747658,
+              "min": 100.5799,
+              "med": 138.68815,
+              "max": 188.1721,
+              "p(95)": 154.43742999999998
+            },
+            "type": "trend",
+            "contains": "time"
+          },
+          "measured_created": {
+            "contains": "default",
+            "values": {
+              "count": 1712,
+              "rate": 42.72572698479576
+            },
+            "type": "counter"
+          },
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          }
+        }
+      },
+      {
+        "workload": "same-product",
+        "vus": 8,
+        "repetition": 3,
+        "createdAll": 2227,
+        "database": {
+          "orders": 2227,
+          "requests": 2227,
+          "available": 997773,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "avg": 141.49369078014186,
+              "min": 97.9425,
+              "med": 138.6634,
+              "max": 356.1632,
+              "p(95)": 155.52192499999998,
+              "p(99)": 222.07213199999924
+            }
+          },
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 1692,
+              "rate": 42.19528922514112
+            }
+          }
+        }
+      },
+      {
+        "workload": "same-product",
+        "vus": 32,
+        "repetition": 1,
+        "createdAll": 2110,
+        "database": {
+          "orders": 2110,
+          "requests": 2110,
+          "available": 997890,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_created": {
+            "values": {
+              "count": 1631,
+              "rate": 40.4956353923352
+            },
+            "type": "counter",
+            "contains": "default"
+          },
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "rate": 0,
+              "count": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          },
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "min": 283.7784,
+              "med": 576.0464,
+              "max": 1091.2319,
+              "p(95)": 721.2992999999999,
+              "p(99)": 880.9498500000001,
+              "avg": 585.8701467811151
+            }
+          }
+        }
+      },
+      {
+        "workload": "same-product",
+        "vus": 32,
+        "repetition": 2,
+        "createdAll": 2109,
+        "database": {
+          "orders": 2109,
+          "requests": 2109,
+          "available": 997891,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 1632,
+              "rate": 40.439097433242765
+            }
+          },
+          "unexpected_responses": {
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            },
+            "type": "counter"
+          },
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "p(99)": 763.4727030000005,
+              "avg": 586.7256470588244,
+              "min": 346.9128,
+              "med": 584.6096500000001,
+              "max": 1103.9579,
+              "p(95)": 676.493265
+            }
+          }
+        }
+      },
+      {
+        "workload": "same-product",
+        "vus": 32,
+        "repetition": 3,
+        "createdAll": 2087,
+        "database": {
+          "orders": 2087,
+          "requests": 2087,
+          "available": 997913,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 1567,
+              "rate": 38.857053615927185
+            }
+          },
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "p(99)": 849.410786,
+              "avg": 610.662625909382,
+              "min": 319.2176,
+              "med": 599.4823,
+              "max": 1173.1502,
+              "p(95)": 766.47588
+            }
+          }
+        }
+      },
+      {
+        "workload": "same-product",
+        "vus": 64,
+        "repetition": 1,
+        "createdAll": 2150,
+        "database": {
+          "orders": 2150,
+          "requests": 2150,
+          "available": 997850,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 1610,
+              "rate": 39.713558191499814
+            }
+          },
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "avg": 1150.806304534159,
+              "min": 185.9848,
+              "med": 1137.0765000000001,
+              "max": 2418.4091,
+              "p(95)": 1560.01085,
+              "p(99)": 1991.9348150000005
+            }
+          }
+        }
+      },
+      {
+        "workload": "same-product",
+        "vus": 64,
+        "repetition": 2,
+        "createdAll": 2175,
+        "database": {
+          "orders": 2175,
+          "requests": 2175,
+          "available": 997825,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "rate": 41.26265413470188,
+              "count": 1678
+            }
+          },
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "rate": 0,
+              "count": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          },
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "p(95)": 1472.4492849999986,
+              "p(99)": 1705.847824,
+              "avg": 1130.0015619785452,
+              "min": 492.7042,
+              "med": 1121.7439,
+              "max": 2608.0036
+            }
+          },
+          "measured_rejected": {
+            "values": {
+              "count": 21,
+              "rate": 0.5163979361315492
+            },
+            "type": "counter",
+            "contains": "default"
+          },
+          "measured_rejection_ms": {
+            "contains": "time",
+            "values": {
+              "p(99)": 895.95502,
+              "avg": 618.269319047619,
+              "min": 357.9211,
+              "med": 671.2292,
+              "max": 902.4902,
+              "p(95)": 869.8143
+            },
+            "type": "trend"
+          }
+        }
+      },
+      {
+        "workload": "same-product",
+        "vus": 64,
+        "repetition": 3,
+        "createdAll": 2033,
+        "database": {
+          "orders": 2033,
+          "requests": 2033,
+          "available": 997967,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_success_ms": {
+            "values": {
+              "p(99)": 2042.3640140000005,
+              "avg": 1196.929416920151,
+              "min": 483.6746,
+              "med": 1187.3191499999998,
+              "max": 2805.282,
+              "p(95)": 1667.277325
+            },
+            "type": "trend",
+            "contains": "time"
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 1578,
+              "rate": 38.97639990841485
+            }
+          },
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          }
+        }
+      },
+      {
+        "workload": "many-products",
+        "vus": 1,
+        "repetition": 1,
+        "createdAll": 543,
+        "database": {
+          "orders": 543,
+          "requests": 543,
+          "available": 999457,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "p(95)": 92.51823999999999,
+              "p(99)": 104.763584,
+              "avg": 73.85489777777778,
+              "min": 59.4469,
+              "med": 70.3424,
+              "max": 137.4948
+            }
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "rate": 10.12166587265322,
+              "count": 405
+            }
+          },
+          "unexpected_responses": {
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            },
+            "type": "counter",
+            "contains": "default"
+          }
+        }
+      },
+      {
+        "workload": "many-products",
+        "vus": 1,
+        "repetition": 2,
+        "createdAll": 536,
+        "database": {
+          "orders": 536,
+          "requests": 536,
+          "available": 999464,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          },
+          "measured_success_ms": {
+            "contains": "time",
+            "values": {
+              "max": 229.8457,
+              "p(95)": 97.07694,
+              "p(99)": 131.06579199999967,
+              "avg": 73.95869382716045,
+              "min": 64.1801,
+              "med": 69.0258
+            },
+            "type": "trend"
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 405,
+              "rate": 10.11478449753583
+            }
+          }
+        }
+      },
+      {
+        "workload": "many-products",
+        "vus": 1,
+        "repetition": 3,
+        "createdAll": 515,
+        "database": {
+          "orders": 515,
+          "requests": 515,
+          "available": 999485,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_success_ms": {
+            "values": {
+              "avg": 73.37509779411764,
+              "min": 63.3092,
+              "med": 69.59565,
+              "max": 210.5699,
+              "p(95)": 94.34007499999998,
+              "p(99)": 133.27789000000004
+            },
+            "type": "trend",
+            "contains": "time"
+          },
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 408,
+              "rate": 10.187091961243638
+            }
+          }
+        }
+      },
+      {
+        "workload": "many-products",
+        "vus": 8,
+        "repetition": 1,
+        "createdAll": 2110,
+        "database": {
+          "orders": 2110,
+          "requests": 2110,
+          "available": 997890,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "p(95)": 219.4707,
+              "p(99)": 362.10308000000003,
+              "avg": 153.13655996156308,
+              "min": 97.3403,
+              "med": 141.1637,
+              "max": 399.4813
+            }
+          },
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 1561,
+              "rate": 38.945019684062885
+            }
+          }
+        }
+      },
+      {
+        "workload": "many-products",
+        "vus": 8,
+        "repetition": 2,
+        "createdAll": 1476,
+        "database": {
+          "orders": 1476,
+          "requests": 1476,
+          "available": 998524,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_created": {
+            "values": {
+              "count": 1072,
+              "rate": 26.71615348956528
+            },
+            "type": "counter",
+            "contains": "default"
+          },
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "rate": 0,
+              "count": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          },
+          "measured_success_ms": {
+            "values": {
+              "p(99)": 354.6444949999997,
+              "avg": 222.7103358208952,
+              "min": 112.6597,
+              "med": 215.07,
+              "max": 417.0651,
+              "p(95)": 299.469705
+            },
+            "type": "trend",
+            "contains": "time"
+          }
+        }
+      },
+      {
+        "workload": "many-products",
+        "vus": 8,
+        "repetition": 3,
+        "createdAll": 1590,
+        "database": {
+          "orders": 1590,
+          "requests": 1590,
+          "available": 998410,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 1195,
+              "rate": 29.800014075581544
+            }
+          },
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "avg": 200.18906058577383,
+              "min": 123.9068,
+              "med": 185.732,
+              "max": 744.9863,
+              "p(95)": 293.50324,
+              "p(99)": 365.06964999999997
+            }
+          },
+          "unexpected_responses": {
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            },
+            "type": "counter",
+            "contains": "default"
+          }
+        }
+      },
+      {
+        "workload": "many-products",
+        "vus": 32,
+        "repetition": 1,
+        "createdAll": 2104,
+        "database": {
+          "orders": 2104,
+          "requests": 2104,
+          "available": 997896,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 1609,
+              "rate": 39.95509791961478
+            }
+          },
+          "unexpected_responses": {
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            },
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            }
+          },
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "med": 590.2344,
+              "max": 1096.6312,
+              "p(95)": 683.0187399999999,
+              "p(99)": 763.5295760000002,
+              "avg": 593.3751318210063,
+              "min": 328.9305
+            }
+          }
+        }
+      },
+      {
+        "workload": "many-products",
+        "vus": 32,
+        "repetition": 2,
+        "createdAll": 2121,
+        "database": {
+          "orders": 2121,
+          "requests": 2121,
+          "available": 997879,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "p(99)": 872.6708179999998,
+              "avg": 592.2011429721362,
+              "min": 310.5745,
+              "med": 577.5541,
+              "max": 1468.5244,
+              "p(95)": 736.1515099999999
+            }
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 1615,
+              "rate": 40.05889585370188
+            }
+          },
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "rate": 0,
+              "count": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          }
+        }
+      },
+      {
+        "workload": "many-products",
+        "vus": 32,
+        "repetition": 3,
+        "createdAll": 2270,
+        "database": {
+          "orders": 2270,
+          "requests": 2270,
+          "available": 997730,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "avg": 557.911028372093,
+              "min": 317.9281,
+              "med": 556.8516,
+              "max": 883.5293,
+              "p(95)": 636.25432,
+              "p(99)": 699.7021879999995
+            }
+          },
+          "measured_created": {
+            "contains": "default",
+            "values": {
+              "count": 1720,
+              "rate": 42.587815847243704
+            },
+            "type": "counter"
+          },
+          "unexpected_responses": {
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            },
+            "type": "counter",
+            "contains": "default"
+          }
+        }
+      },
+      {
+        "workload": "many-products",
+        "vus": 64,
+        "repetition": 1,
+        "createdAll": 2183,
+        "database": {
+          "orders": 2183,
+          "requests": 2183,
+          "available": 997817,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "rate": 41.35118775066823,
+              "count": 1672
+            }
+          },
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "med": 1113.14805,
+              "max": 2440.4585,
+              "p(95)": 1504.3489149999996,
+              "p(99)": 2184.232099,
+              "avg": 1123.9822497009575,
+              "min": 445.1681
+            }
+          }
+        }
+      },
+      {
+        "workload": "many-products",
+        "vus": 64,
+        "repetition": 2,
+        "createdAll": 2121,
+        "database": {
+          "orders": 2121,
+          "requests": 2121,
+          "available": 997879,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_created": {
+            "contains": "default",
+            "values": {
+              "count": 1639,
+              "rate": 40.2565105553983
+            },
+            "type": "counter"
+          },
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "p(99)": 2375.5248259999926,
+              "avg": 1162.7085954850515,
+              "min": 647.0305,
+              "med": 1126.6995,
+              "max": 3740.6695,
+              "p(95)": 1633.0741399999997
+            }
+          },
+          "unexpected_responses": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            },
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            }
+          }
+        }
+      },
+      {
+        "workload": "many-products",
+        "vus": 64,
+        "repetition": 3,
+        "createdAll": 2042,
+        "database": {
+          "orders": 2042,
+          "requests": 2042,
+          "available": 997958,
+          "inventoryViolations": 0,
+          "requestViolations": 0,
+          "orderViolations": 0
+        },
+        "metrics": {
+          "measured_rejected": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 13,
+              "rate": 0.3187940740164114
+            }
+          },
+          "measured_success_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "avg": 1189.3470966559505,
+              "min": 335.4131,
+              "med": 1188.3481,
+              "max": 3125.4267,
+              "p(95)": 1626.0935799999997,
+              "p(99)": 1856.6780400000002
+            }
+          },
+          "measured_rejection_ms": {
+            "type": "trend",
+            "contains": "time",
+            "values": {
+              "p(99)": 1835.3937760000001,
+              "avg": 1479.475984615385,
+              "min": 512.2529,
+              "med": 1747.4299,
+              "max": 1839.1255,
+              "p(95)": 1820.46688
+            }
+          },
+          "unexpected_responses": {
+            "thresholds": {
+              "count==0": {
+                "ok": true
+              }
+            },
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 0,
+              "rate": 0
+            }
+          },
+          "measured_created": {
+            "type": "counter",
+            "contains": "default",
+            "values": {
+              "count": 1555,
+              "rate": 38.13267577657844
+            }
+          }
+        }
+      }
+    ],
+    "scope": "Same-PC k6 HTTP baseline, not production capacity, locking-method comparison or before/after performance claim",
+    "cleanup": {
+      "stopped": true,
+      "instance": "isolated-5e083e9520021652",
+      "serverStopped": true,
+      "databaseRunning": false
+    }
+  },
+  "unverified": [
+    "production capacity",
+    "long-running load",
+    "shared multi-server admission",
+    "record retention expiry",
+    "other databases and deployment infrastructure"
+  ]
+}

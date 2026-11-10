@@ -72,6 +72,15 @@ function stop() {
   return true;
 }
 
+function crash() {
+  if (!instance || process.env.STOCK_ALLOW_DB_CRASH !== instance) throw new Error('Explicit owned isolated instance required');
+  const meta = read();
+  verifyOwnership(meta);
+  if (!isRunning()) throw new Error('Owned test database is not running');
+  run('pg_ctl', ['-D', data, '-m', 'immediate', '-w', '-t', '30', 'stop']);
+  return true;
+}
+
 function sql(meta, database, statement) {
   return run('psql', ['-X', '-w', '-A', '-t', '-h', '127.0.0.1', '-p', String(meta.port), '-U', 'stock_mini_admin',
     '-d', database, '-v', 'ON_ERROR_STOP=1'], statement, { PGPASSWORD: meta.adminPassword });
@@ -148,6 +157,7 @@ async function main() {
   if (action === 'init') return init();
   if (action === 'start') return console.log(JSON.stringify({ started: start(), port: read().port }));
   if (action === 'stop') return console.log(JSON.stringify({ stopped: stop() }));
+  if (action === 'crash') return console.log(JSON.stringify({ stopped: crash(), mode: 'immediate' }));
   if (action === 'status') return console.log(JSON.stringify({ running: isRunning() }));
   if (action === 'env') {
     const mode = process.argv[3];

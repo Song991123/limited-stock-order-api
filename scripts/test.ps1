@@ -1,11 +1,14 @@
-param([string]$NodeExecutable = (Get-Command node.exe).Source, [switch]$TestsOnly, [switch]$IsolatedDatabase, [string]$TestFilter)
+param([string]$NodeExecutable = (Get-Command node.exe).Source, [switch]$TestsOnly, [switch]$IsolatedDatabase, [string]$TestFilter, [switch]$DatabaseRecovery)
 $ErrorActionPreference = 'Stop'
+if ($DatabaseRecovery -and -not $IsolatedDatabase) { throw 'DatabaseRecovery requires a new isolated database' }
 $project = Split-Path -Parent $PSScriptRoot
 $runId = Get-Date -Format 'yyyyMMdd-HHmmss'
 $evidence = Join-Path $project "evidence/raw/$runId"
 New-Item -ItemType Directory -Path $evidence -Force | Out-Null
 $previousInstance = $env:STOCK_DB_TEST_INSTANCE
+$previousCrash = $env:STOCK_ALLOW_DB_CRASH
 if ($IsolatedDatabase) { $env:STOCK_DB_TEST_INSTANCE = 'isolated-' + [Guid]::NewGuid().ToString('N').Substring(0,16) }
+if ($DatabaseRecovery) { $env:STOCK_ALLOW_DB_CRASH = $env:STOCK_DB_TEST_INSTANCE }
 $wasRunning = ((& $NodeExecutable (Join-Path $PSScriptRoot 'local-db.cjs') status) | ConvertFrom-Json).running
 Push-Location $project
 try {
@@ -28,22 +31,24 @@ try {
     $workspaceKey = [Convert]::ToHexString($workspaceBytes).ToLowerInvariant().Substring(0, 12)
     $env:GRADLE_USER_HOME = Join-Path ([IO.Path]::GetTempPath()) "stock-order-mini-$workspaceKey/gradle-home"
     $env:STOCK_BUILD_DIR = Join-Path ([IO.Path]::GetTempPath()) "stock-order-mini-$workspaceKey/build"
-    $tasks = @('clean', 'test')
+    $testTask = if ($DatabaseRecovery) { 'databaseRecoveryTest' } else { 'test' }
+    $tasks = @('clean', $testTask)
     if ($TestFilter) { $tasks += @('--tests', $TestFilter) }
     if (-not $TestsOnly) { $tasks += @('bootJar', 'javadoc') }
     & (Join-Path $project 'gradlew.bat') --no-daemon @tasks 2>&1 | Tee-Object -FilePath (Join-Path $evidence 'gradle.log')
     $exitCode = $LASTEXITCODE
-    if (Test-Path -LiteralPath (Join-Path $env:STOCK_BUILD_DIR 'test-results/test')) {
-        Copy-Item -LiteralPath (Join-Path $env:STOCK_BUILD_DIR 'test-results/test') -Destination (Join-Path $evidence 'junit-xml') -Recurse
+    if (Test-Path -LiteralPath (Join-Path $env:STOCK_BUILD_DIR "test-results/$testTask")) {
+        Copy-Item -LiteralPath (Join-Path $env:STOCK_BUILD_DIR "test-results/$testTask") -Destination (Join-Path $evidence 'junit-xml') -Recurse
     }
-    if (Test-Path -LiteralPath (Join-Path $env:STOCK_BUILD_DIR 'reports/tests/test')) {
-        Copy-Item -LiteralPath (Join-Path $env:STOCK_BUILD_DIR 'reports/tests/test') -Destination (Join-Path $evidence 'junit-html') -Recurse
+    if (Test-Path -LiteralPath (Join-Path $env:STOCK_BUILD_DIR "reports/tests/$testTask")) {
+        Copy-Item -LiteralPath (Join-Path $env:STOCK_BUILD_DIR "reports/tests/$testTask") -Destination (Join-Path $evidence 'junit-html') -Recurse
     }
     if (Test-Path -LiteralPath $env:STOCK_BUILD_DIR) {
         New-Item -ItemType Directory -Path (Join-Path $project 'build') -Force | Out-Null
         Get-ChildItem -LiteralPath $env:STOCK_BUILD_DIR | Where-Object { -not $TestsOnly -or $_.Name -ne 'libs' } | Copy-Item -Destination (Join-Path $project 'build') -Recurse -Force
     }
     $summary = [ordered]@{ buildExit = $exitCode; tests = 0; failures = 0; errors = 0; skipped = 0; testsOnly = [bool]$TestsOnly; isolatedDatabase = [bool]$IsolatedDatabase; evidenceDirectory = $evidence }
+    $summary['databaseRecovery'] = [bool]$DatabaseRecovery
     if (Test-Path -LiteralPath (Join-Path $evidence 'junit-xml')) {
         foreach ($file in Get-ChildItem -LiteralPath (Join-Path $evidence 'junit-xml') -Filter 'TEST-*.xml') {
             $suite = ([xml](Get-Content -LiteralPath $file.FullName -Raw)).testsuite
@@ -60,5 +65,6 @@ try {
         [ordered]@{ instance=$env:STOCK_DB_TEST_INSTANCE; port=$instanceMeta.port; pidFileExists=(Test-Path -LiteralPath (Join-Path $instanceMeta.data 'postmaster.pid')) } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $evidence 'isolated-base-cleanup.json') -Encoding UTF8
     }
     $env:STOCK_DB_TEST_INSTANCE = $previousInstance
+    $env:STOCK_ALLOW_DB_CRASH = $previousCrash
     Pop-Location
 }

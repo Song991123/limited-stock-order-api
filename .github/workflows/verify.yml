@@ -70,5 +70,6 @@ jobs:
             evidence/raw/ci/actor-order-journeys.json
             evidence/raw/ci/actor-access.json
             evidence/raw/ci/actor-admission.json
+            evidence/raw/ci/two-servers.json
           if-no-files-found: warn
           retention-days: 14

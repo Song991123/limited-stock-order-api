@@ -68,7 +68,7 @@ RETURNING product_id, quantity;
 
 SQL이나 제약 오류가 나면 모두 롤백합니다. 컨트롤러가 호출하는 서비스 메서드에 `@Transactional(rollbackFor = Exception.class)`을 붙이고, 저장 오류를 성공 결과로 바꾸지 않습니다. 같은 클래스 안에서 메서드를 호출하는 것만으로 새 트랜잭션 설정이 적용되지는 않습니다. 처리 결과를 채우지 않은 요청은 커밋 시점의 지연 제약 트리거에서도 거절합니다. checked 예외도 롤백하도록 명시했습니다. [Spring의 롤백 규칙](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/rolling-back.html)
 
-주문 접수 결과는 커밋 성공 뒤에 응답합니다. 기존 검사에서는 PostgreSQL을 켜 둔 채 서버 JVM을 커밋 전과 후에 종료하고 재시작했습니다. 커밋 전 종료는 미확정 변경이 남지 않고, 커밋 후 종료는 같은 키로 원래 주문을 찾는지 확인했습니다. 커밋 후 HTTP 응답 유실도 별도로 검사했습니다. 커밋 중 연결을 잃으면 확정 여부를 단정하지 않고 같은 키로 확인합니다. PostgreSQL 서버 자체 중단과 복구는 검사하지 않았습니다.
+주문 접수 결과는 커밋 성공 뒤에 응답합니다. 기존 검사에서는 PostgreSQL을 켜 둔 채 서버 JVM을 커밋 전과 후에 종료하고 재시작했습니다. 커밋 전 종료는 미확정 변경이 남지 않고, 커밋 후 종료는 같은 키로 원래 주문을 찾는지 확인했습니다. 커밋 후 HTTP 응답 유실도 별도로 검사했습니다. 커밋 중 연결을 잃으면 확정 여부를 단정하지 않고 같은 키로 확인합니다. 이후 DB 서버 자체의 중단/복구도 별도 15건에서 확인했습니다. [추가 점검](../BACKEND_REVIEW.md)에서 두 검사를 구분합니다.
 
 ## 5. Spring JDBC 선택 이유
 
