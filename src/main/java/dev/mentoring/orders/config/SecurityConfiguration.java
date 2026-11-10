@@ -11,12 +11,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -32,20 +28,6 @@ public class SecurityConfiguration {
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    /**
-     * DB에 저장된 계정명과 비밀번호 해시로 로그인 정보 조회.
-     *
-     * <p>로그인할 계정이 없으면 조회 함수에서 UsernameNotFoundException 발생.
-     */
-    @Bean
-    UserDetailsService userDetailsService(JdbcClient jdbcClient) {
-        return username -> jdbcClient.sql("SELECT username, password_hash FROM buyers WHERE username = :username")
-                .param("username", username).query((resultSet, rowNumber) -> User
-                        .withUsername(resultSet.getString("username"))
-                        .password(resultSet.getString("password_hash")).roles("CUSTOMER").build())
-                .optional().orElseThrow(() -> new UsernameNotFoundException("Unknown customer"));
     }
 
     /**

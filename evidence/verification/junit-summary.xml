@@ -1,195 +1,211 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<testsuites tests="160" failures="0" errors="0" skipped="0">
-  <testsuite name="dev.mentoring.orders.ActorAccessIntegrationTest" tests="6" failures="0" errors="0" skipped="0" time="7.047">
-    <testcase name="forgedBuyerIdIsRejectedThenCorrectedPurchaseBelongsToCaller()" classname="dev.mentoring.orders.ActorAccessIntegrationTest" time="2.171" />
-    <testcase name="anotherCustomerCannotAccessAcceptedOrCancelledOrderEvenWithItsKey()" classname="dev.mentoring.orders.ActorAccessIntegrationTest" time="1.49" />
-    <testcase name="missingAndIndependentSessionTokensRejectPurchaseAndCancellation()" classname="dev.mentoring.orders.ActorAccessIntegrationTest" time="0.726" />
-    <testcase name="anonymousAndWrongPasswordCannotUseAnyApi()" classname="dev.mentoring.orders.ActorAccessIntegrationTest" time="0.861" />
-    <testcase name="sameKeyCustomersCancelOnlyTheirOwnOrders()" classname="dev.mentoring.orders.ActorAccessIntegrationTest" time="1.139" />
-    <testcase name="deletingSessionCookieRequiresFreshCsrfBeforeRetry()" classname="dev.mentoring.orders.ActorAccessIntegrationTest" time="0.657" />
+<testsuites tests="172" failures="0" errors="0" skipped="0">
+  <testsuite name="dev.mentoring.orders.ActorAccessIntegrationTest" tests="6" failures="0" errors="0" skipped="0" time="5.027">
+    <testcase name="forgedBuyerIdIsRejectedThenCorrectedPurchaseBelongsToCaller()" classname="dev.mentoring.orders.ActorAccessIntegrationTest" time="1.463" />
+    <testcase name="anotherCustomerCannotAccessAcceptedOrCancelledOrderEvenWithItsKey()" classname="dev.mentoring.orders.ActorAccessIntegrationTest" time="1.135" />
+    <testcase name="missingAndIndependentSessionTokensRejectPurchaseAndCancellation()" classname="dev.mentoring.orders.ActorAccessIntegrationTest" time="0.505" />
+    <testcase name="anonymousAndWrongPasswordCannotUseAnyApi()" classname="dev.mentoring.orders.ActorAccessIntegrationTest" time="0.639" />
+    <testcase name="sameKeyCustomersCancelOnlyTheirOwnOrders()" classname="dev.mentoring.orders.ActorAccessIntegrationTest" time="0.82" />
+    <testcase name="deletingSessionCookieRequiresFreshCsrfBeforeRetry()" classname="dev.mentoring.orders.ActorAccessIntegrationTest" time="0.463" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.ActorAdmissionIntegrationTest" tests="3" failures="0" errors="0" skipped="0" time="4.185">
-    <testcase name="exhaustedPurchaseBudgetStillAllowsCancellationWithItsOwnBudget()" classname="dev.mentoring.orders.ActorAdmissionIntegrationTest" time="0.768" />
-    <testcase name="busyWriteRejectsAnotherCustomerWithoutBlockingReadsOrReservingKey()" classname="dev.mentoring.orders.ActorAdmissionIntegrationTest" time="1.911" />
-    <testcase name="customerRateLimitRejectsRetriesWithoutDebitingAgainOrLimitingOtherCustomer()" classname="dev.mentoring.orders.ActorAdmissionIntegrationTest" time="1.504" />
+  <testsuite name="dev.mentoring.orders.ActorAdmissionIntegrationTest" tests="3" failures="0" errors="0" skipped="0" time="2.738">
+    <testcase name="exhaustedPurchaseBudgetStillAllowsCancellationWithItsOwnBudget()" classname="dev.mentoring.orders.ActorAdmissionIntegrationTest" time="0.597" />
+    <testcase name="busyWriteRejectsAnotherCustomerWithoutBlockingReadsOrReservingKey()" classname="dev.mentoring.orders.ActorAdmissionIntegrationTest" time="1.117" />
+    <testcase name="customerRateLimitRejectsRetriesWithoutDebitingAgainOrLimitingOtherCustomer()" classname="dev.mentoring.orders.ActorAdmissionIntegrationTest" time="1.024" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.ActorOrderJourneyIntegrationTest" tests="4" failures="0" errors="0" skipped="0" time="3.929">
-    <testcase name="customerPagesContainOwnedOrdersIncludingCancelledButNotRejectedPurchases()" classname="dev.mentoring.orders.ActorOrderJourneyIntegrationTest" time="1.29" />
-    <testcase name="catalogSupportsEmptyListAndLimitsListingWithoutHidingExistingProductDetails()" classname="dev.mentoring.orders.ActorOrderJourneyIntegrationTest" time="0.548" />
-    <testcase name="customerPurchasesRetriesCancelsAndPurchasesAgain()" classname="dev.mentoring.orders.ActorOrderJourneyIntegrationTest" time="1.206" />
-    <testcase name="rejectedPurchaseNeedsNewKeyAfterAnotherCustomerRestoresStock()" classname="dev.mentoring.orders.ActorOrderJourneyIntegrationTest" time="0.884" />
+  <testsuite name="dev.mentoring.orders.ActorOrderJourneyIntegrationTest" tests="4" failures="0" errors="0" skipped="0" time="3.057">
+    <testcase name="customerPagesContainOwnedOrdersIncludingCancelledButNotRejectedPurchases()" classname="dev.mentoring.orders.ActorOrderJourneyIntegrationTest" time="0.988" />
+    <testcase name="catalogSupportsEmptyListAndLimitsListingWithoutHidingExistingProductDetails()" classname="dev.mentoring.orders.ActorOrderJourneyIntegrationTest" time="0.439" />
+    <testcase name="customerPurchasesRetriesCancelsAndPurchasesAgain()" classname="dev.mentoring.orders.ActorOrderJourneyIntegrationTest" time="0.937" />
+    <testcase name="rejectedPurchaseNeedsNewKeyAfterAnotherCustomerRestoresStock()" classname="dev.mentoring.orders.ActorOrderJourneyIntegrationTest" time="0.693" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.config.AuthenticationFailureTest" tests="3" failures="0" errors="0" skipped="0" time="0.027">
-    <testcase name="unavailableAuthenticationStoreReturnsSafeRetryableError()" classname="dev.mentoring.orders.config.AuthenticationFailureTest" time="0.024" />
+  <testsuite name="dev.mentoring.orders.config.AuthenticationFailureTest" tests="3" failures="0" errors="0" skipped="0" time="0.015">
+    <testcase name="unavailableAuthenticationStoreReturnsSafeRetryableError()" classname="dev.mentoring.orders.config.AuthenticationFailureTest" time="0.012" />
     <testcase name="wrongPasswordKeepsTheBasicAuthenticationChallenge()" classname="dev.mentoring.orders.config.AuthenticationFailureTest" time="0.001" />
-    <testcase name="unexpectedAuthenticationServiceErrorIsNotWrongPassword()" classname="dev.mentoring.orders.config.AuthenticationFailureTest" time="0.002" />
+    <testcase name="unexpectedAuthenticationServiceErrorIsNotWrongPassword()" classname="dev.mentoring.orders.config.AuthenticationFailureTest" time="0.001" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" tests="7" failures="0" errors="0" skipped="0" time="0.026">
-    <testcase name="missing-product-id" classname="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" time="0.017" />
+  <testsuite name="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" tests="7" failures="0" errors="0" skipped="0" time="0.015">
+    <testcase name="missing-product-id" classname="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" time="0.011" />
     <testcase name="zero-product-id" classname="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" time="0.001" />
-    <testcase name="negative-product-id" classname="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" time="0.001" />
+    <testcase name="negative-product-id" classname="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" time="0.0" />
     <testcase name="missing-quantity" classname="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" time="0.0" />
-    <testcase name="zero-quantity" classname="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" time="0.001" />
-    <testcase name="negative-quantity" classname="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" time="0.001" />
-    <testcase name="acceptsPositiveNumbersWithoutInventingAStockLimit()" classname="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" time="0.001" />
+    <testcase name="zero-quantity" classname="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" time="0.0" />
+    <testcase name="negative-quantity" classname="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" time="0.0" />
+    <testcase name="acceptsPositiveNumbersWithoutInventingAStockLimit()" classname="dev.mentoring.orders.dto.request.CreateOrderRequestValidationTest" time="0.0" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.dto.response.ResponseMappingTest" tests="3" failures="0" errors="0" skipped="0" time="0.008">
-    <testcase name="mapsProductWithItsCurrentAvailableQuantity()" classname="dev.mentoring.orders.dto.response.ResponseMappingTest" time="0.002" />
+  <testsuite name="dev.mentoring.orders.dto.response.ResponseMappingTest" tests="3" failures="0" errors="0" skipped="0" time="0.006">
+    <testcase name="mapsProductWithItsCurrentAvailableQuantity()" classname="dev.mentoring.orders.dto.response.ResponseMappingTest" time="0.001" />
     <testcase name="mapsCancelledOrderWithoutChangingTimesOrQuantity()" classname="dev.mentoring.orders.dto.response.ResponseMappingTest" time="0.004" />
     <testcase name="mapsAcceptedOrderWithoutACancellationTime()" classname="dev.mentoring.orders.dto.response.ResponseMappingTest" time="0.001" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.exception.ApiExceptionHandlerTest" tests="14" failures="0" errors="0" skipped="0" time="0.033">
-    <testcase name="unsupportedBodyTypeKeepsAcceptedMediaTypes()" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.003" />
-    <testcase name="frameworkRetryTimeAndGeneratedErrorReferenceArePreserved()" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.002" />
-    <testcase name="[1] failure=dev.mentoring.orders.exception.OrderProblem: INVARIANT_VIOLATION, status=500, code=INVARIANT_VIOLATION, sqlState=none" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.004" />
-    <testcase name="[2] failure=org.springframework.dao.DataAccessResourceFailureException: private-test-data, status=503, code=DATABASE_UNAVAILABLE, sqlState=08006" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
-    <testcase name="[3] failure=org.springframework.dao.DataIntegrityViolationException: private-test-data, status=500, code=INTERNAL_ERROR, sqlState=23514" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
-    <testcase name="[4] failure=org.springframework.dao.DataIntegrityViolationException: private-test-data, status=500, code=INTERNAL_ERROR, sqlState=none" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
+  <testsuite name="dev.mentoring.orders.exception.ApiExceptionHandlerTest" tests="14" failures="0" errors="0" skipped="0" time="0.016">
+    <testcase name="unsupportedBodyTypeKeepsAcceptedMediaTypes()" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
+    <testcase name="frameworkRetryTimeAndGeneratedErrorReferenceArePreserved()" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
+    <testcase name="[1] failure=dev.mentoring.orders.exception.OrderProblem: INVARIANT_VIOLATION, status=500, code=INVARIANT_VIOLATION, sqlState=none" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.002" />
+    <testcase name="[2] failure=org.springframework.dao.DataAccessResourceFailureException: private-test-data, status=503, code=DATABASE_UNAVAILABLE, sqlState=08006" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.0" />
+    <testcase name="[3] failure=org.springframework.dao.DataIntegrityViolationException: private-test-data, status=500, code=INTERNAL_ERROR, sqlState=23514" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.0" />
+    <testcase name="[4] failure=org.springframework.dao.DataIntegrityViolationException: private-test-data, status=500, code=INTERNAL_ERROR, sqlState=none" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.0" />
     <testcase name="[5] failure=java.lang.IllegalStateException: private-test-data, status=500, code=INTERNAL_ERROR, sqlState=none" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
-    <testcase name="[6] failure=org.springframework.transaction.TransactionSystemException: Rollback failed, status=503, code=DATABASE_UNAVAILABLE, sqlState=08006" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
-    <testcase name="[7] failure=org.springframework.transaction.TransactionSystemException: Rollback failed, status=503, code=DATABASE_UNAVAILABLE, sqlState=08006" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
-    <testcase name="[8] failure=org.springframework.dao.DataAccessResourceFailureException: private-test-data, status=503, code=DATABASE_UNAVAILABLE, sqlState=57P02" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
+    <testcase name="[6] failure=org.springframework.transaction.TransactionSystemException: Rollback failed, status=503, code=DATABASE_UNAVAILABLE, sqlState=08006" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.0" />
+    <testcase name="[7] failure=org.springframework.transaction.TransactionSystemException: Rollback failed, status=503, code=DATABASE_UNAVAILABLE, sqlState=08006" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.0" />
+    <testcase name="[8] failure=org.springframework.dao.DataAccessResourceFailureException: private-test-data, status=503, code=DATABASE_UNAVAILABLE, sqlState=57P02" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.0" />
     <testcase name="[9] failure=org.springframework.dao.DataAccessResourceFailureException: private-test-data, status=503, code=DATABASE_UNAVAILABLE, sqlState=57P03" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
-    <testcase name="unsupportedMethodKeepsAllowedMethods()" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
-    <testcase name="shortageUsesTheCommonConflictResponse()" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
-    <testcase name="badInputDoesNotCreateAServerErrorLog()" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.001" />
+    <testcase name="unsupportedMethodKeepsAllowedMethods()" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.0" />
+    <testcase name="shortageUsesTheCommonConflictResponse()" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.0" />
+    <testcase name="badInputDoesNotCreateAServerErrorLog()" classname="dev.mentoring.orders.exception.ApiExceptionHandlerTest" time="0.0" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.NormalStartupIntegrationTest" tests="1" failures="0" errors="0" skipped="0" time="0.03">
-    <testcase name="startsWithoutCreatingDemoAccountsOrProducts()" classname="dev.mentoring.orders.NormalStartupIntegrationTest" time="0.03" />
+  <testsuite name="dev.mentoring.orders.NormalStartupIntegrationTest" tests="1" failures="0" errors="0" skipped="0" time="0.024">
+    <testcase name="startsWithoutCreatingDemoAccountsOrProducts()" classname="dev.mentoring.orders.NormalStartupIntegrationTest" time="0.024" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.OrderHttpIntegrationTest" tests="56" failures="0" errors="0" skipped="0" time="32.038">
-    <testcase name="deferredConstraintRejectsUnfinishedRequest()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.321" />
-    <testcase name="routingMethodAndMediaTypeErrorsRemainClientErrors()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.427" />
-    <testcase name="knownOversizedExpectContinueRequestDoesNotStartBodyTransmission()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.207" />
-    <testcase name="lockTimeoutIsRetryableAndDoesNotLeaveRequest()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="3.436" />
-    <testcase name="existingQueryNamesStillSelectOneOrderPage()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.7" />
-    <testcase name="sameTextKeyDifferentCustomers()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.404" />
-    <testcase name="positiveQuantityAndUnknownProductRemainBusinessDecisions()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.442" />
-    <testcase name="commitBeforeLostResponseIsReplayedWithoutAnotherDebit()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.377" />
-    <testcase name="lostCancellationResponseRestoresOnce()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.484" />
-    <testcase name="invalidCancellationInputsKeepOrderAndStock()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="1.176" />
-    <testcase name="encodedOrderPathCannotBypassRequestBodyLimit()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.346" />
-    <testcase name="formCsrfCannotBypassBodySizeLimit()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.323" />
-    <testcase name="emptyCancellationAcceptsMissingOrFormContentType()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.455" />
-    <testcase name="requestBodyLimitAppliesToChunkedAndFixedLength()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.254" />
-    <testcase name="nonemptyFormBodyWithHeaderTokenIsRejected()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.42" />
-    <testcase name="bodyTypeRejectionIncludesAcceptedMediaTypes()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.293" />
-    <testcase name="unauthenticatedAndCsrfMissingRequestsAreRejected()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.243" />
-    <testcase name="serverFailureHasAnErrorReferenceWithoutSqlDetails()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.303" />
-    <testcase name="restorationHistoryFailureRollsBackStockAndState()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.445" />
-    <testcase name="outOfStockResultStaysWithOriginalKey()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.631" />
-    <testcase name="restorationFailureRollsBackCancellation()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.523" />
-    <testcase name="formTokenDoesNotReplaceRequiredHeaderToken()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.29" />
-    <testcase name="methodRejectionIncludesAllowHeader()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.301" />
-    <testcase name="sameKeyWithUnknownProductStillReportsChangedInput()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.375" />
-    <testcase name="cancellationAndNewPurchasePreserveStock()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.686" />
-    <testcase name="invalidOrderBodiesDoNotReservePurchaseKey()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="1.522" />
-    <testcase name="agedPurchaseKeyStillReturnsCancelledOrder()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.624" />
-    <testcase name="cancellationUsesStoredQuantity()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.459" />
-    <testcase name="invalidAndCoercedInputsChangeNothing()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.948" />
-    <testcase name="purchaseKeyFormatAndLengthAreValidatedBeforeSaving()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.698" />
-    <testcase name="twentyCancellationsRestoreOnce(RepetitionInfo) [1/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.731" />
-    <testcase name="twentyCancellationsRestoreOnce(RepetitionInfo) [2/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.753" />
-    <testcase name="twentyCancellationsRestoreOnce(RepetitionInfo) [3/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.794" />
-    <testcase name="exactBodyLimitAcceptsFixedAndUnknownLengthRequests()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.379" />
-    <testcase name="orderInsertFailureRollsBackSubtraction()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.378" />
-    <testcase name="allowedExpectContinueRequestStillTransmitsBodyAndCreatesOrder()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.323" />
-    <testcase name="sameKeyDifferentValidInputs()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.359" />
-    <testcase name="newKeyIsNewPurchase()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.363" />
-    <testcase name="debitHistoryFailureRollsBackAll()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.294" />
-    <testcase name="otherCustomerCannotReadOrCancelOrder()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.524" />
-    <testcase name="oldPurchaseKeyAfterCancellationDoesNotResurrectOrder()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.453" />
-    <testcase name="requestFinishFailureRollsBackOrderAndMovement()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.384" />
-    <testcase name="twentyRetriesOnePurchase(RepetitionInfo) [1/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.712" />
-    <testcase name="twentyRetriesOnePurchase(RepetitionInfo) [2/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.71" />
-    <testcase name="twentyRetriesOnePurchase(RepetitionInfo) [3/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.672" />
-    <testcase name="mvcValidatesPathAndQueryConstraintsWithoutControllerProxy()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.705" />
-    <testcase name="unrelatedProductDoesNotWaitForHeldStock()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.34" />
-    <testcase name="lastStockTwoCustomers(RepetitionInfo) [1/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.365" />
-    <testcase name="lastStockTwoCustomers(RepetitionInfo) [2/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.381" />
-    <testcase name="lastStockTwoCustomers(RepetitionInfo) [3/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.42" />
-    <testcase name="duplicateOrderFieldsDoNotChooseOneValueOrReserveKey()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.519" />
-    <testcase name="responseDtosKeepExistingHttpFields()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.825" />
-    <testcase name="sameKeyCannotChangeProduct()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.371" />
-    <testcase name="randomizedParallelOrdersAndCancellationsRemainConsistent()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="1.342" />
-    <testcase name="productQueriesRemainAvailableAfterControllerSplit()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.37" />
-    <testcase name="createGetAndList()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.423" />
+  <testsuite name="dev.mentoring.orders.OrderHttpIntegrationTest" tests="57" failures="0" errors="0" skipped="0" time="23.497">
+    <testcase name="deferredConstraintRejectsUnfinishedRequest()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.249" />
+    <testcase name="routingMethodAndMediaTypeErrorsRemainClientErrors()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.338" />
+    <testcase name="knownOversizedExpectContinueRequestDoesNotStartBodyTransmission()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.174" />
+    <testcase name="lockTimeoutIsRetryableAndDoesNotLeaveRequest()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="3.338" />
+    <testcase name="existingQueryNamesStillSelectOneOrderPage()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.515" />
+    <testcase name="sameTextKeyDifferentCustomers()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.279" />
+    <testcase name="positiveQuantityAndUnknownProductRemainBusinessDecisions()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.337" />
+    <testcase name="commitBeforeLostResponseIsReplayedWithoutAnotherDebit()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.288" />
+    <testcase name="lostCancellationResponseRestoresOnce()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.345" />
+    <testcase name="invalidCancellationInputsKeepOrderAndStock()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.806" />
+    <testcase name="encodedOrderPathCannotBypassRequestBodyLimit()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.228" />
+    <testcase name="formCsrfCannotBypassBodySizeLimit()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.227" />
+    <testcase name="emptyCancellationAcceptsMissingOrFormContentType()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.333" />
+    <testcase name="requestBodyLimitAppliesToChunkedAndFixedLength()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.169" />
+    <testcase name="nonemptyFormBodyWithHeaderTokenIsRejected()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.279" />
+    <testcase name="bodyTypeRejectionIncludesAcceptedMediaTypes()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.221" />
+    <testcase name="unauthenticatedAndCsrfMissingRequestsAreRejected()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.17" />
+    <testcase name="serverFailureHasAnErrorReferenceWithoutSqlDetails()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.275" />
+    <testcase name="restorationHistoryFailureRollsBackStockAndState()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.351" />
+    <testcase name="outOfStockResultStaysWithOriginalKey()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.452" />
+    <testcase name="restorationFailureRollsBackCancellation()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.396" />
+    <testcase name="formTokenDoesNotReplaceRequiredHeaderToken()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.23" />
+    <testcase name="methodRejectionIncludesAllowHeader()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.222" />
+    <testcase name="sameKeyWithUnknownProductStillReportsChangedInput()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.277" />
+    <testcase name="cancellationAndNewPurchasePreserveStock()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.526" />
+    <testcase name="invalidOrderBodiesDoNotReservePurchaseKey()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="1.133" />
+    <testcase name="unknownAndSqlLikeAccountsCannotAuthenticate()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.386" />
+    <testcase name="agedPurchaseKeyStillReturnsCancelledOrder()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.462" />
+    <testcase name="cancellationUsesStoredQuantity()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.339" />
+    <testcase name="invalidAndCoercedInputsChangeNothing()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.738" />
+    <testcase name="purchaseKeyFormatAndLengthAreValidatedBeforeSaving()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.511" />
+    <testcase name="twentyCancellationsRestoreOnce(RepetitionInfo) [1/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.355" />
+    <testcase name="twentyCancellationsRestoreOnce(RepetitionInfo) [2/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.355" />
+    <testcase name="twentyCancellationsRestoreOnce(RepetitionInfo) [3/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.351" />
+    <testcase name="exactBodyLimitAcceptsFixedAndUnknownLengthRequests()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.298" />
+    <testcase name="orderInsertFailureRollsBackSubtraction()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.286" />
+    <testcase name="allowedExpectContinueRequestStillTransmitsBodyAndCreatesOrder()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.226" />
+    <testcase name="sameKeyDifferentValidInputs()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.279" />
+    <testcase name="newKeyIsNewPurchase()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.304" />
+    <testcase name="debitHistoryFailureRollsBackAll()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.222" />
+    <testcase name="otherCustomerCannotReadOrCancelOrder()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.401" />
+    <testcase name="oldPurchaseKeyAfterCancellationDoesNotResurrectOrder()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.347" />
+    <testcase name="requestFinishFailureRollsBackOrderAndMovement()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.279" />
+    <testcase name="twentyRetriesOnePurchase(RepetitionInfo) [1/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.303" />
+    <testcase name="twentyRetriesOnePurchase(RepetitionInfo) [2/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.307" />
+    <testcase name="twentyRetriesOnePurchase(RepetitionInfo) [3/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.307" />
+    <testcase name="mvcValidatesPathAndQueryConstraintsWithoutControllerProxy()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.568" />
+    <testcase name="unrelatedProductDoesNotWaitForHeldStock()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.262" />
+    <testcase name="lastStockTwoCustomers(RepetitionInfo) [1/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.285" />
+    <testcase name="lastStockTwoCustomers(RepetitionInfo) [2/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.299" />
+    <testcase name="lastStockTwoCustomers(RepetitionInfo) [3/3]" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.279" />
+    <testcase name="duplicateOrderFieldsDoNotChooseOneValueOrReserveKey()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.399" />
+    <testcase name="responseDtosKeepExistingHttpFields()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.629" />
+    <testcase name="sameKeyCannotChangeProduct()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.276" />
+    <testcase name="randomizedParallelOrdersAndCancellationsRemainConsistent()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.652" />
+    <testcase name="productQueriesRemainAvailableAfterControllerSplit()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.272" />
+    <testcase name="createGetAndList()" classname="dev.mentoring.orders.OrderHttpIntegrationTest" time="0.339" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.OrderProcessRecoveryTest" tests="1" failures="0" errors="0" skipped="0" time="22.694">
-    <testcase name="separateJvmRollbackAndCommittedReplayForPurchaseAndCancellation()" classname="dev.mentoring.orders.OrderProcessRecoveryTest" time="22.694" />
+  <testsuite name="dev.mentoring.orders.OrderProcessRecoveryTest" tests="1" failures="0" errors="0" skipped="0" time="17.78">
+    <testcase name="separateJvmRollbackAndCommittedReplayForPurchaseAndCancellation()" classname="dev.mentoring.orders.OrderProcessRecoveryTest" time="17.78" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.PackageStructureTest" tests="2" failures="0" errors="0" skipped="0" time="0.011">
-    <testcase name="internalTypesDoNotExposeHttpDtosInTheirSignatures()" classname="dev.mentoring.orders.PackageStructureTest" time="0.007" />
-    <testcase name="controllersKeepRequestValidationAndReturnResponseDtos()" classname="dev.mentoring.orders.PackageStructureTest" time="0.003" />
+  <testsuite name="dev.mentoring.orders.PackageStructureTest" tests="9" failures="0" errors="0" skipped="0" time="0.258">
+    <testcase name="configurationClassesDoNotContainJdbcQueries()" classname="dev.mentoring.orders.PackageStructureTest" time="0.047" />
+    <testcase name="automaticallyDiscoveredServiceWithBodyOnlyDtoUseIsRejected()" classname="dev.mentoring.orders.PackageStructureTest" time="0.101" />
+    <testcase name="controllersAndServicesDoNotExecuteSql()" classname="dev.mentoring.orders.PackageStructureTest" time="0.006" />
+    <testcase name="internalTypesDoNotExposeHttpDtosInTheirSignatures()" classname="dev.mentoring.orders.PackageStructureTest" time="0.009" />
+    <testcase name="automaticallyDiscoveredControllerWithRepositoryUseIsRejected()" classname="dev.mentoring.orders.PackageStructureTest" time="0.08" />
+    <testcase name="controllersCallServicesInsteadOfRepositories()" classname="dev.mentoring.orders.PackageStructureTest" time="0.001" />
+    <testcase name="repositoriesDoNotDependOnServicesOrAuthenticationFramework()" classname="dev.mentoring.orders.PackageStructureTest" time="0.001" />
+    <testcase name="controllersKeepRequestValidationAndReturnResponseDtos()" classname="dev.mentoring.orders.PackageStructureTest" time="0.008" />
+    <testcase name="domainTypesDoNotDependOnFrameworkOrStorage()" classname="dev.mentoring.orders.PackageStructureTest" time="0.001" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.service.OrderServiceTest" tests="22" failures="0" errors="0" skipped="0" time="2.061">
-    <testcase name="cancellationRestoresOnlyTheStoredQuantity()" classname="dev.mentoring.orders.service.OrderServiceTest" time="1.197" />
-    <testcase name="rejectsInvalidCancellationIdBeforeAccessingRepository(long) [1] orderId=0" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.04" />
-    <testcase name="rejectsInvalidCancellationIdBeforeAccessingRepository(long) [2] orderId=-1" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.03" />
-    <testcase name="repeatedCancellationDoesNotRestoreAgain()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.048" />
-    <testcase name="missingRecordAfterAnInsertConflictIsNotTreatedAsANewPurchase()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.031" />
-    <testcase name="insertConflictUsesAFreshReadInsteadOfTheInitialEmptyResult()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.017" />
-    <testcase name="replayRejectsChangedQuantityWithoutAnotherDebit()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.013" />
-    <testcase name="[1] productId=0, quantity=1" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.036" />
-    <testcase name="[2] productId=-1, quantity=1" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.023" />
-    <testcase name="[3] productId=30, quantity=0" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.004" />
-    <testcase name="[4] productId=30, quantity=-1" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.005" />
-    <testcase name="replayReturnsCurrentCancelledOrderWithoutAnotherDebit()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.01" />
-    <testcase name="newPurchaseStoresDebitOrderAndOutcomeInOrder()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.019" />
-    <testcase name="insertFailureStopsHistoryAndOutcomeWrites()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.053" />
-    <testcase name="[1] beforeOrderId=0, pageSize=20" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.02" />
-    <testcase name="[2] beforeOrderId=-1, pageSize=20" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.007" />
-    <testcase name="[3] beforeOrderId=9223372036854775807, pageSize=0" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.015" />
-    <testcase name="[4] beforeOrderId=9223372036854775807, pageSize=101" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.006" />
-    <testcase name="recordedShortageDoesNotTryStockAgain()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.008" />
-    <testcase name="rejectsInvalidReadIdBeforeAccessingRepository(long) [1] orderId=0" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.01" />
-    <testcase name="rejectsInvalidReadIdBeforeAccessingRepository(long) [2] orderId=-1" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.006" />
-    <testcase name="shortageReturnsAnOutcomeInsteadOfThrowingBeforeCommit()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.014" />
+  <testsuite name="dev.mentoring.orders.repository.model.LoginAccountTest" tests="1" failures="0" errors="0" skipped="0" time="0.0">
+    <testcase name="printingAccountDoesNotExposeCredentials()" classname="dev.mentoring.orders.repository.model.LoginAccountTest" time="0.0" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.service.ProductServiceTest" tests="4" failures="0" errors="0" skipped="0" time="0.085">
-    <testcase name="[1] productId=0" classname="dev.mentoring.orders.service.ProductServiceTest" time="0.007" />
-    <testcase name="[2] productId=-1" classname="dev.mentoring.orders.service.ProductServiceTest" time="0.016" />
-    <testcase name="returnsTheCurrentProduct()" classname="dev.mentoring.orders.service.ProductServiceTest" time="0.026" />
-    <testcase name="returnsTheCurrentProducts()" classname="dev.mentoring.orders.service.ProductServiceTest" time="0.006" />
+  <testsuite name="dev.mentoring.orders.security.CustomerUserDetailsServiceTest" tests="3" failures="0" errors="0" skipped="0" time="0.364">
+    <testcase name="returnsStoredCredentialsAndCustomerAuthority()" classname="dev.mentoring.orders.security.CustomerUserDetailsServiceTest" time="0.341" />
+    <testcase name="storageFailureIsNotConvertedToMissingAccount()" classname="dev.mentoring.orders.security.CustomerUserDetailsServiceTest" time="0.013" />
+    <testcase name="missingAccountIsRejectedAsUnknownCustomer()" classname="dev.mentoring.orders.security.CustomerUserDetailsServiceTest" time="0.003" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.TwoServerIntegrationTest" tests="12" failures="0" errors="0" skipped="0" time="12.25">
-    <testcase name="sameCancellationAcrossTwoServersRestoresOnce() [1/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="1.611" />
-    <testcase name="sameCancellationAcrossTwoServersRestoresOnce() [2/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="1.063" />
-    <testcase name="sameCancellationAcrossTwoServersRestoresOnce() [3/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="1.36" />
-    <testcase name="lastStockAcrossTwoServersAcceptsOneCustomer() [1/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.87" />
-    <testcase name="lastStockAcrossTwoServersAcceptsOneCustomer() [2/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.786" />
-    <testcase name="lastStockAcrossTwoServersAcceptsOneCustomer() [3/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.803" />
-    <testcase name="samePurchaseAcrossTwoServersCreatesOneOrder() [1/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.981" />
-    <testcase name="samePurchaseAcrossTwoServersCreatesOneOrder() [2/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="1.001" />
-    <testcase name="samePurchaseAcrossTwoServersCreatesOneOrder() [3/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.986" />
-    <testcase name="cancellationAndNewPurchaseAcrossTwoServersRemainConsistent() [1/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.947" />
-    <testcase name="cancellationAndNewPurchaseAcrossTwoServersRemainConsistent() [2/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.912" />
-    <testcase name="cancellationAndNewPurchaseAcrossTwoServersRemainConsistent() [3/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.923" />
+  <testsuite name="dev.mentoring.orders.service.OrderServiceTest" tests="22" failures="0" errors="0" skipped="0" time="0.251">
+    <testcase name="cancellationRestoresOnlyTheStoredQuantity()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.146" />
+    <testcase name="rejectsInvalidCancellationIdBeforeAccessingRepository(long) [1] orderId=0" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.01" />
+    <testcase name="rejectsInvalidCancellationIdBeforeAccessingRepository(long) [2] orderId=-1" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.003" />
+    <testcase name="repeatedCancellationDoesNotRestoreAgain()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.007" />
+    <testcase name="missingRecordAfterAnInsertConflictIsNotTreatedAsANewPurchase()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.004" />
+    <testcase name="insertConflictUsesAFreshReadInsteadOfTheInitialEmptyResult()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.005" />
+    <testcase name="replayRejectsChangedQuantityWithoutAnotherDebit()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.003" />
+    <testcase name="[1] productId=0, quantity=1" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.01" />
+    <testcase name="[2] productId=-1, quantity=1" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.002" />
+    <testcase name="[3] productId=30, quantity=0" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.001" />
+    <testcase name="[4] productId=30, quantity=-1" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.002" />
+    <testcase name="replayReturnsCurrentCancelledOrderWithoutAnotherDebit()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.004" />
+    <testcase name="newPurchaseStoresDebitOrderAndOutcomeInOrder()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.004" />
+    <testcase name="insertFailureStopsHistoryAndOutcomeWrites()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.004" />
+    <testcase name="[1] beforeOrderId=0, pageSize=20" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.005" />
+    <testcase name="[2] beforeOrderId=-1, pageSize=20" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.002" />
+    <testcase name="[3] beforeOrderId=9223372036854775807, pageSize=0" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.001" />
+    <testcase name="[4] beforeOrderId=9223372036854775807, pageSize=101" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.002" />
+    <testcase name="recordedShortageDoesNotTryStockAgain()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.002" />
+    <testcase name="rejectsInvalidReadIdBeforeAccessingRepository(long) [1] orderId=0" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.003" />
+    <testcase name="rejectsInvalidReadIdBeforeAccessingRepository(long) [2] orderId=-1" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.003" />
+    <testcase name="shortageReturnsAnOutcomeInsteadOfThrowingBeforeCommit()" classname="dev.mentoring.orders.service.OrderServiceTest" time="0.002" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.web.admission.WriteAdmissionTest" tests="11" failures="0" errors="0" skipped="0" time="0.178">
-    <testcase name="rateRetryAfterUsesRemainingWindowRoundedUp()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.01" />
-    <testcase name="rateIsPerCustomer()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.011" />
-    <testcase name="rejectionResponseCarriesTheCalculatedRetryAfter()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.008" />
-    <testcase name="orderAndCancellationShareTheSameConcurrentWriteSlots()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.019" />
-    <testcase name="negativeMonotonicTimeStillProducesPositiveRetryAfter()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.007" />
-    <testcase name="failedCancellationCountsOnlyAgainstCancellationAndReleasesItsSlot()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.019" />
-    <testcase name="newMinuteResetsTheCustomerCount()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.002" />
-    <testcase name="failureReleasesSlot()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.003" />
-    <testcase name="concurrentRateChecksDoNotExceedTheWindowLimit()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.05" />
-    <testcase name="occupiedSlotRejectsRatherThanGrowingQueue()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.019" />
-    <testcase name="orderAndCancellationHaveIndependentCustomerLimits()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.007" />
+  <testsuite name="dev.mentoring.orders.service.ProductServiceTest" tests="4" failures="0" errors="0" skipped="0" time="0.009">
+    <testcase name="[1] productId=0" classname="dev.mentoring.orders.service.ProductServiceTest" time="0.003" />
+    <testcase name="[2] productId=-1" classname="dev.mentoring.orders.service.ProductServiceTest" time="0.001" />
+    <testcase name="returnsTheCurrentProduct()" classname="dev.mentoring.orders.service.ProductServiceTest" time="0.002" />
+    <testcase name="returnsTheCurrentProducts()" classname="dev.mentoring.orders.service.ProductServiceTest" time="0.002" />
   </testsuite>
-  <testsuite name="dev.mentoring.orders.web.filter.RequestSizeFilterTest" tests="11" failures="0" errors="0" skipped="0" time="0.16">
-    <testcase name="[1] servletPath=/orders-extra" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.004" />
-    <testcase name="[2] servletPath=/products" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.002" />
-    <testcase name="[1] servletPath=/orders" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.012" />
-    <testcase name="[2] servletPath=/orders/1/cancel" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.007" />
-    <testcase name="readRequestIsNotTreatedAsAnOrderWrite()" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.007" />
-    <testcase name="actualBytesRemainLimitedWhenDeclaredLengthDoesNotExceedLimit(long) [1] contentLength=-1" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.024" />
-    <testcase name="actualBytesRemainLimitedWhenDeclaredLengthDoesNotExceedLimit(long) [2] contentLength=0" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.005" />
-    <testcase name="actualBytesRemainLimitedWhenDeclaredLengthDoesNotExceedLimit(long) [3] contentLength=1" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.026" />
-    <testcase name="actualBytesRemainLimitedWhenDeclaredLengthDoesNotExceedLimit(long) [4] contentLength=8192" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.005" />
-    <testcase name="oversizedDeclaredLengthIsRejectedWithoutOpeningBody(long) [1] contentLength=8193" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.007" />
-    <testcase name="oversizedDeclaredLengthIsRejectedWithoutOpeningBody(long) [2] contentLength=9223372036854775807" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.001" />
+  <testsuite name="dev.mentoring.orders.TwoServerIntegrationTest" tests="12" failures="0" errors="0" skipped="0" time="8.294">
+    <testcase name="sameCancellationAcrossTwoServersRestoresOnce() [1/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.867" />
+    <testcase name="sameCancellationAcrossTwoServersRestoresOnce() [2/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.593" />
+    <testcase name="sameCancellationAcrossTwoServersRestoresOnce() [3/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.587" />
+    <testcase name="lastStockAcrossTwoServersAcceptsOneCustomer() [1/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.675" />
+    <testcase name="lastStockAcrossTwoServersAcceptsOneCustomer() [2/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.638" />
+    <testcase name="lastStockAcrossTwoServersAcceptsOneCustomer() [3/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.739" />
+    <testcase name="samePurchaseAcrossTwoServersCreatesOneOrder() [1/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.54" />
+    <testcase name="samePurchaseAcrossTwoServersCreatesOneOrder() [2/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.706" />
+    <testcase name="samePurchaseAcrossTwoServersCreatesOneOrder() [3/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.56" />
+    <testcase name="cancellationAndNewPurchaseAcrossTwoServersRemainConsistent() [1/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.765" />
+    <testcase name="cancellationAndNewPurchaseAcrossTwoServersRemainConsistent() [2/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.746" />
+    <testcase name="cancellationAndNewPurchaseAcrossTwoServersRemainConsistent() [3/3]" classname="dev.mentoring.orders.TwoServerIntegrationTest" time="0.874" />
+  </testsuite>
+  <testsuite name="dev.mentoring.orders.web.admission.WriteAdmissionTest" tests="11" failures="0" errors="0" skipped="0" time="0.065">
+    <testcase name="rateRetryAfterUsesRemainingWindowRoundedUp()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.004" />
+    <testcase name="rateIsPerCustomer()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.003" />
+    <testcase name="rejectionResponseCarriesTheCalculatedRetryAfter()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.001" />
+    <testcase name="orderAndCancellationShareTheSameConcurrentWriteSlots()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.012" />
+    <testcase name="negativeMonotonicTimeStillProducesPositiveRetryAfter()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.002" />
+    <testcase name="failedCancellationCountsOnlyAgainstCancellationAndReleasesItsSlot()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.006" />
+    <testcase name="newMinuteResetsTheCustomerCount()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.003" />
+    <testcase name="failureReleasesSlot()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.004" />
+    <testcase name="concurrentRateChecksDoNotExceedTheWindowLimit()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.011" />
+    <testcase name="occupiedSlotRejectsRatherThanGrowingQueue()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.007" />
+    <testcase name="orderAndCancellationHaveIndependentCustomerLimits()" classname="dev.mentoring.orders.web.admission.WriteAdmissionTest" time="0.006" />
+  </testsuite>
+  <testsuite name="dev.mentoring.orders.web.filter.RequestSizeFilterTest" tests="11" failures="0" errors="0" skipped="0" time="0.028">
+    <testcase name="[1] servletPath=/orders-extra" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.001" />
+    <testcase name="[2] servletPath=/products" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.001" />
+    <testcase name="[1] servletPath=/orders" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.004" />
+    <testcase name="[2] servletPath=/orders/1/cancel" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.001" />
+    <testcase name="readRequestIsNotTreatedAsAnOrderWrite()" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.001" />
+    <testcase name="actualBytesRemainLimitedWhenDeclaredLengthDoesNotExceedLimit(long) [1] contentLength=-1" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.005" />
+    <testcase name="actualBytesRemainLimitedWhenDeclaredLengthDoesNotExceedLimit(long) [2] contentLength=0" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.001" />
+    <testcase name="actualBytesRemainLimitedWhenDeclaredLengthDoesNotExceedLimit(long) [3] contentLength=1" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.001" />
+    <testcase name="actualBytesRemainLimitedWhenDeclaredLengthDoesNotExceedLimit(long) [4] contentLength=8192" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.001" />
+    <testcase name="oversizedDeclaredLengthIsRejectedWithoutOpeningBody(long) [1] contentLength=8193" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.003" />
+    <testcase name="oversizedDeclaredLengthIsRejectedWithoutOpeningBody(long) [2] contentLength=9223372036854775807" classname="dev.mentoring.orders.web.filter.RequestSizeFilterTest" time="0.0" />
   </testsuite>
 </testsuites>
