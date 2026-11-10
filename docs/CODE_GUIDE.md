@@ -79,7 +79,7 @@ public OrderPlacement placeOrder(String username, String idempotencyKey, long pr
 | `@Service`, `@Repository` | 주문 처리와 SQL 저장소를 Spring 관리 객체로 등록. 자체적으로 잠금을 걸지는 않음 |
 | `@Component` | 크기 필터, 쓰기 한도와 초기 데이터 등록기를 관리 객체로 등록 |
 | `@Profile("demo")` | 로컬 예제용 초기화. demo 프로필이 활성화됐을 때 예제 데이터 등록기 사용 |
-| `@Configuration(proxyBeanMethods = false)`, `@Bean` | 비밀번호 인코더, 계정 조회와 보안 필터 체인 등록. Bean 메서드끼리 직접 호출하지 않아 설정 클래스 프록시는 생략 |
+| `@Configuration(proxyBeanMethods = false)`, `@Bean` | 비밀번호 인코더, 인증 오류 응답과 보안 필터 체인 등록. Bean 메서드끼리 직접 호출하지 않아 설정 클래스 프록시는 생략. 계정 조회 클래스는 `@Repository`, 로그인 정보 변환 클래스는 `@Service`로 등록 |
 | `@Value` | 설정 파일의 쓰기 한도와 실행 시 생성한 비밀번호 주입 |
 | `@RestControllerAdvice`, `@ExceptionHandler` | 입력/업무/DB 오류를 같은 API 오류 형식으로 변환 |
 | `@Order` | Servlet 필터의 실행 순서 지정. 고객 주문의 처리 순서와는 무관 |

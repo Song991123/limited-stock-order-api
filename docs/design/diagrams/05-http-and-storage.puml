@@ -1,0 +1,42 @@
+@startuml
+top to bottom direction
+skinparam defaultFontName Malgun Gothic
+skinparam defaultFontSize 17
+skinparam shadowing false
+skinparam roundcorner 0
+skinparam backgroundColor white
+skinparam ArrowColor #455768
+skinparam rectangleBackgroundColor #F4F7F9
+skinparam rectangleBorderColor #647788
+skinparam databaseBackgroundColor #EDF4F5
+skinparam databaseBorderColor #647788
+skinparam nodesep 35
+skinparam ranksep 35
+
+actor "구매 고객" as customer
+rectangle "Spring Boot 주문 접수 서버" {
+  rectangle "Spring Security\n로그인과 CSRF 검사\nBCrypt 비밀번호 비교" as security
+  rectangle "주문 API\nOrderController\n요청 DTO 검증 / 응답 DTO 변환" as controller
+  rectangle "로그인 정보 변환\nCustomerUserDetailsService" as accountService
+  rectangle "주문 접수와 취소\nOrderService\n트랜잭션 적용" as orderService
+  rectangle "로그인 계정 조회 SQL\nCustomerAccountRepository" as accountRepository
+  rectangle "주문 저장 SQL\nOrderRepository" as orderRepository
+}
+database "PostgreSQL\n고객 계정 / 구매 요청\n주문 / 재고 / 증감 이력" as db
+
+customer -down-> security : 1. 주문 또는 취소 HTTP 요청
+security -right-> controller : 3. 검사 통과 요청
+security -down-> accountService : 2. 인증에 쓸 계정 조회
+accountService -down-> accountRepository : 계정명으로 조회
+accountRepository -down-> db : 계정명과 비밀번호 해시 조회
+controller -down-> orderService : 로그인 고객과\n검증한 입력
+orderService -down-> orderRepository : 주문 처리와 저장 요청
+orderRepository -down-> db : 구매 결과, 주문, 재고와 이력 저장
+
+legend bottom left
+화살표: 호출 관계 / 반환 메시지 생략
+번호: HTTP 요청부터 주문 API 진입까지의 순서
+인증 시 계정 조회와 주문 저장은 별도 처리
+상품 조회와 오류 처리 등 보조 경로는 생략
+endlegend
+@enduml
