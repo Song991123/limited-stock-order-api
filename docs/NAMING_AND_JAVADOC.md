@@ -42,10 +42,10 @@
 | `existing` | `recordedPurchase`, `existingOrder` | 최초 구매 결과와 현재 주문 상태 구분 |
 | `ORDER`, `PRODUCT` | `ORDER_ROW_MAPPER`, `PRODUCT_ROW_MAPPER` | 데이터 한 건이 아니라 SQL 결과 변환기라는 역할 |
 | `jdbc`, `rs`, `name` | `jdbcClient`, `resultSet`, `columnName` | 조회 도구, 결과 행과 컬럼명 구분 |
-| `slots`, `windows` | `writePermits`, `customerRateWindows` | 동시에 실행할 수 있는 요청 수와 고객별 분당 횟수 구분 |
+| `slots`, `windows` | `writePermits`, `orderRateWindows`, `cancellationRateWindows` | 공통 동시 처리 수와 고객별 구매/취소 횟수 구분 |
 | `concurrent`, `perCustomerPerMinute` | `maxConcurrentWrites`, `maxRequestsPerCustomerPerMinute` | 현재 사용량이 아닌 허용 상한 |
 | `minute`, `count`, `remaining` | `windowIndex`, `requestCount`, `remainingWindowNanos` | 구간 번호, 요청 수와 시간 단위 |
-| `execute`, `reserve` | `executeWrite`, `checkAndCountRequest` | 작업 실행과 원자적인 한도 검사/카운트 구분 |
+| `execute`, `check` | `executeOrder`, `executeCancellation`, `checkAndCountRequest` | 주문/취소 실행과 한도 검사/횟수 계산 구분 |
 | 예외 처리기의 `order`, `database` | `handleOrderProblem`, `handleDatabaseFailure` | 조회가 아니라 오류 응답 처리라는 행동 |
 | `purchaseResponse` | `toOrderResponse` | 주문 처리 결과로 HTTP 응답 생성 |
 

@@ -30,9 +30,9 @@ SELECT FOR UPDATE 뒤 검사하는 방법과 JPA 버전 검사도 대안입니�
 
 Spring Security의 계정 인증과 CSRF 검사를 유지하고, 주문 조회/취소 SQL에 고객 ID 조건을 넣습니다. 클라이언트가 다른 고객 ID나 복구 수량을 보내 결정하게 하지 않습니다. 문자열 숫자, 소수 수량, 알 수 없는 필드와 중복 JSON 필드를 거절합니다.
 
-[RequestSizeFilter](../src/main/java/dev/mentoring/orders/web/filter/RequestSizeFilter.java)는 폼 처리와 보안 필터가 본문을 읽기 전에 크기를 검사합니다. 8KiB를 초과하면 고정 길이와 chunked 요청 모두 거절합니다. 취소 요청은 본문이 비어 있어야 합니다.
+[RequestSizeFilter](../src/main/java/dev/mentoring/orders/web/filter/RequestSizeFilter.java)는 알려진 길이가 8KiB를 넘으면 스트림을 열기 전에 거절하고, 나머지는 실제 바이트를 제한합니다. Tomcat의 100 Continue도 본문 읽기 시점에 보내도록 설정했습니다. 고정 길이와 chunked의 크기 제한은 같고 취소 요청은 본문이 비어 있어야 합니다.
 
-[WriteAdmission](../src/main/java/dev/mentoring/orders/web/admission/WriteAdmission.java)은 동시 쓰기를 제한하고 계정별 고정 1분 구간의 요청 수를 셉니다. 고객별 한도 초과에는 다음 구간까지 남은 초를 `Retry-After`로 반환합니다. 요청 키의 멱등성과 남용 제한은 다른 역할입니다.
+[WriteAdmission](../src/main/java/dev/mentoring/orders/web/admission/WriteAdmission.java)은 구매와 취소의 계정별 횟수를 따로 세고 전체 동시 쓰기는 함께 제한합니다. 고객별 횟수 초과에는 다음 구간까지 남은 초를 `Retry-After`로 반환합니다. 구매 재전송 때문에 취소까지 막지 않되 취소의 남용 제한도 유지합니다. [선택 이유와 전후 결과](REQUEST_FLOW_IMPROVEMENTS.md)에 바꾼 흐름과 남은 비용을 정리했습니다.
 
 ## 코드 읽기
 
