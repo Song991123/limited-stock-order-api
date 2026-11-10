@@ -288,6 +288,30 @@ class OrderHttpIntegrationTest {
         assertThat(available()).isEqualTo(10);
     }
 
+    /** 기록 시각을 과거로 바꿔도 같은 구매는 새 주문이나 재차감으로 처리하지 않음. */
+    @Test void agedPurchaseKeyStillReturnsCancelledOrder() throws Exception {
+        var created=alice.buy("aged-purchase",product,2);
+        long id=json(created).path("id").asLong();
+        jdbc.update("UPDATE order_requests SET created_at = TIMESTAMPTZ '2020-01-01 00:00:00+00' WHERE request_key=?", "aged-purchase");
+        var acceptedReplay=alice.buy("aged-purchase",product,2);
+        assertThat(acceptedReplay.statusCode()).isEqualTo(200);
+        assertThat(json(acceptedReplay).path("id").asLong()).isEqualTo(id);
+        assertThat(json(acceptedReplay).path("status").asText()).isEqualTo("ACCEPTED");
+        assertThat(alice.cancel(id).statusCode()).isEqualTo(200);
+        var cancelledReplay=alice.buy("aged-purchase",product,2);
+        assertThat(cancelledReplay.statusCode()).isEqualTo(200);
+        assertThat(json(cancelledReplay).path("id").asLong()).isEqualTo(id);
+        assertThat(json(cancelledReplay).path("status").asText()).isEqualTo("CANCELLED");
+        assertThat(alice.buy("aged-purchase",product,1).statusCode()).isEqualTo(409);
+        assertThat(count("orders")).isEqualTo(1);
+        assertThat(count("order_requests")).isEqualTo(1);
+        assertThat(available()).isEqualTo(10);
+        observe("aged-key-cancelled-replay",Map.of("createdHttp",created.statusCode(),
+                "acceptedReplayHttp",acceptedReplay.statusCode(),"cancelledReplayHttp",cancelledReplay.statusCode(),
+                "originalId",id,"replayedId",json(cancelledReplay).path("id").asLong(),
+                "status",json(cancelledReplay).path("status").asText(),"orders",count("orders"),"available",available()));
+    }
+
     @Test void otherCustomerCannotReadOrCancelOrder() throws Exception {
         long id=json(alice.buy("private-order",product,1)).path("id").asLong();
         assertThat(bob.send("GET","/orders/"+id,null,null).statusCode()).isEqualTo(404);
@@ -654,6 +678,31 @@ class OrderHttpIntegrationTest {
                 .POST(HttpRequest.BodyPublishers.ofString(payload(product,1))).build();
         assertThat(alice.http.send(request,HttpResponse.BodyHandlers.ofString()).statusCode()).isEqualTo(415);
         assertEmptyAndStock(10);
+    }
+
+    @Test void methodRejectionIncludesAllowHeader() throws Exception {
+        var response=alice.send("PUT","/products",null,"{}");
+        assertThat(response.statusCode()).isEqualTo(405);
+        String allow=response.headers().firstValue("Allow").orElse("");
+        assertThat(Arrays.stream(allow.split(",")).map(String::trim).toList()).contains("GET");
+        assertThat(json(response).path("code").asText()).isEqualTo("REQUEST_REJECTED");
+        assertEmptyAndStock(10);
+        observe("method-allow-header",Map.of("http",response.statusCode(),"allow",allow,
+                "code",json(response).path("code").asText(),"orders",count("orders"),"available",available()));
+    }
+
+    @Test void bodyTypeRejectionIncludesAcceptedMediaTypes() throws Exception {
+        var request=HttpRequest.newBuilder(uri(port,"/orders")).header("Authorization",alice.authorization)
+                .header(alice.csrfHeader,alice.csrf).header("Content-Type","text/plain")
+                .POST(HttpRequest.BodyPublishers.ofString(payload(product,1))).build();
+        var response=alice.http.send(request,HttpResponse.BodyHandlers.ofString());
+        assertThat(response.statusCode()).isEqualTo(415);
+        String accept=response.headers().firstValue("Accept").orElse("");
+        assertThat(accept).contains("application/json");
+        assertThat(json(response).path("code").asText()).isEqualTo("REQUEST_REJECTED");
+        assertEmptyAndStock(10);
+        observe("body-type-accept-header",Map.of("http",response.statusCode(),"accept",accept,
+                "code",json(response).path("code").asText(),"orders",count("orders"),"available",available()));
     }
 
     @Test void cancellationUsesStoredQuantity() throws Exception {
