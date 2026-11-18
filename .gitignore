@@ -7,3 +7,4 @@ evidence/raw/
 *.zip
 .idea/
 *.iml
+.playwright-cli/

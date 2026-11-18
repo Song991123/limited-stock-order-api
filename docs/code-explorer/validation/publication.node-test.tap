@@ -1,0 +1,226 @@
+TAP version 13
+# Subtest: all current sources have reviewed explanations and a deterministic HTML
+ok 1 - all current sources have reviewed explanations and a deterministic HTML
+  ---
+  duration_ms: 386.5644
+  type: 'test'
+  ...
+# Subtest: every source line and original character is retained
+ok 2 - every source line and original character is retained
+  ---
+  duration_ms: 10.3954
+  type: 'test'
+  ...
+# Subtest: JDK parser locates methods and annotations in all Java sources
+ok 3 - JDK parser locates methods and annotations in all Java sources
+  ---
+  duration_ms: 0.3966
+  type: 'test'
+  ...
+# Subtest: all annotations actually used have effect, reason, alternative and limits
+ok 4 - all annotations actually used have effect, reason, alternative and limits
+  ---
+  duration_ms: 0.2369
+  type: 'test'
+  ...
+# Subtest: flow links point to actual source methods
+ok 5 - flow links point to actual source methods
+  ---
+  duration_ms: 0.2211
+  type: 'test'
+  ...
+# Subtest: cancellation separates first cancellation and repeated cancellation
+ok 6 - cancellation separates first cancellation and repeated cancellation
+  ---
+  duration_ms: 0.3154
+  type: 'test'
+  ...
+# Subtest: every source path is repository relative and excludes private runtime data
+ok 7 - every source path is repository relative and excludes private runtime data
+  ---
+  duration_ms: 28.3375
+  type: 'test'
+  ...
+# Subtest: recorded service tests and separate recovery cases stay separate
+ok 8 - recorded service tests and separate recovery cases stay separate
+  ---
+  duration_ms: 0.1547
+  type: 'test'
+  ...
+# Subtest: all existing diagram images are embedded without network dependencies
+ok 9 - all existing diagram images are embedded without network dependencies
+  ---
+  duration_ms: 2.1146
+  type: 'test'
+  ...
+# Subtest: HTML excludes private absolute workspace paths
+ok 10 - HTML excludes private absolute workspace paths
+  ---
+  duration_ms: 1.666
+  type: 'test'
+  ...
+# Subtest: HTML data roundtrips exactly and escapes closing script text
+ok 11 - HTML data roundtrips exactly and escapes closing script text
+  ---
+  duration_ms: 10.6633
+  type: 'test'
+  ...
+# Subtest: syntax highlighting escapes source without changing code text
+ok 12 - syntax highlighting escapes source without changing code text
+  ---
+  duration_ms: 0.1431
+  type: 'test'
+  ...
+# Subtest: unmodified fixture keeps its reviewed line notes
+ok 13 - unmodified fixture keeps its reviewed line notes
+  ---
+  duration_ms: 18.2631
+  type: 'test'
+  ...
+# Subtest: source drift updates displayed source but disables obsolete line notes
+ok 14 - source drift updates displayed source but disables obsolete line notes
+  ---
+  duration_ms: 18.1804
+  type: 'test'
+  ...
+# Subtest: freshness CLI fails for source changes without writing a misleading HTML
+ok 15 - freshness CLI fails for source changes without writing a misleading HTML
+  ---
+  duration_ms: 748.6527
+  type: 'test'
+  ...
+# Subtest: source with a closing script tag stays JSON text, not executable HTML
+ok 16 - source with a closing script tag stays JSON text, not executable HTML
+  ---
+  duration_ms: 19.2381
+  type: 'test'
+  ...
+# Subtest: explanation drift also requires a new review
+ok 17 - explanation drift also requires a new review
+  ---
+  duration_ms: 17.998
+  type: 'test'
+  ...
+# Subtest: new source without explanation is reported
+ok 18 - new source without explanation is reported
+  ---
+  duration_ms: 18.5967
+  type: 'test'
+  ...
+# Subtest: deleted source cannot retain orphan explanation and review entries
+ok 19 - deleted source cannot retain orphan explanation and review entries
+  ---
+  duration_ms: 15.9661
+  type: 'test'
+  ...
+# Subtest: out-of-range explanation and duplicate file ownership are rejected
+ok 20 - out-of-range explanation and duplicate file ownership are rejected
+  ---
+  duration_ms: 24.4648
+  type: 'test'
+  ...
+# Subtest: explicitly accepting a reviewed file updates only its source reference
+ok 21 - explicitly accepting a reviewed file updates only its source reference
+  ---
+  duration_ms: 32.8361
+  type: 'test'
+  ...
+# Subtest: repository traversal is rejected and cross-OS line endings have one hash
+ok 22 - repository traversal is rejected and cross-OS line endings have one hash
+  ---
+  duration_ms: 0.6472
+  type: 'test'
+  ...
+# Subtest: a plain helper method end does not claim a Spring commit
+ok 23 - a plain helper method end does not claim a Spring commit
+  ---
+  duration_ms: 0.1795
+  type: 'test'
+  ...
+# Subtest: Java if is a control condition even when it contains a string literal
+ok 24 - Java if is a control condition even when it contains a string literal
+  ---
+  duration_ms: 0.1723
+  type: 'test'
+  ...
+# Subtest: fixture.js conditions are not SQL
+ok 25 - fixture.js conditions are not SQL
+  ---
+  duration_ms: 0.0818
+  type: 'test'
+  ...
+# Subtest: fixture.ps1 conditions are not SQL
+ok 26 - fixture.ps1 conditions are not SQL
+  ---
+  duration_ms: 0.258
+  type: 'test'
+  ...
+# Subtest: fixture.cjs conditions are not SQL
+ok 27 - fixture.cjs conditions are not SQL
+  ---
+  duration_ms: 0.0562
+  type: 'test'
+  ...
+# Subtest: real SQL and SQL inside a Java text block keep SQL explanations
+ok 28 - real SQL and SQL inside a Java text block keep SQL explanations
+  ---
+  duration_ms: 0.1825
+  type: 'test'
+  ...
+# Subtest: all current code conditions avoid the former SQL misclassification
+ok 29 - all current code conditions avoid the former SQL misclassification
+  ---
+  duration_ms: 0.8337
+  type: 'test'
+  ...
+# Subtest: reviewed script SQL fragments keep their explicit SQL explanations
+ok 30 - reviewed script SQL fragments keep their explicit SQL explanations
+  ---
+  duration_ms: 0.1294
+  type: 'test'
+  ...
+# Subtest: stale source hides file notes and method summaries in generated HTML
+ok 31 - stale source hides file notes and method summaries in generated HTML
+  ---
+  duration_ms: 1483.596
+  type: 'test'
+  ...
+# Subtest: reviewed callers do not reuse summaries from stale callees
+ok 32 - reviewed callers do not reuse summaries from stale callees
+  ---
+  duration_ms: 773.7948
+  type: 'test'
+  ...
+# Subtest: stale callers do not reuse their own summaries or other project summaries
+ok 33 - stale callers do not reuse their own summaries or other project summaries
+  ---
+  duration_ms: 734.1442
+  type: 'test'
+  ...
+# Subtest: changed method notes stay hidden until explicitly reviewed
+ok 34 - changed method notes stay hidden until explicitly reviewed
+  ---
+  duration_ms: 771.7248
+  type: 'test'
+  ...
+# Subtest: freshness CLI rejects changed method explanations without overwriting HTML
+ok 35 - freshness CLI rejects changed method explanations without overwriting HTML
+  ---
+  duration_ms: 1543.7784
+  type: 'test'
+  ...
+# Subtest: a stale same-named method cannot make a different method appear unique
+ok 36 - a stale same-named method cannot make a different method appear unique
+  ---
+  duration_ms: 804.0816
+  type: 'test'
+  ...
+1..36
+# tests 36
+# suites 0
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8944.7221

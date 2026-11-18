@@ -19,6 +19,8 @@
 
 동시 주문 처리와 코드 구성은 [구현 설명](docs/IMPLEMENTATION.md)을 확인해주세요.
 
+원본 코드와 줄별 설명은 [HTML 코드 해설](docs/code-explorer/index.html)에서 볼 수 있습니다. 로컬 파일을 브라우저에서 열면 폴더별 코드, 어노테이션과 기술 선택 이유를 함께 확인할 수 있습니다.
+
 ## 실행 방법
 
 Windows, Java 21, PowerShell 7, Node.js와 PostgreSQL 16 실행 파일이 필요합니다. 빌드는 Gradle Wrapper 8.14.3, 서버는 Spring Boot 3.5.16과 Spring JDBC를 사용합니다.
