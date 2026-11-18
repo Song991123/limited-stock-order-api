@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; base-uri 'none'">
+  <title>한정 재고 주문 서버 | 코드 해설</title>
+  <style>/* CODE_EXPLORER_STYLE */</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <button class="icon-button mobile-menu" id="open-tree" title="폴더 목록 열기" aria-label="폴더 목록 열기" aria-expanded="false" data-icon="PanelLeftOpen"></button>
+      <span class="brand-mark" data-icon="Package" aria-hidden="true"></span>
+      <div><span class="brand-name">한정 재고 주문 서버</span><span class="brand-subtitle">Spring Boot 코드 해설</span></div>
+    </div>
+    <label class="search-box" for="search"><span data-icon="Search" aria-hidden="true"></span><input id="search" type="search" autocomplete="off" placeholder="멱등키, @Transactional, 취소" aria-label="파일과 코드 해설 검색"><button class="icon-button" id="clear-search" type="button" title="검색 지우기" aria-label="검색 지우기" data-icon="X" hidden></button></label>
+    <div class="source-state"><span class="status-dot" id="status-dot"></span><span id="source-state"></span></div>
+  </header>
+    <nav class="view-tabs" role="tablist" aria-label="문서 보기">
+    <button id="tab-code" role="tab" aria-controls="view-code" data-view="code" aria-selected="true" data-icon="Code2">코드와 해설</button>
+    <button id="tab-project" role="tab" aria-controls="view-project" data-view="project" aria-selected="false" data-icon="BookOpen">프로그램</button>
+    <button id="tab-technology" role="tab" aria-controls="view-technology" data-view="technology" aria-selected="false" data-icon="GitBranch">기술 선택</button>
+    <button id="tab-verification" role="tab" aria-controls="view-verification" data-view="verification" aria-selected="false" data-icon="ShieldCheck">검증 범위</button>
+  </nav>
+  <div class="workspace">
+    <button id="sidebar-backdrop" class="backdrop" aria-label="폴더 목록 닫기" hidden></button>
+    <aside id="sidebar" aria-label="저장소 폴더와 검색 결과">
+      <div class="sidebar-heading"><span id="sidebar-label">파일</span><span id="file-count"></span><div class="sidebar-actions"><button class="icon-button" id="expand-tree" title="폴더 모두 펼치기" aria-label="폴더 모두 펼치기" data-icon="FolderOpen"></button><button class="icon-button" id="collapse-tree" title="폴더 모두 접기" aria-label="폴더 모두 접기" data-icon="ChevronsDownUp"></button><button class="icon-button mobile-menu" id="close-tree" title="폴더 목록 닫기" aria-label="폴더 목록 닫기" data-icon="X"></button></div></div>
+      <div id="tree" class="tree" role="tree" aria-label="실제 코드 폴더 구조"></div>
+      <div id="search-results" class="search-results" aria-label="검색 결과" hidden></div>
+      <div class="sidebar-footer"><span>limited-stock-order-api</span><span id="snapshot-hash"></span></div>
+    </aside>
+    <main id="main">
+      <section id="view-code" class="code-view" role="tabpanel" aria-labelledby="tab-code">
+        <header class="file-header">
+          <div class="file-title-row"><div class="file-identity"><span id="file-role" class="role-label"></span><h1 id="file-name"></h1></div><div class="file-actions"><button class="icon-button" id="copy-code" title="원본 코드 복사" aria-label="원본 코드 복사" data-icon="Copy"></button><button class="icon-button" id="download-code" title="원본 파일 내려받기" aria-label="원본 파일 내려받기" data-icon="Download"></button><button class="icon-button" id="open-github" title="GitHub main 파일 열기" aria-label="GitHub main 파일 열기" data-icon="ExternalLink"></button></div></div>
+          <p id="file-path" class="file-path"></p>
+          <p id="file-purpose" class="file-purpose"></p>
+          <div class="file-controls"><select id="method-select" aria-label="메서드 선택"></select><div id="file-technologies" class="file-technologies"></div><label class="comment-toggle"><input id="show-comments" type="checkbox" checked>주석</label></div>
+          <div id="stale-banner" class="stale-banner" role="status" hidden></div>
+          <details id="file-decisions" class="file-decisions"><summary>이 파일의 선택 이유와 대안</summary><div id="decision-content"></div></details>
+        </header>
+        <div id="code-scroll" class="code-scroll" tabindex="0" aria-label="줄별 코드 읽기">
+          <div class="code-columns"><span>줄</span><span>원본 코드</span><span>해설</span></div>
+          <div id="code-rows"></div>
+        </div>
+        <footer class="reader-status"><span id="current-line"></span><span id="code-count"></span></footer>
+      </section>
+      <section id="view-project" class="document-view" role="tabpanel" aria-labelledby="tab-project" hidden></section>
+      <section id="view-technology" class="document-view" role="tabpanel" aria-labelledby="tab-technology" hidden></section>
+      <section id="view-verification" class="document-view" role="tabpanel" aria-labelledby="tab-verification" hidden></section>
+    </main>
+  </div>
+  <dialog id="technology-dialog" aria-labelledby="technology-title"><div class="dialog-heading"><h2 id="technology-title"></h2><button class="icon-button" id="close-technology" title="설명 닫기" aria-label="설명 닫기" data-icon="X"></button></div><div id="technology-body"></div></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <div id="app-error" class="app-error" role="alert" hidden></div>
+  <script id="explorer-data" type="application/json">__CODE_EXPLORER_DATA__</script>
+  <script>/* CODE_EXPLORER_APP */</script>
+</body>
+</html>
