@@ -1,0 +1,142 @@
+TAP version 13
+# Subtest: all current sources have reviewed explanations and a deterministic HTML
+ok 1 - all current sources have reviewed explanations and a deterministic HTML
+  ---
+  duration_ms: 357.5889
+  type: 'test'
+  ...
+# Subtest: every source line and original character is retained
+ok 2 - every source line and original character is retained
+  ---
+  duration_ms: 9.2277
+  type: 'test'
+  ...
+# Subtest: JDK parser locates methods and annotations in all Java sources
+ok 3 - JDK parser locates methods and annotations in all Java sources
+  ---
+  duration_ms: 0.3432
+  type: 'test'
+  ...
+# Subtest: all annotations actually used have effect, reason, alternative and limits
+ok 4 - all annotations actually used have effect, reason, alternative and limits
+  ---
+  duration_ms: 0.2058
+  type: 'test'
+  ...
+# Subtest: flow links point to actual source methods
+ok 5 - flow links point to actual source methods
+  ---
+  duration_ms: 0.1825
+  type: 'test'
+  ...
+# Subtest: every source path is repository relative and excludes private runtime data
+ok 6 - every source path is repository relative and excludes private runtime data
+  ---
+  duration_ms: 29.0335
+  type: 'test'
+  ...
+# Subtest: recorded service tests and separate recovery cases stay separate
+ok 7 - recorded service tests and separate recovery cases stay separate
+  ---
+  duration_ms: 0.1207
+  type: 'test'
+  ...
+# Subtest: all existing diagram images are embedded without network dependencies
+ok 8 - all existing diagram images are embedded without network dependencies
+  ---
+  duration_ms: 2.0799
+  type: 'test'
+  ...
+# Subtest: HTML excludes private absolute workspace paths
+ok 9 - HTML excludes private absolute workspace paths
+  ---
+  duration_ms: 1.6458
+  type: 'test'
+  ...
+# Subtest: HTML data roundtrips exactly and escapes closing script text
+ok 10 - HTML data roundtrips exactly and escapes closing script text
+  ---
+  duration_ms: 10.963
+  type: 'test'
+  ...
+# Subtest: syntax highlighting escapes source without changing code text
+ok 11 - syntax highlighting escapes source without changing code text
+  ---
+  duration_ms: 0.1973
+  type: 'test'
+  ...
+# Subtest: unmodified fixture keeps its reviewed line notes
+ok 12 - unmodified fixture keeps its reviewed line notes
+  ---
+  duration_ms: 19.2644
+  type: 'test'
+  ...
+# Subtest: source drift updates displayed source but disables obsolete line notes
+ok 13 - source drift updates displayed source but disables obsolete line notes
+  ---
+  duration_ms: 22.6097
+  type: 'test'
+  ...
+# Subtest: freshness CLI fails for source changes without writing a misleading HTML
+ok 14 - freshness CLI fails for source changes without writing a misleading HTML
+  ---
+  duration_ms: 855.5113
+  type: 'test'
+  ...
+# Subtest: source with a closing script tag stays JSON text, not executable HTML
+ok 15 - source with a closing script tag stays JSON text, not executable HTML
+  ---
+  duration_ms: 19.6748
+  type: 'test'
+  ...
+# Subtest: explanation drift also requires a new review
+ok 16 - explanation drift also requires a new review
+  ---
+  duration_ms: 18.6605
+  type: 'test'
+  ...
+# Subtest: new source without explanation is reported
+ok 17 - new source without explanation is reported
+  ---
+  duration_ms: 19.209
+  type: 'test'
+  ...
+# Subtest: deleted source cannot retain orphan explanation and review entries
+ok 18 - deleted source cannot retain orphan explanation and review entries
+  ---
+  duration_ms: 17.987
+  type: 'test'
+  ...
+# Subtest: out-of-range explanation and duplicate file ownership are rejected
+ok 19 - out-of-range explanation and duplicate file ownership are rejected
+  ---
+  duration_ms: 27.643
+  type: 'test'
+  ...
+# Subtest: explicitly accepting a reviewed file updates only its source reference
+ok 20 - explicitly accepting a reviewed file updates only its source reference
+  ---
+  duration_ms: 37.3944
+  type: 'test'
+  ...
+# Subtest: repository traversal is rejected and cross-OS line endings have one hash
+ok 21 - repository traversal is rejected and cross-OS line endings have one hash
+  ---
+  duration_ms: 0.637
+  type: 'test'
+  ...
+# Subtest: a plain helper method end does not claim a Spring commit
+ok 22 - a plain helper method end does not claim a Spring commit
+  ---
+  duration_ms: 0.1783
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2910.2095
