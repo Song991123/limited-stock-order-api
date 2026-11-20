@@ -53,32 +53,19 @@ public final class ReviewFixture {
 
     /** 응답과 별개로 저장된 수량, 주문, 구매 결과와 이력의 일치 여부 조회. */
     public static Map<String, Object> snapshot() throws SQLException {
-        long inventoryViolations = number("""
-                SELECT count(*) FROM inventories i WHERE available_quantity < 0 OR available_quantity > initial_quantity
-                OR available_quantity <> initial_quantity - COALESCE((SELECT sum(quantity) FROM orders o WHERE o.product_id=i.product_id AND o.status='ACCEPTED'),0)
-                OR available_quantity <> initial_quantity + COALESCE((SELECT sum(quantity_delta) FROM inventory_movements m WHERE m.product_id=i.product_id),0)
-                """);
-        long requestViolations = number("""
-                SELECT count(*) FROM order_requests r WHERE outcome IS NULL
-                OR (outcome='ACCEPTED' AND (SELECT count(*) FROM orders o WHERE o.request_id=r.id)<>1)
-                OR (outcome='OUT_OF_STOCK' AND EXISTS(SELECT 1 FROM orders o WHERE o.request_id=r.id))
-                """);
-        long orderViolations = number("""
-                SELECT count(*) FROM orders o JOIN order_requests r ON r.id=o.request_id
-                WHERE o.buyer_id<>r.buyer_id OR o.product_id<>r.product_id OR o.quantity<>r.quantity
-                OR (SELECT count(*) FROM inventory_movements m WHERE m.order_id=o.id AND m.kind='DEBIT')<>1
-                OR (SELECT count(*) FROM inventory_movements m WHERE m.order_id=o.id AND m.kind='RESTORE')<>(CASE WHEN o.status='CANCELLED' THEN 1 ELSE 0 END)
-                OR EXISTS(SELECT 1 FROM inventory_movements m WHERE m.order_id=o.id AND (m.product_id<>o.product_id OR m.quantity_delta<>(CASE WHEN m.kind='DEBIT' THEN -o.quantity ELSE o.quantity END)))
-                """);
+        OrderStorageChecks.Counts counts;
+        try (var connection = connection()) {
+            counts = OrderStorageChecks.compare(connection);
+        }
+        counts.assertConsistent();
         var result = new LinkedHashMap<String, Object>();
-        result.put("inventoryViolations", inventoryViolations);
-        result.put("requestViolations", requestViolations);
-        result.put("orderViolations", orderViolations);
+        result.put("inventoryViolations", counts.inventoryViolations());
+        result.put("requestViolations", counts.requestViolations());
+        result.put("orderViolations", counts.orderViolations());
         result.put("orders", number("SELECT count(*) FROM orders"));
         result.put("requests", number("SELECT count(*) FROM order_requests"));
         result.put("available", number("SELECT sum(available_quantity) FROM inventories"));
         result.put("restorations", number("SELECT count(*) FROM inventory_movements WHERE kind='RESTORE'"));
-        assertThat(inventoryViolations + requestViolations + orderViolations).isZero();
         return result;
     }
 

@@ -6,6 +6,7 @@ import static org.awaitility.Awaitility.await;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpServer;
+import dev.mentoring.orders.support.OrderStorageChecks;
 import java.io.IOException;
 import java.net.*;
 import java.net.http.*;
@@ -648,6 +649,145 @@ class OrderHttpIntegrationTest {
         assertThat(available()).isEqualTo(9);
     }
 
+    @Test void queryTokenDoesNotReplaceRequiredHeaderToken() throws Exception {
+        long id=json(alice.buy("query-token-required",product,1)).path("id").asLong();
+        String token=URLEncoder.encode(alice.csrf,StandardCharsets.UTF_8);
+        var request=HttpRequest.newBuilder(uri(port,"/orders/"+id+"/cancel?_csrf="+token))
+                .header("Authorization",alice.authorization)
+                .POST(HttpRequest.BodyPublishers.noBody()).build();
+        var response=alice.http.send(request,HttpResponse.BodyHandlers.ofString());
+        assertThat(response.statusCode()).isEqualTo(403);
+        assertThat(available()).isEqualTo(9);
+        assertThat(json(alice.send("GET","/orders/"+id,null,null)).path("status").asText()).isEqualTo("ACCEPTED");
+        observe("query-token-requires-header",Map.of("http",response.statusCode(),"available",available()));
+    }
+
+    @Test void validHeaderStillCancelsWhenQueryTokenIsInvalid() throws Exception {
+        long id=json(alice.buy("valid-header-and-query",product,1)).path("id").asLong();
+        var request=HttpRequest.newBuilder(uri(port,"/orders/"+id+"/cancel?_csrf=invalid"))
+                .header("Authorization",alice.authorization).header(alice.csrfHeader,alice.csrf)
+                .POST(HttpRequest.BodyPublishers.noBody()).build();
+        var response=alice.http.send(request,HttpResponse.BodyHandlers.ofString());
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(json(response).path("status").asText()).isEqualTo("CANCELLED");
+        assertThat(available()).isEqualTo(10);
+        observe("valid-header-with-invalid-query",Map.of("http",response.statusCode(),"available",available()));
+    }
+
+    @Test void consistencyCheckRejectsSwappedMovementAmounts() throws Exception {
+        long first=json(alice.buy("movement-first",product,1)).path("id").asLong();
+        long second=json(alice.buy("movement-second",product,2)).path("id").asLong();
+        try {
+            assertThat(jdbc.update("""
+                    UPDATE inventory_movements SET quantity_delta=CASE WHEN order_id=? THEN -2 ELSE -1 END
+                    WHERE order_id IN (?,?) AND kind='DEBIT'
+                    """,first,first,second)).isEqualTo(2);
+            var counts=OrderStorageChecks.compare(jdbc);
+            assertThat(counts.inventoryViolations()).isZero();
+            assertThat(counts.orderViolations()).isEqualTo(2);
+            assertThatThrownBy(this::invariants).isInstanceOf(AssertionError.class);
+            observe("per-order-movement-amount-check",Map.of("inventoryViolations",counts.inventoryViolations(),
+                    "orderViolations",counts.orderViolations()));
+        } finally {
+            jdbc.update("""
+                    UPDATE inventory_movements m SET quantity_delta=-o.quantity
+                    FROM orders o WHERE m.order_id=o.id AND m.kind='DEBIT'
+                    """);
+        }
+    }
+
+    @Test void consistencyCheckRejectsSwappedMovementProducts() throws Exception {
+        long first=json(alice.buy("product-movement-first",product,1)).path("id").asLong();
+        long second=json(alice.buy("product-movement-second",other,1)).path("id").asLong();
+        try {
+            assertThat(jdbc.update("""
+                    UPDATE inventory_movements SET product_id=CASE WHEN order_id=? THEN ? ELSE ? END
+                    WHERE order_id IN (?,?) AND kind='DEBIT'
+                    """,first,other,product,first,second)).isEqualTo(2);
+            var counts=OrderStorageChecks.compare(jdbc);
+            assertThat(counts.inventoryViolations()).isZero();
+            assertThat(counts.orderViolations()).isEqualTo(2);
+            assertThatThrownBy(this::invariants).isInstanceOf(AssertionError.class);
+            observe("per-order-movement-product-check",Map.of("inventoryViolations",counts.inventoryViolations(),
+                    "orderViolations",counts.orderViolations()));
+        } finally {
+            jdbc.update("""
+                    UPDATE inventory_movements m SET product_id=o.product_id
+                    FROM orders o WHERE m.order_id=o.id AND m.kind='DEBIT'
+                    """);
+        }
+    }
+
+    /** 앞선 실제 HTTP 요청의 등록을 잠시 멈추고 실패시켜, 같은 키로 기다린 요청이 등록을 이어받는지 확인. */
+    @RepeatedTest(3)
+    void waitingRetryTakesOverAfterFirstRequestRollsBack() throws Exception {
+        long failedRequestId=jdbc.queryForObject("SELECT nextval(pg_get_serial_sequence('order_requests','id'))",Long.class)+1;
+        jdbc.execute("""
+                CREATE FUNCTION test_fail() RETURNS trigger LANGUAGE plpgsql AS $$
+                BEGIN
+                    PERFORM pg_advisory_xact_lock(2026112101);
+                    RAISE EXCEPTION 'Injected first purchase failure' USING ERRCODE='23514';
+                END $$
+                """);
+        jdbc.execute("CREATE TRIGGER injected_fault AFTER INSERT ON order_requests FOR EACH ROW "
+                +"WHEN (NEW.id="+failedRequestId+") EXECUTE FUNCTION test_fail()");
+        var executor=Executors.newFixedThreadPool(2);
+        try (var blocker=connection();var observer=connection()) {
+            blocker.setAutoCommit(false);
+            try (var statement=blocker.createStatement()) {
+                statement.execute("SELECT pg_advisory_xact_lock(2026112101)");
+            }
+            int blockerPid;
+            try (var statement=blocker.createStatement();var rows=statement.executeQuery("SELECT pg_backend_pid()")) {
+                rows.next();blockerPid=rows.getInt(1);
+            }
+            try {
+                var first=executor.submit(()->alice.buy("rollback-same-purchase",product,2));
+                await().atMost(Duration.ofSeconds(2)).pollInterval(Duration.ofMillis(15))
+                        .until(()->waitingBackend(observer,blockerPid)>0);
+                int firstPid=waitingBackend(observer,blockerPid);
+                var retry=executor.submit(()->alice.buy("rollback-same-purchase",product,2));
+                await().atMost(Duration.ofSeconds(2)).pollInterval(Duration.ofMillis(15))
+                        .until(()->waitingBackend(observer,firstPid)>0);
+                int retryPid=waitingBackend(observer,firstPid);
+                assertThat(first.isDone()).isFalse();assertThat(retry.isDone()).isFalse();
+                blocker.commit();
+                var failed=first.get(10,TimeUnit.SECONDS);
+                var succeeded=retry.get(10,TimeUnit.SECONDS);
+                assertThat(failed.statusCode()).isEqualTo(500);
+                assertThat(succeeded.statusCode()).isEqualTo(201);
+                assertThat(count("order_requests")).isEqualTo(1);
+                assertThat(count("orders")).isEqualTo(1);
+                assertThat(count("inventory_movements")).isEqualTo(1);
+                assertThat(available()).isEqualTo(8);
+                long orderId=json(succeeded).path("id").asLong();
+                var replay=alice.buy("rollback-same-purchase",product,2);
+                assertThat(replay.statusCode()).isEqualTo(200);
+                assertThat(json(replay).path("id").asLong()).isEqualTo(orderId);
+                observe("same-key-waiter-after-rollback",Map.of("firstHttp",failed.statusCode(),
+                        "waitingRetryHttp",succeeded.statusCode(),"replayHttp",replay.statusCode(),
+                        "observedRetryWaiting",retryPid>0,"orders",count("orders"),
+                        "movements",count("inventory_movements"),"available",available()));
+            } finally {
+                blocker.rollback();
+            }
+        } finally {
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(20,TimeUnit.SECONDS)).isTrue();
+            removeFault();
+        }
+    }
+
+    private int waitingBackend(Connection observer,int blockerPid) throws SQLException {
+        try (var statement=observer.prepareStatement("""
+                SELECT COALESCE(min(pid),0) FROM pg_stat_activity
+                WHERE datname=current_database() AND wait_event_type='Lock' AND ?=ANY(pg_blocking_pids(pid))
+                """)) {
+            statement.setInt(1,blockerPid);
+            try (var rows=statement.executeQuery()) { rows.next();return rows.getInt(1); }
+        }
+    }
+
     @Test void mvcValidatesPathAndQueryConstraintsWithoutControllerProxy() throws Exception {
         for (String path:List.of("/products/0","/orders/0","/orders?limit=0","/orders?limit=101",
                 "/orders?beforeId=0","/orders?limit=word")) {
@@ -849,22 +989,7 @@ class OrderHttpIntegrationTest {
     }
     private void removeFault() { jdbc.execute("DROP FUNCTION IF EXISTS test_fail() CASCADE"); }
     private void invariants() {
-        assertThat(jdbc.queryForObject("""
-                SELECT count(*) FROM inventories i WHERE available_quantity<0 OR available_quantity>initial_quantity
-                OR available_quantity<>initial_quantity-COALESCE((SELECT sum(quantity) FROM orders o WHERE o.product_id=i.product_id AND o.status='ACCEPTED'),0)
-                OR available_quantity<>initial_quantity+COALESCE((SELECT sum(quantity_delta) FROM inventory_movements m WHERE m.product_id=i.product_id),0)
-                """,Long.class)).isZero();
-        assertThat(jdbc.queryForObject("""
-                SELECT count(*) FROM order_requests r WHERE outcome IS NULL
-                OR (outcome='ACCEPTED' AND (SELECT count(*) FROM orders o WHERE o.request_id=r.id)<>1)
-                OR (outcome='OUT_OF_STOCK' AND EXISTS(SELECT 1 FROM orders o WHERE o.request_id=r.id))
-                """,Long.class)).isZero();
-        assertThat(jdbc.queryForObject("""
-                SELECT count(*) FROM orders o JOIN order_requests r ON r.id=o.request_id
-                WHERE o.buyer_id<>r.buyer_id OR o.product_id<>r.product_id OR o.quantity<>r.quantity
-                OR (SELECT count(*) FROM inventory_movements m WHERE m.order_id=o.id AND m.kind='DEBIT')<>1
-                OR (SELECT count(*) FROM inventory_movements m WHERE m.order_id=o.id AND m.kind='RESTORE')<>(CASE WHEN o.status='CANCELLED' THEN 1 ELSE 0 END)
-                """,Long.class)).isZero();
+        OrderStorageChecks.compare(jdbc).assertConsistent();
     }
 
     private final class Client {

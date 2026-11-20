@@ -4,6 +4,7 @@ import jakarta.servlet.DispatcherType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.mentoring.orders.dto.response.ErrorResponse;
 import dev.mentoring.orders.exception.DatabaseFailures;
+import dev.mentoring.orders.web.csrf.HeaderCsrfTokenRequestHandler;
 import java.util.UUID;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -11,7 +12,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +31,7 @@ public class SecurityConfiguration {
     }
 
     /**
-     * 모든 API에 HTTP Basic 인증 적용. POST 요청에는 세션과 CSRF 토큰도 확인.
+     * 모든 API에 HTTP Basic 인증 적용. POST 요청에는 세션과 헤더의 CSRF 토큰도 확인.
      *
      * <p>ERROR 처리는 원래 오류 응답을 보내기 위해 허용. 일반 API의 인증을 생략하는 설정은 아님.
      *
@@ -44,7 +44,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated())
                 .httpBasic(basic -> basic.authenticationEntryPoint(authenticationEntryPoint))
                 .exceptionHandling(errors -> errors.authenticationEntryPoint(authenticationEntryPoint))
-                .csrf(Customizer.withDefaults())
+                .csrf(csrf -> csrf.csrfTokenRequestHandler(new HeaderCsrfTokenRequestHandler()))
                 .requestCache(cache -> cache.disable())
                 .formLogin(form -> form.disable())
                 .build();

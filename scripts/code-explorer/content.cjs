@@ -65,11 +65,11 @@ const technologies = {
     source: 'https://docs.spring.io/spring-security/reference/6.5/servlet/authentication/passwords/user-details-service.html', files: [java + 'config/SecurityConfiguration.java', java + 'security/CustomerUserDetailsService.java', java + 'repository/CustomerAccountRepository.java']
   },
   csrf: {
-    title: 'CSRF 토큰', description: '주문과 취소를 변경하는 요청에서 세션과 함께 보낸 CSRF 토큰을 확인합니다.',
+    title: 'CSRF 토큰', description: '주문과 취소 요청에서 세션과 헤더의 CSRF 토큰을 확인합니다. URL과 폼 파라미터는 헤더를 대신하지 못합니다.',
     why: '브라우저가 인증 정보를 자동으로 붙이는 환경에서 다른 사이트가 변경 요청을 보내는 상황에 대비합니다. GET /csrf로 토큰을 받습니다.',
     alternatives: '모든 상태를 토큰 헤더로만 관리하는 별도 인증 구조에서는 정책이 달라질 수 있습니다. 이 서버의 Basic 인증과 세션 구성을 유지한 채 CSRF를 적용합니다.',
     limit: '토큰이 유효해도 다른 고객의 주문을 취소할 수는 없습니다. 소유자 검사는 SQL에서 따로 수행합니다.',
-    source: 'https://docs.spring.io/spring-security/reference/6.5/servlet/exploits/csrf.html', files: [java + 'controller/CsrfController.java', java + 'config/SecurityConfiguration.java']
+    source: 'https://docs.spring.io/spring-security/reference/6.5/servlet/exploits/csrf.html', files: [java + 'controller/CsrfController.java', java + 'config/SecurityConfiguration.java', java + 'web/csrf/HeaderCsrfTokenRequestHandler.java']
   },
   bcrypt: {
     title: 'BCrypt 비밀번호 해시', description: '복호화할 암호문 대신 비밀번호 검증용 해시를 저장합니다. 입력 비밀번호의 비교는 Spring Security가 맡습니다.',
@@ -80,9 +80,9 @@ const technologies = {
   },
   admission: {
     title: '주문과 취소의 요청 제한', description: '고객별 분당 주문/취소 횟수와 서버 프로그램 하나의 동시 쓰기 수를 제한합니다.',
-    why: '구매 재시도가 많아도 취소의 횟수 한도까지 소진하지 않게 각각 계산합니다. 두 작업의 공통 동시 처리 수는 Semaphore로 제한합니다.',
+    why: '구매와 취소의 횟수를 따로 세고 동시 처리 수는 Semaphore로 함께 제한합니다. 시각 읽기와 횟수 갱신은 같은 고객별 잠금 안에서 처리해 늦게 들어온 요청이 새 분의 횟수를 지우지 않게 합니다.',
     alternatives: 'Redis 같은 공유 저장소를 쓰면 여러 서버가 같은 한도를 계산할 수 있습니다. 현재 카운터와 세마포어는 JVM 하나에만 적용합니다.',
-    limit: '요청을 저장해 나중에 실행하는 대기열이 아닙니다. 거절은 429와 Retry-After로 안내하며 재고 정합성은 DB가 따로 지킵니다.',
+    limit: '인증과 본문 처리 뒤의 쓰기 호출만 제한합니다. 인증 조회와 BCrypt 계산까지 보호하는 서버 전체 제한이나 여러 서버의 공통 제한은 아닙니다. 초과 시 429와 Retry-After로 안내하며 재고는 DB에서 별도로 보호합니다.',
     source: 'https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/Semaphore.html', files: [java + 'web/admission/WriteAdmission.java']
   },
   'body-size': {
@@ -110,7 +110,7 @@ const technologies = {
     title: '단위 검사와 실제 HTTP/DB 검사', description: '대역으로 서비스 분기를 확인하는 검사와, 서버 및 PostgreSQL에 실제 요청하는 검사를 나눕니다.',
     why: '저장소 대역만으로는 실제 유일성 충돌이나 커밋/롤백을 확인할 수 없습니다. 잠금 대기, SQL 오류 주입과 응답 차단으로 실패 조건을 재현합니다.',
     alternatives: 'sleep만으로 동시 실행을 추정하지 않고 별도 연결의 잠금과 pg_stat_activity로 실제 대기를 확인합니다.',
-    limit: '정규 172건과 별도 DB 중단 15건은 과거 실행 기록입니다. 이 HTML을 만드는 작업은 주문 API나 DB를 다시 실행하지 않습니다.',
+    limit: '정규 검사 186건은 2026-11-21 실행 기록이며, DB 중단 15건은 2026-11-10의 별도 과거 기록입니다. 이 HTML을 만드는 작업은 주문 API나 DB를 다시 실행하지 않습니다.',
     source: 'https://docs.junit.org/5.11.4/user-guide/', files: [test + 'OrderHttpIntegrationTest.java', test + 'DatabaseRecoveryIntegrationTest.java']
   },
   architecture: {
@@ -184,6 +184,7 @@ const flows = [
     ['요청 본문 크기 확인', java + 'web/filter/RequestSizeFilter.java', 'doFilterInternal', '다른 필터가 본문을 읽기 전에 허용한 길이인지 검사합니다.'],
     ['로그인과 CSRF 확인', java + 'config/SecurityConfiguration.java', 'securityFilterChain', 'Spring Security가 로그인 정보와 상태 변경 요청의 CSRF 토큰을 검사합니다.'],
     ['입력 DTO 검사', java + 'controller/OrderController.java', 'placeOrder', '상품 ID와 수량을 검사하고 인증된 고객과 구매 키를 서비스에 전달합니다.'],
+    ['고객별 횟수와 동시 쓰기 수 확인', java + 'web/admission/WriteAdmission.java', 'executeOrder', '고객별 주문 횟수를 세고 서버 프로그램 하나의 동시 쓰기 수를 확인합니다. 초과하면 서비스를 실행하지 않고 거절합니다.'],
     ['같은 구매 확인', java + 'service/OrderService.java', 'placeOrder', '기존 키를 대조하고 새 구매 요청을 먼저 등록합니다.'],
     ['남은 재고 차감', java + 'repository/OrderRepository.java', 'tryDecreaseStock', '남은 수량이 충분할 때만 차감합니다.'],
     ['주문과 결과 저장', java + 'service/OrderService.java', 'createOrder', '주문과 차감 이력, 구매 결과를 같은 트랜잭션으로 확정합니다.'],

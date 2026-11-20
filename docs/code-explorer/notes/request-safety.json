@@ -1,0 +1,60 @@
+{
+  "files": {
+    "src/main/java/dev/mentoring/orders/web/csrf/HeaderCsrfTokenRequestHandler.java": {
+      "purpose": "주문과 취소의 CSRF 토큰을 헤더에서만 받습니다. 기본 처리기에 토큰 마스킹과 지연 조회를 맡기고, URL과 폼 파라미터로 대체하는 경로만 막습니다.",
+      "role": "HTTP 토큰 입력 처리",
+      "calledBy": ["SecurityConfiguration", "Spring Security CsrfFilter"],
+      "technologies": ["security", "csrf"],
+      "decisions": [
+        {
+          "title": "기본 토큰 처리를 유지하고 입력 위치만 제한",
+          "why": "Spring Security의 기본 처리기는 헤더와 요청 파라미터를 모두 받습니다. API 명세의 헤더 전용 규칙을 실제로 적용하기 위해 헤더가 없거나 비면 거절하고 나머지 처리는 XOR 처리기에 위임합니다.",
+          "alternatives": "명세를 바꿔 쿼리 토큰도 허용할 수 있으나 URL에 토큰이 남을 수 있습니다. 기본 마스킹 처리를 직접 구현하거나 없앨 필요는 없습니다.",
+          "limit": "토큰 값의 실제 검증과 접근 거절은 CsrfFilter가 수행합니다. 이 클래스가 비밀번호나 주문 소유자를 확인하지 않으며 HTTP 처리용 web.csrf에 둡니다."
+        }
+      ],
+      "methods": {
+        "handle": {"title": "기본 토큰 공개 처리 위임", "purpose": "요청 속성으로 토큰을 공개하는 작업을 기본 처리기에 맡깁니다. 실제 토큰을 읽을 때까지 저장소 조회를 미루는 동작도 유지합니다."},
+        "resolveCsrfTokenValue": {"title": "헤더의 토큰만 추출", "purpose": "정해진 헤더가 없거나 비어 있으면 null을 반환해 거절하게 합니다. 헤더가 있으면 기본 처리기로 마스킹된 값을 해석합니다."}
+      },
+      "lines": {
+        "16": "스프링의 XOR 처리기를 재사용합니다. 응답 토큰의 마스킹이나 세션 토큰을 직접 만들지 않습니다.",
+        "21": "기본 처리기에 요청과 지연 토큰 공급 함수를 그대로 넘깁니다.",
+        "27": "현재 토큰 설정의 실제 헤더 이름으로 값을 읽습니다. X-CSRF-TOKEN 문자열을 별도로 고정하지 않습니다.",
+        "28": "헤더가 없거나 공백이면 유효한 URL 파라미터가 있어도 대체하지 않습니다.",
+        "29": "헤더가 있는 경우에만 기본 처리기로 마스킹을 해석합니다. 잘못된 헤더 값은 검증에 실패합니다."
+      }
+    },
+    "src/test/java/dev/mentoring/orders/web/csrf/HeaderCsrfTokenRequestHandlerTest.java": {
+      "purpose": "실제 CSRF 처리기와 Servlet 요청 대역으로 헤더 전용 정책, 마스킹과 지연 조회를 검사합니다.",
+      "role": "CSRF 처리기 단위 검사",
+      "calledBy": ["JUnit Jupiter"],
+      "technologies": ["testing", "csrf"],
+      "decisions": [{"title": "정책 제한과 기존 보호 기능을 함께 확인", "why": "쿼리 토큰을 막으면서 정상 헤더의 마스킹 해석과 지연 조회까지 깨지지 않았는지 확인합니다.", "alternatives": "실제 HTTP 취소 검사는 세션과 필터 연결까지 확인하며 이 단위 검사와 함께 사용합니다.", "limit": "이 클래스는 DB와 네트워크를 사용하지 않습니다. 실제 취소 요청은 OrderHttpIntegrationTest에서 별도로 검사합니다."}],
+      "methods": {
+        "maskedHeaderIsDecodedUsingTheDefaultHandler": {"title": "마스킹된 정상 헤더", "purpose": "공개된 토큰이 원문과 다르고 정상 헤더를 해석하면 원래 세션 토큰이 나오는지 검사합니다."},
+        "requestParameterCannotReplaceTheHeader": {"title": "파라미터만 보낸 토큰", "purpose": "유효한 토큰을 파라미터에 넣어도 헤더가 없으면 추출 결과가 null인지 검사합니다."},
+        "blankHeaderCannotFallBackToTheParameter": {"title": "빈 헤더의 대체 차단", "purpose": "빈 값과 공백 헤더를 URL 파라미터의 토큰으로 대신하지 않는지 검사합니다."},
+        "validHeaderIsNotReplacedByAnInvalidParameter": {"title": "정상 헤더 우선 확인", "purpose": "잘못된 파라미터가 있어도 유효한 헤더를 기준으로 해석하는지 검사합니다."},
+        "malformedHeaderIsNotAcceptedAsAnUnmaskedToken": {"title": "잘못된 마스킹 거절", "purpose": "마스킹하지 않은 세션 토큰을 그대로 보내면 받아들이지 않는지 검사합니다."},
+        "exposingTheTokenStillDefersLoadingUntilItIsRead": {"title": "지연 조회 유지", "purpose": "속성 등록만으로 토큰을 불러오지 않고 getToken을 호출할 때 한 번 조회하는지 검사합니다."},
+        "exposeToken": {"title": "검사용 토큰 공개", "purpose": "실제 처리기로 요청 속성에 공개한 마스킹 토큰을 읽습니다."}
+      },
+      "lines": {}
+    },
+    "src/test/java/dev/mentoring/orders/support/OrderStorageChecks.java": {
+      "purpose": "HTTP, 요청 제한과 별도 JVM 검사가 같은 SQL로 재고 합계, 구매 결과, 주문과 개별 증감 이력을 대조하게 합니다.",
+      "role": "공통 DB 저장값 검사",
+      "calledBy": ["OrderHttpIntegrationTest", "ActorAdmissionIntegrationTest", "ReviewFixture"],
+      "technologies": ["testing", "jdbc"],
+      "decisions": [{"title": "합계뿐 아니라 주문별 이력 확인", "why": "두 이력의 수량이나 상품을 서로 바꾸면 합계만으로는 오류를 놓칠 수 있어, 각 주문의 상품과 수량을 이력에 직접 대조합니다. 세 검사 경로가 같은 SQL을 사용합니다.", "alternatives": "검사마다 SQL을 복사하면 한쪽만 보강되어 확인 범위가 달라집니다. 제품 DB에 교차 테이블 트리거를 새로 추가하는 대신 검사 코드를 공유합니다.", "limit": "검사가 끝나 요청이 정리된 시점의 저장값을 조회합니다. 운영 요청의 매 순간을 감시하거나 DB 제약을 추가하는 코드는 아닙니다."}],
+      "methods": {
+        "OrderStorageChecks": {"title": "정적 검사 도구", "purpose": "객체를 만들지 않고 공통 SQL과 정적 메서드를 사용합니다."},
+        "compare": {"title": "세 종류의 불일치 수 조회", "purpose": "Spring의 JdbcTemplate 또는 별도로 만든 JDBC 연결에서 같은 세 SQL을 실행해 재고, 요청과 주문의 불일치 수를 반환합니다."},
+        "count": {"title": "JDBC 조회 결과 읽기", "purpose": "검사용 고정 SQL의 단일 집계 값을 읽고 구문과 결과 자원을 닫습니다."},
+        "assertConsistent": {"title": "불일치 발견 시 검사 실패", "purpose": "세 종류의 불일치 수가 모두 0인지 확인하고 어느 종류가 틀렸는지 실패 메시지에 표시합니다."}
+      },
+      "lines": {}
+    }
+  }
+}
