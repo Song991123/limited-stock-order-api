@@ -216,7 +216,29 @@ const flows = [
   ] }
 ];
 
-module.exports = { technologies, annotations, flows, project: {
+const execution = {
+  requirements: 'Java 21, PowerShell 7, Node.js와 PostgreSQL 16 실행 파일이 필요합니다. 명령은 프로젝트 폴더에서 실행합니다.',
+  steps: [
+    { title: '전체 검사와 실행 파일 생성', command: 'pwsh -NoProfile -File .\\scripts\\test.ps1 -IsolatedDatabase',
+      text: '새 전용 DB에서 JUnit 검사를 실행하고 실행 JAR와 HTML 검사 보고서를 만듭니다. 실패하면 실행을 중단합니다.', source: 'scripts/test.ps1' },
+    { title: '주문 서버 시작', command: 'pwsh -NoProfile -File .\\scripts\\start-demo.ps1 -IsolatedDatabase',
+      text: '기존 DB는 두고 새 전용 데모 DB와 백그라운드 서버를 시작합니다. 기본 주소는 http://127.0.0.1:18086입니다. 같은 데모 DB를 다시 쓰려면 -IsolatedDatabase를 생략합니다.', source: 'scripts/start-demo.ps1' },
+    { title: '주문과 취소를 단계별로 실행', command: 'pwsh -NoProfile -File .\\scripts\\demo-request.ps1',
+      text: '주문, 같은 구매 재요청, 취소와 재취소를 실제 HTTP로 보냅니다. 요청과 응답, 각 단계의 재고를 출력하고 기대값이 다르면 실패합니다.', source: 'scripts/demo-request.ps1' },
+    { title: '이번에 시작한 서버와 전용 DB 종료', command: 'pwsh -NoProfile -File .\\scripts\\stop-demo.ps1 -StopDatabase',
+      text: '이 프로젝트의 기록과 일치하는 서버를 종료합니다. DB 데이터는 남습니다. 실행 전부터 사용 중이던 DB는 -StopDatabase 없이 서버만 종료합니다.', source: 'scripts/stop-demo.ps1' }
+  ],
+  outputs: [
+    { id: 'demo-result', title: '주문과 취소의 단계별 결과', href: '../../build/reports/demo/index.html',
+      text: '각 요청의 JSON, 실제 HTTP 응답과 재고 변화. 데모를 실행할 때 생성합니다.' },
+    { id: 'junit-result', title: '전체 JUnit 검사 보고서', href: '../../build/reports/tests/test/index.html',
+      text: '조건별 통과와 실패, 실행 시간과 오류 내용. 전체 검사를 실행할 때 생성합니다.' },
+    { id: 'server-jar', title: '서버 실행 파일 JAR', href: '../../build/libs/limited-stock-order-api-0.1.0.jar',
+      text: '전체 검사 뒤 만든 Spring Boot 실행 파일. 위의 시작 명령이 DB 설정과 함께 실행합니다.' }
+  ]
+};
+
+module.exports = { technologies, annotations, flows, execution, project: {
   title: '한정 재고 상품 주문 접수 서버', subtitle: 'Spring Boot 백엔드 세미 프로젝트',
   purpose: '고객이 한정 판매 상품을 주문하면 수량을 확보하고, 자기 주문을 취소하면 원래 주문 수량을 재고에 돌려놓는 서버입니다.',
   actor: '같은 상품을 구매하는 고객 A와 B가 마지막 재고를 두고 경쟁합니다. 주문이나 취소 응답을 받지 못한 고객은 같은 구매 키 또는 주문 ID로 결과를 다시 확인합니다.',

@@ -36,16 +36,28 @@ Windows, Java 21, PowerShell 7, Node.js와 PostgreSQL 16 실행 파일이 필요
 .\scripts\test.ps1 -IsolatedDatabase
 
 # 서버 시작, 주문과 취소 예제, 종료
-.\scripts\start-demo.ps1 -Port 18086
+.\scripts\start-demo.ps1 -IsolatedDatabase -Port 18086
 .\scripts\demo-request.ps1
 .\scripts\stop-demo.ps1 -StopDatabase
 ```
 
-`start-demo.ps1`은 로컬 백그라운드 서버를 시작합니다. 주소는 기본 `http://127.0.0.1:18086`이며 사용 중이면 다른 포트를 지정합니다. 예제 스크립트는 주문, 같은 키의 재전송과 두 번의 취소를 실행한 뒤 재고가 원래 수량인지 보여줍니다.
+`start-demo.ps1`은 로컬 백그라운드 서버를 시작합니다. 주소는 기본 `http://127.0.0.1:18086`이며 사용 중이면 다른 포트를 지정합니다. `-IsolatedDatabase`는 기존 DB 대신 새 데모 DB를 만듭니다. 다음 시작에 같은 데모 데이터를 쓰려면 이 옵션을 생략합니다.
+
+예제는 주문 전 재고를 조회한 뒤 주문, 같은 키의 재요청과 두 번의 취소를 실행합니다. 각 요청의 본문과 HTTP 응답, 재고를 출력하고 주문 ID와 상태, 수량이 예상과 다르면 실패합니다. 인증 비밀번호, 쿠키와 CSRF 토큰 값은 기록하지 않습니다.
+
+[HTML 해설의 실행과 결과](docs/code-explorer/index.html#view=execution)에서 명령과 로컬 결과 링크를 확인해주세요. 실제 실행 뒤에는 다음 파일이 생성됩니다.
+
+| 파일 | 내용 |
+| --- | --- |
+| `build/libs/limited-stock-order-api-0.1.0.jar` | 전체 검사 뒤 만든 서버 실행 파일 |
+| `build/reports/tests/test/index.html` | 전체 JUnit 검사 보고서 |
+| `build/reports/demo/index.html` | 시연의 요청, 응답과 단계별 재고 |
+
+이 파일들은 로컬 빌드 결과이며 GitHub에 포함하지 않습니다. 시연 결과는 실행 시각별 폴더에도 보관합니다. 시연은 순차 HTTP 비교이며, 동시성 및 DB 이력 대조와 장애 검사는 JUnit 보고서에서 구분합니다.
 
 예제 고객과 상품은 `demo` 프로필에서만 준비합니다. `start-demo.ps1`이 이 프로필을 선택하며, 일반 실행은 이미 저장된 계정과 상품을 사용합니다.
 
-프로젝트 전용 DB를 별도로 생성합니다. 계정 비밀번호와 실행 정보는 `.runtime`에 자동 생성되며 Git에 포함되지 않습니다. 검사 DB는 실행마다 새로 만들고 종료합니다. 데모의 주문과 DB 데이터는 종료 후에도 보존됩니다.
+프로젝트 전용 DB를 별도로 생성합니다. 계정 비밀번호와 실행 정보는 `.runtime`에 자동 생성되며 Git에 포함되지 않습니다. 검사 DB는 실행마다 새로 만들고 종료합니다. 데모의 주문과 DB 데이터는 종료 후에도 보존됩니다. DB를 다른 실행에서도 사용 중이라면 `-StopDatabase` 없이 서버만 종료합니다.
 
 ## API
 

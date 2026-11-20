@@ -21,6 +21,7 @@
     <nav class="view-tabs" role="tablist" aria-label="문서 보기">
     <button id="tab-code" role="tab" aria-controls="view-code" data-view="code" aria-selected="true" data-icon="Code2">코드와 해설</button>
     <button id="tab-project" role="tab" aria-controls="view-project" data-view="project" aria-selected="false" data-icon="BookOpen">프로그램</button>
+    <button id="tab-execution" role="tab" aria-controls="view-execution" data-view="execution" aria-selected="false" data-icon="List">실행과 결과</button>
     <button id="tab-technology" role="tab" aria-controls="view-technology" data-view="technology" aria-selected="false" data-icon="GitBranch">기술 선택</button>
     <button id="tab-verification" role="tab" aria-controls="view-verification" data-view="verification" aria-selected="false" data-icon="ShieldCheck">검증 범위</button>
   </nav>
@@ -49,6 +50,7 @@
         <footer class="reader-status"><span id="current-line"></span><span id="code-count"></span></footer>
       </section>
       <section id="view-project" class="document-view" role="tabpanel" aria-labelledby="tab-project" hidden></section>
+      <section id="view-execution" class="document-view" role="tabpanel" aria-labelledby="tab-execution" hidden></section>
       <section id="view-technology" class="document-view" role="tabpanel" aria-labelledby="tab-technology" hidden></section>
       <section id="view-verification" class="document-view" role="tabpanel" aria-labelledby="tab-verification" hidden></section>
     </main>

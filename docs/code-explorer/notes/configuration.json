@@ -856,10 +856,19 @@
       }
     },
     ".github/workflows/verify.yml": {
-      "purpose": "지정 브랜치의 변경에서 주문 서버 검사와 빌드, DB 없는 코드 탐색 문서 검사를 서로 독립된 작업으로 실행합니다.",
+      "purpose": "주문 서버 검사와 빌드, DB 없는 코드 해설과 시연 기록 검사를 각각 실행합니다.",
       "role": "CI",
-      "calledBy": ["GitHub Actions의 push 이벤트", "GitHub Actions의 pull_request 이벤트"],
-      "technologies": ["build", "configuration", "testing", "tooling", "security"],
+      "calledBy": [
+        "GitHub Actions의 push 이벤트",
+        "GitHub Actions의 pull_request 이벤트"
+      ],
+      "technologies": [
+        "build",
+        "configuration",
+        "testing",
+        "tooling",
+        "security"
+      ],
       "decisions": [
         {
           "title": "CI 전용 PostgreSQL과 계정 사용",
@@ -887,9 +896,9 @@
         },
         {
           "title": "문서 검사는 DB 없는 독립 작업으로 실행",
-          "why": "code-explorer에는 test를 기다리는 needs나 PostgreSQL services가 없습니다. 자체 러너에서 소스를 가져오고 Node.js 24와 JDK 21을 준비해 생성기 테스트와 최신성 검사만 수행하므로 DB 준비나 주문 서버 검사 성공을 기다리지 않습니다.",
+          "why": "code-explorer는 PostgreSQL 서비스 없이 소스와 Node.js 24, JDK 21을 준비합니다. 생성기와 시연 HTML 변환, HTTP 대역의 기록 검사와 최신성 검사를 실행합니다.",
           "alternatives": "문서 검사를 test 작업의 마지막 단계에 넣을 수도 있습니다. 그러면 DB 준비와 앞선 제품 검사 실패 때문에 문서 검사까지 실행되지 않을 수 있고 두 검사의 실행 환경도 함께 관리하게 됩니다.",
-          "limit": "생성기 테스트와 원문, 해설 및 HTML의 일치 검사는 주문이나 재고의 실제 DB 동작을 입증하지 않습니다. --check는 검토 기준을 승인하거나 HTML을 갱신하지 않으므로 내용이 바뀌면 원문 대조와 별도 갱신이 필요합니다."
+          "limit": "문서 생성과 시연 도구 대역 검사는 실제 주문이나 재고의 DB 동작 검사를 대신하지 않습니다. --check는 검토 기준을 승인하거나 HTML을 갱신하지 않습니다."
         },
         {
           "title": "문서 생성기의 Node와 Java 역할 구분",
@@ -991,9 +1000,12 @@
         "94": "Node.js 준비 액션에 전달할 입력을 정의합니다.",
         "95": "Node.js 주 버전을 24로 지정해 뒤의 node --test와 생성기 --check 명령에 사용합니다. 구체적인 패치 버전을 이 행에서 고정하지는 않습니다.",
         "96": "코드 탐색 문서 생성기의 테스트를 실행할 단계 이름입니다. 제품 서버의 JUnit 검사 단계와 구분합니다.",
-        "97": "Node의 테스트 실행기로 scripts/code-explorer/builder.test.cjs를 실행합니다. 문서 생성기를 검사하는 명령이며 기존 Gradle 검사나 실제 DB를 사용하는 주문 검사를 실행하는 명령이 아닙니다.",
-        "98": "원문과 줄별 해설 및 생성 HTML이 현재 내용과 맞는지 검사할 단계 이름입니다.",
-        "99": "생성기를 --check로 실행해 원문과 해설의 검토 해시, 누락된 파일, 줄 번호와 생성 HTML 차이를 검사합니다. 문제가 있으면 실패 상태로 종료하며 검토 기준이나 HTML 파일을 덮어쓰지 않고 DB나 주문 서버도 실행하지 않습니다."
+        "97": "코드 해설 생성기와 합성 시연 기록의 HTML 변환을 검사합니다. 주문 서버나 DB를 실행하지 않습니다.",
+        "98": "시연의 요청 기록을 대역으로 검사하는 단계입니다.",
+        "99": "이 단계는 PowerShell로 실행합니다.",
+        "100": "시연 함수만 읽어 HTTP 대역으로 비밀값 제외, 전송 전 기록과 실패 판정을 확인합니다.",
+        "101": "원문과 해설, 생성 HTML의 일치를 확인하는 단계입니다.",
+        "102": "원문과 해설의 검토 해시, 누락된 파일과 생성 HTML 차이를 검사합니다. 파일을 갱신하거나 DB를 실행하지 않습니다."
       }
     }
   }

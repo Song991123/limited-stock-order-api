@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "files": {
     ".github/workflows/verify.yml": {
-      "sourceHash": "07cfe3c55ecf32cb10c1c96cda16577611d786ff53e645000b3b1ba8c499e344",
-      "noteHash": "ec8dfee2daeeb29dff066331b39e24405c72e6870a04108c18e83e2b933dfcd4"
+      "sourceHash": "42c37c988b30f794f20986eba73aa989b584b4628b012abe4f17178708d19391",
+      "noteHash": "a47485e250029d007eff984e46193c52d718c3207170254d4d6f3f8bb6af5d6a"
     },
     "build.gradle": {
       "sourceHash": "bceee69688acd4009fe86b3deb697830769c5751e6e4a8706067ba2c2daf2db7",
@@ -18,8 +18,20 @@
       "noteHash": "94e5d5cf09fc845c738492f4d7d4fd2cc4a7b02a38fb8bf681e8e758a36461ae"
     },
     "scripts/demo-request.ps1": {
-      "sourceHash": "473d7635a8f9a9c67468516d7a13678d5b5d2ca6dcf25a2eb62206e918c03230",
-      "noteHash": "8997775f16a530780b24f19731e2d32ec1a03e30862ceea23d3ac366b53457f2"
+      "sourceHash": "7f164a9c6542e34fa056b25cedb438fa38269e26bdbce42bc4f8bf540b9d0d04",
+      "noteHash": "5b66ae2497d0a1ead5d66956ec20492b8f59fd3465d62c731b5f9cb6e94d2b10"
+    },
+    "scripts/demo/report.cjs": {
+      "sourceHash": "c6ad63569a68eb86611b6e5040b77889d67e446495e02bfd696584e2c11f2916",
+      "noteHash": "c50aafb7621e13853645d65e5993c59cecd1bc128815560315e6df647d6a9c99"
+    },
+    "scripts/demo/report.test.cjs": {
+      "sourceHash": "0f19ddc0435c5f74d150cb8aecac8e7cc046ec02db64d0c910e4441752e77e19",
+      "noteHash": "ff7cfc9a1476c87ed70aa36c966a8eb76f66c7a283fbc69cc4b077fd059e1874"
+    },
+    "scripts/demo/request.test.ps1": {
+      "sourceHash": "3b7ffc9900311a7cfa83ef6615951f20fd7fdeb123126fe6277354041667b4e8",
+      "noteHash": "56c18d92c18578c17d31af3a9c6f4f53479f5d886b23bfeae66008a8acaf8aa7"
     },
     "scripts/export-evidence.ps1": {
       "sourceHash": "29378ac6bf8b93ab16be4147599588bf18bb70856e5c2ff549355ec3547a8f30",
@@ -54,16 +66,16 @@
       "noteHash": "61c5cb2efa1e2772cac743760eb12053e148d33a1975fbb5f9f43d30ae60cd38"
     },
     "scripts/start-demo.ps1": {
-      "sourceHash": "59f42241155a40a8de19479e15393d0c2ef1b66875b26433e3d79db7435e660f",
-      "noteHash": "838e67965ad3749c3ed221a47ca7438569a9894fa3866802b513745b3dc974b3"
+      "sourceHash": "91ce9c1c1413ca1e6fa5e9321ef2c0b00c6cbf29d51cecc1cb92502c7298e786",
+      "noteHash": "8eec9b5feb54c1d8fece6cf073aa7e212e3eb15a49f574761bdedb542514a843"
     },
     "scripts/stop-demo.ps1": {
-      "sourceHash": "f0540963df2aeb629357fdd95ea373bb2a615db5943ed78fced4287e92de6bd3",
-      "noteHash": "aedc5dbc99c80e1760532d982e42ecc35cca730d59d3b985e7ab6b8c0c3422bb"
+      "sourceHash": "bacffaaf4e89ae691a609c1e42fd6aef98b06de21bd26830577e9982dd43e2ff",
+      "noteHash": "bb09eba677f67500ffaec7529002db606bb90049cfc907e6121d411fcf9ce0e9"
     },
     "scripts/test.ps1": {
-      "sourceHash": "81bf83e3dc0f9186daa004b7ef56c4eff5dba73e8957cd356fc4a64264414a0f",
-      "noteHash": "45e6d14187956554cfa1215036de2aacaa94f184fb982b7c866adb976e15622c"
+      "sourceHash": "f0efba3b1ce5214ad0f7a8db4c8101a180269d6d9188f6a033f55554fa52c402",
+      "noteHash": "158629548ce01163b817e6a1cb1b7ef74f28c672a0d8e4263b8447d3dadcb564"
     },
     "settings.gradle": {
       "sourceHash": "9d848a380c47ac8d258d854739a039080c243a5eaa652c258832cf024e598055",

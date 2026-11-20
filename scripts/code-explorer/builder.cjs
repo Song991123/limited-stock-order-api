@@ -41,6 +41,7 @@ function sourceFiles(root) {
   }
   visit('src', true);
   visit('scripts', false);
+  visit('scripts/demo', true);
   visit('.github/workflows', false);
   for (const name of ['build.gradle', 'settings.gradle', 'gradle.properties', 'gradle/wrapper/gradle-wrapper.properties']) {
     if (fs.existsSync(safePath(root, name))) result.push(name);
@@ -164,7 +165,7 @@ function asset(root, relative) {
 function build(root = TOOL_ROOT, options = {}) {
   const snapshot = collect(root, options.javaIndex);
   const data = {
-    schemaVersion: 1, project: content.project, flows: content.flows, technologies: content.technologies, annotations: content.annotations,
+    schemaVersion: 1, project: content.project, flows: content.flows, execution: content.execution, technologies: content.technologies, annotations: content.annotations,
     files: snapshot.files, evidence: loadEvidence(root),
     figures: ['01-actors', '02-last-stock', '03-request-retry', '04-cancellation-state', '05-http-and-storage'].map((id, i) => ({
       id, title: ['고객과 요청', '마지막 재고', '같은 구매의 재전송', '취소 상태와 복구', '코드 구성과 인증'][i],
