@@ -107,6 +107,36 @@ async page => {
   const verificationText = await page.locator('#view-verification').innerText();
   check('archived 172 and separate 15 are not combined', verificationText.includes('172건') && verificationText.includes('15건') && verificationText.includes('정규 검사와 별도'));
 
+  await page.locator('[data-view="execution"]').click();
+  check('execution guide has the four real commands', await page.locator('#view-execution .command-row').count() === 4);
+  check('execution guide distinguishes HTTP demo and DB test coverage', (await page.locator('#view-execution').innerText()).includes('DB 대조는 전체 검사 보고서'));
+  check('JAR link points to the generated executable', (await page.locator('#server-jar').getAttribute('href')) === '../../build/libs/limited-stock-order-api-0.1.0.jar');
+  await page.evaluate(() => {
+    window.commandClipboardDescriptor = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async text => { window.copiedCommand = text; } } });
+  });
+  await page.getByRole('button', { name: '명령 복사: 전체 검사와 실행 파일 생성', exact: true }).click();
+  check('copy command preserves the actual PowerShell invocation', await page.evaluate(() => window.copiedCommand === window.codeExplorer.data.execution.steps[0].command));
+  await page.evaluate(() => { if (window.commandClipboardDescriptor) Object.defineProperty(navigator, 'clipboard', window.commandClipboardDescriptor); else delete navigator.clipboard; });
+  for (const [id, heading] of [['demo-result', '주문과 취소의 실제 실행 결과'], ['junit-result', 'Test Summary']]) {
+    const opening = page.waitForEvent('popup');
+    await page.locator('#' + id).click();
+    const popup = await opening;
+    await popup.waitForLoadState('domcontentloaded');
+    check('local result link opens its actual report: ' + id, (await popup.locator('h1').first().innerText()).includes(heading));
+    if (id === 'demo-result') {
+      check('demo report contains the real sequential HTTP requests', await popup.locator('.step').count() === 11);
+      check('demo report displays successful recorded comparisons', (await popup.locator('.status').innerText()).includes('시연 완료'));
+      const amounts = await popup.locator('.inventory td').allTextContents();
+      check('demo report shows debit once and restore once', amounts.length === 5 && Number(amounts[1]) === Number(amounts[0]) - 1 && amounts[1] === amounts[2] && amounts[0] === amounts[3] && amounts[3] === amounts[4]);
+      await popup.setViewportSize({ width: 390, height: 844 });
+      check('demo report fits a mobile viewport', await popup.evaluate(() => document.body.scrollWidth <= innerWidth));
+      await popup.screenshot({ path: '.runtime/code-explorer/demo-mobile.png', fullPage: true });
+    }
+    await popup.close();
+  }
+  await page.screenshot({ path: '.runtime/code-explorer/execution-desktop.png' });
+
   const controller = info.paths.find(name => name.endsWith('/controller/OrderController.java'));
   for (const [width, height] of [[1440, 900], [1280, 800], [768, 1024], [390, 844], [320, 780]]) {
     await page.setViewportSize({ width, height });
@@ -129,7 +159,7 @@ async page => {
     }
     await page.screenshot({ path: '.runtime/code-explorer/code-' + width + '.png' });
     if (width <= 390) {
-      for (const view of ['project', 'technology', 'verification']) {
+      for (const view of ['project', 'execution', 'technology', 'verification']) {
         await page.locator('[data-view="' + view + '"]').click();
         check('document view fits: ' + view + '/' + width, await page.evaluate(() => document.body.scrollWidth <= innerWidth));
       }

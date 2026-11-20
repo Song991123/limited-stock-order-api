@@ -11,8 +11,15 @@ if (Test-Path -LiteralPath $record) {
             throw 'The recorded PID belongs to a different process; it was not stopped'
         }
         Stop-Process -Id $process.Id
-        $process.WaitForExit(10000) | Out-Null
+        if (-not $process.WaitForExit(10000)) { throw 'The demo server did not exit within 10 seconds' }
         Write-Output 'Stopped this project server'
     }
 }
-if ($StopDatabase) { & $NodeExecutable (Join-Path $PSScriptRoot 'local-db.cjs') stop }
+if ($StopDatabase) {
+    $previousInstance = $env:STOCK_DB_TEST_INSTANCE
+    try {
+        if ($server) { $env:STOCK_DB_TEST_INSTANCE = $server.databaseInstance }
+        & $NodeExecutable (Join-Path $PSScriptRoot 'local-db.cjs') stop
+        if ($LASTEXITCODE -ne 0) { throw 'Could not stop this project database' }
+    } finally { $env:STOCK_DB_TEST_INSTANCE = $previousInstance }
+}

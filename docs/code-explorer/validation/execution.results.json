@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 1,
+  "recordedPhase": "local verification before GitHub publication; CI and merge status are recorded in pull request checks",
+  "checkedAt": "2026-11-20T04:21:47.129Z",
+  "regular": {
+    "run": "20261120-131745",
+    "buildExit": 0,
+    "tests": 172,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "isolatedDatabase": true,
+    "databaseRecovery": false
+  },
+  "sources": {
+    "files": 85,
+    "mismatches": []
+  },
+  "reportPublication": {
+    "originalXmlFiles": 18,
+    "publishedXmlFiles": 18,
+    "byteIdenticalToOriginal": true,
+    "previousXmlFilesPreserved": 21,
+    "staleXmlFilesRemovedFromPublished": 3
+  },
+  "jar": {
+    "file": "build/libs/limited-stock-order-api-0.1.0.jar",
+    "bytes": 29504281,
+    "sha256": "07b52ccf076ad0550429211d50c785a343ca1828701f878642ed1ef2f40b9b2e",
+    "modifiedAt": "2026-11-20T04:18:03.753Z",
+    "matchesDemoJar": true
+  },
+  "demo": {
+    "run": "20261120-132041-875",
+    "passed": true,
+    "requests": 11,
+    "comparisons": 25,
+    "inventory": [
+      10,
+      9,
+      9,
+      10,
+      10
+    ],
+    "summary": {
+      "firstHttp": 201,
+      "replayHttp": 200,
+      "sameOrder": true,
+      "orderId": 3,
+      "cancelStatus": "CANCELLED",
+      "repeatedCancelStatus": "CANCELLED",
+      "stockBefore": 10,
+      "stockAfter": 10
+    },
+    "actualStatuses": [
+      200,
+      200,
+      200,
+      201,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "html": "build/reports/demo/index.html",
+    "junitHtml": "build/reports/tests/test/index.html"
+  },
+  "privacy": {
+    "leakedSecretNames": [],
+    "requestHeaderAllowlist": true,
+    "responseHeaderAllowlist": true,
+    "csrfMasked": true
+  },
+  "cleanup": {
+    "demoDatabaseRunning": false,
+    "isolatedTestPidFileExists": false
+  },
+  "explanation": {
+    "sourceSetHash": "93e69e79f53d2c49f1b0e94737da9f2ba2bea012effb73433680106d4c9b5bfe",
+    "htmlSha256": "c79215be70297c61fa3d2d69bf0f545549b265dc572a1b6a937a4821c4a70c5f",
+    "summary": {
+      "files": 78,
+      "lines": 7053,
+      "specific": 3573,
+      "manual": 1812,
+      "stale": 0
+    }
+  },
+  "documentTests": {
+    "total": 44,
+    "passed": 44,
+    "failed": 0,
+    "generator": 37,
+    "demoRenderer": 7,
+    "report": "execution.node-test.tap"
+  },
+  "requestMockChecks": {
+    "scope": "mock HTTP and local trace only; no server or DB execution",
+    "passed": 19,
+    "checks": [
+      "request persisted before HTTP execution",
+      "redirects disabled and timeout bounded",
+      "purchase key and request body retained",
+      "authentication and cookie values omitted",
+      "safe response Location retained",
+      "request persisted before HTTP execution",
+      "redirects disabled and timeout bounded",
+      "CSRF token omitted but actual header name retained",
+      "request persisted before HTTP execution",
+      "redirects disabled and timeout bounded",
+      "CSRF authentication error keeps its actual HTTP status",
+      "request persisted before HTTP execution",
+      "redirects disabled and timeout bounded",
+      "non JSON CSRF error keeps status without exposing its body",
+      "request persisted before HTTP execution",
+      "redirects disabled and timeout bounded",
+      "lost response preserves original purchase key and unknown outcome",
+      "incorrect inventory makes the demo fail",
+      "matching order result is recorded"
+    ]
+  },
+  "browser": {
+    "browser": "157.0.8103.52",
+    "sourceFiles": 78,
+    "sourceLines": 7053,
+    "passed": 82,
+    "failures": [],
+    "errors": [],
+    "externalRequests": [],
+    "checks": [
+      "all source explanations reviewed",
+      "no startup error",
+      "every rendered source preserves original text",
+      "folder collapse",
+      "actual source tree contains all files",
+      "tree selects source",
+      "method jump selects its real line",
+      "annotation opens exact explanation",
+      "annotation includes effect and alternatives",
+      "annotation dialog closes",
+      "comment toggle hides comment rows",
+      "copy passes exact source to clipboard adapter",
+      "keyboard moves through source tree",
+      "keyboard switches document tabs",
+      "instant search: 주문취소",
+      "instant search: @Transactional",
+      "instant search: Idempotency-Key",
+      "instant search: DTO",
+      "instant search: 재고",
+      "empty search state",
+      "search reset restores tree",
+      "source download uses real filename",
+      "source download succeeds",
+      "program purpose explains customer and stock",
+      "actor diagram opens full-size view",
+      "request flow: 주문 접수",
+      "request flow: 같은 구매 재요청",
+      "request flow: 주문 취소",
+      "first and repeated cancellation are separate branches",
+      "repeated cancellation does not restore stock again",
+      "cancellation failure and ownership conditions remain",
+      "request flow: 로그인 정보 확인",
+      "embedded diagram: 마지막 재고",
+      "embedded diagram: 같은 구매의 재전송",
+      "embedded diagram: 취소 상태와 복구",
+      "embedded diagram: 코드 구성과 인증",
+      "flow links return to source code",
+      "browser back restores previous view",
+      "technology compares alternatives and limitations",
+      "archived 172 and separate 15 are not combined",
+      "execution guide has the four real commands",
+      "execution guide distinguishes HTTP demo and DB test coverage",
+      "JAR link points to the generated executable",
+      "copy command preserves the actual PowerShell invocation",
+      "local result link opens its actual report: demo-result",
+      "demo report contains the real sequential HTTP requests",
+      "demo report displays successful recorded comparisons",
+      "demo report shows debit once and restore once",
+      "demo report fits a mobile viewport",
+      "local result link opens its actual report: junit-result",
+      "viewport has no page overflow: 1440",
+      "reader has space: 1440",
+      "viewport has no page overflow: 1280",
+      "reader has space: 1280",
+      "viewport has no page overflow: 768",
+      "reader has space: 768",
+      "mobile folder drawer: 768",
+      "mobile drawer closes: 768",
+      "viewport has no page overflow: 390",
+      "reader has space: 390",
+      "mobile folder drawer: 390",
+      "mobile drawer closes: 390",
+      "document view fits: project/390",
+      "document view fits: execution/390",
+      "document view fits: technology/390",
+      "document view fits: verification/390",
+      "annotation dialog fits: 390",
+      "viewport has no page overflow: 320",
+      "reader has space: 320",
+      "mobile folder drawer: 320",
+      "mobile drawer closes: 320",
+      "document view fits: project/320",
+      "document view fits: execution/320",
+      "document view fits: technology/320",
+      "document view fits: verification/320",
+      "annotation dialog fits: 320",
+      "cancellation branch layout: 1280",
+      "cancellation branches fit: 1280",
+      "cancellation branch layout: 390",
+      "cancellation branches fit: 390",
+      "no external network request",
+      "no JavaScript or CSP error"
+    ]
+  },
+  "targetValidation": [
+    {
+      "target": "https://example.invalid",
+      "exitCode": 1,
+      "rejected": true
+    },
+    {
+      "target": "http://127.0.0.1:9",
+      "exitCode": 1,
+      "rejected": true
+    }
+  ],
+  "gracefulDemoReuse": {
+    "databaseReused": true,
+    "originalOrderId": 1,
+    "originalOrderStatus": "CANCELLED",
+    "availableQuantity": 10
+  },
+  "processCleanup": {
+    "matchingDemoProcessAlive": false
+  },
+  "comparisonScope": {
+    "stalePublishedReportsBefore": {
+      "xmlFiles": 21,
+      "testcases": 193
+    },
+    "currentRawAndPublished": {
+      "xmlFiles": 18,
+      "testcases": 172
+    },
+    "oldRegularEvidence": "preserved; current regular run is a new execution",
+    "oldDatabaseRecoveryEvidence": "15 archived cases; not rerun here"
+  },
+  "environmentPreparation": {
+    "incompleteGradleCache": "preserved under this project's temporary workspace before using a fresh cache",
+    "incompletePostgresTools": "restored from existing PostgreSQL 16.15 distribution",
+    "originalIncompleteDatabaseData": "left untouched; new dedicated database instances used",
+    "failedPreparationRun": "20261120-125935; not counted as passed"
+  },
+  "scope": {
+    "productJavaAndSqlChanged": false,
+    "bubliChanged": false,
+    "notionChanged": false,
+    "newDatabaseRecoveryTestRun": false,
+    "remoteCiRun": false,
+    "githubPushOrMerge": false
+  }
+}

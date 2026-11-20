@@ -94,6 +94,9 @@ jobs:
         with:
           node-version: "24"
       - name: Test source explorer generator
-        run: node --test scripts/code-explorer/builder.test.cjs
+        run: node --test scripts/code-explorer/builder.test.cjs scripts/demo/report.test.cjs
+      - name: Test demo recording without server
+        shell: pwsh
+        run: ./scripts/demo/request.test.ps1
       - name: Check source and explanation freshness
         run: node scripts/build-code-explorer.cjs --check

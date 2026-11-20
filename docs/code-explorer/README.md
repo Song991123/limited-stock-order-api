@@ -8,8 +8,9 @@
 - 파일의 역할, 메서드별 처리, 기술과 어노테이션의 효과, 선택 이유와 대안.
 - 고객의 주문, 같은 구매의 재요청, 취소와 인증 흐름 및 기존 설계 그림.
 - 저장된 서비스 검사 결과와 미검증 범위. 문서 생성이나 화면 검사와는 별도.
+- 실행과 결과: 서버 실행 명령, 실제 HTTP 시연의 단계별 결과, 로컬 JUnit 보고서와 실행 JAR 링크.
 
-원문은 `src`의 Java, SQL, 설정 파일과 기존 최상위 `scripts`, 빌드 설정, CI 설정을 수록한다. 빌드 산출물, 외부 라이브러리, 실행 비밀번호와 `.runtime`, 원시 검증 자료는 제외한다. 이 HTML을 만드는 도구 자체는 해설 대상 서비스 코드와 구분해 `scripts/code-explorer`에 둔다.
+원문은 `src`의 Java, SQL, 설정 파일과 최상위 `scripts`, 시연 보고서 도구인 `scripts/demo`, 빌드 설정과 CI 설정을 수록한다. 빌드 산출물, 외부 라이브러리, 실행 비밀번호와 `.runtime`, 원시 검증 자료는 제외한다. 이 HTML을 만드는 도구 자체는 해설 대상 서비스 코드와 구분해 `scripts/code-explorer`에 둔다.
 
 Java 메서드와 어노테이션의 위치는 JDK 21의 구문 분석기로 읽는다. 애플리케이션을 실행하거나 클래스에 연결하지 않는다. 원문의 문자와 줄은 그대로 수록하며, OS에 따른 BOM과 CRLF만 LF로 정규화한다. 줄 설명은 파일별 JSON과 공통 구문 설명을 조합한다.
 
@@ -25,7 +26,8 @@ node scripts/build-code-explorer.cjs
 node scripts/build-code-explorer.cjs --accept-reviewed src/main/java/dev/mentoring/orders/service/OrderService.java
 
 # 생성기 검사와 갱신 누락 확인
-node --test scripts/code-explorer/builder.test.cjs
+node --test scripts/code-explorer/builder.test.cjs scripts/demo/report.test.cjs
+pwsh -NoProfile -File scripts/demo/request.test.ps1
 node scripts/build-code-explorer.cjs --check
 ```
 
@@ -47,6 +49,6 @@ CI는 원문과 해설 해시, 미수록 파일, 잘못된 줄 번호와 생성 
 | `../../scripts/build-code-explorer.cjs` | 생성과 최신성 검사 |
 | `../../scripts/code-explorer/SourceIndex.java` | JDK 구문 분석기로 메서드와 어노테이션 위치 추출 |
 
-정규 JUnit 172건과 별도 DB 중단 검사 15건은 기존 기록이다. 이 문서의 생성기 검사와 화면 검사는 해당 수치에 더하지 않는다. 해시 일치는 설명의 정확성, 주문 동작이나 운영 성능을 보증하지 않는다.
+검증 범위 탭의 정규 JUnit 172건과 별도 DB 중단 검사 15건은 기존 기록이다. 실행과 결과 탭의 로컬 보고서는 실제로 다시 실행해 생성한 파일에 연결한다. 이 문서의 생성기 검사와 화면 검사는 서비스 검사 수에 더하지 않는다. 해시 일치는 설명의 정확성, 주문 동작이나 운영 성능을 보증하지 않는다.
 
-생성기와 브라우저 확인 결과는 [문서 검사](VALIDATION.md)를 확인한다. Playwright가 설치된 환경에서는 로컬 HTML을 연 검사 세션에서 `playwright-cli run-code --filename=scripts/code-explorer/browser-check.js`로 화면 검사를 다시 실행할 수 있다. 해당 세션에 로컬 파일 읽기를 허용해야 하며, 사용 중인 브라우저에 연결하지 않고 별도 프로필을 사용한다. 캡처는 `.runtime/code-explorer`에 저장한다.
+생성기와 브라우저 확인 결과는 [문서 검사](VALIDATION.md)를 확인한다. 로컬 전체 검사와 데모 실행 뒤 Playwright의 별도 세션에서 `playwright-cli run-code --filename=scripts/code-explorer/browser-check.js`로 화면을 검사한다. 로컬 결과 링크도 실제 보고서로 열어 확인하므로 두 보고서가 먼저 있어야 한다. 해당 세션에 로컬 파일 읽기를 허용하고 사용 중인 브라우저에는 연결하지 않는다. 캡처는 `.runtime/code-explorer`에 저장한다.

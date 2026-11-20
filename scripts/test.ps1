@@ -45,6 +45,18 @@ try {
     }
     if (Test-Path -LiteralPath $env:STOCK_BUILD_DIR) {
         New-Item -ItemType Directory -Path (Join-Path $project 'build') -Force | Out-Null
+        # 이전 XML과 HTML은 실행 기록으로 옮기고 이번 작업의 결과만 게시.
+        foreach ($relative in @("test-results/$testTask", "reports/tests/$testTask")) {
+            $incoming = Join-Path $env:STOCK_BUILD_DIR $relative
+            $published = Join-Path (Join-Path $project 'build') $relative
+            if ((Test-Path -LiteralPath $incoming) -and (Test-Path -LiteralPath $published)) {
+                $resolved = (Resolve-Path -LiteralPath $published).Path
+                $buildRoot = [IO.Path]::GetFullPath((Join-Path $project 'build'))
+                if (-not $resolved.StartsWith($buildRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) { throw 'Report path is outside this project build directory' }
+                $archive = Join-Path $evidence ('previous-local-' + $relative.Replace('/', '-'))
+                Move-Item -LiteralPath $resolved -Destination $archive
+            }
+        }
         Get-ChildItem -LiteralPath $env:STOCK_BUILD_DIR | Where-Object { -not $TestsOnly -or $_.Name -ne 'libs' } | Copy-Item -Destination (Join-Path $project 'build') -Recurse -Force
     }
     $summary = [ordered]@{ buildExit = $exitCode; tests = 0; failures = 0; errors = 0; skipped = 0; testsOnly = [bool]$TestsOnly; isolatedDatabase = [bool]$IsolatedDatabase; evidenceDirectory = $evidence }
