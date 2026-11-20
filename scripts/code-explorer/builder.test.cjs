@@ -165,7 +165,14 @@ test('every source path is repository relative and excludes private runtime data
 });
 
 test('recorded service tests and separate recovery cases stay separate', () => {
-  assert.equal(snapshot.data.evidence.regular.tests, 172);
+  const recorded = JSON.parse(fs.readFileSync(path.join(TOOL_ROOT, 'evidence/verification/latest.json'), 'utf8').replace(/^\uFEFF/, ''));
+  assert.equal(snapshot.data.evidence.regular.tests, recorded.tests);
+  const recordedDate = `${recorded.testedOn.slice(0, 4)}-${recorded.testedOn.slice(4, 6)}-${recorded.testedOn.slice(6, 8)}`;
+  assert.ok(snapshot.data.technologies.testing.limit.includes(`정규 검사 ${recorded.tests}건은 ${recordedDate} 실행 기록`));
+  assert.match(snapshot.data.technologies.testing.limit, /DB 중단 15건은 2026-11-10의 별도 과거 기록/);
+  const groups = snapshot.data.evidence.groups;
+  assert.equal(groups.httpDatabase + groups.processRecovery + groups.unitArchitecture, recorded.tests);
+  assert.equal(groups.httpDatabase, recorded.suites.filter(suite => suite.name.endsWith('IntegrationTest')).reduce((sum, suite) => sum + suite.tests, 0));
   assert.equal(snapshot.data.evidence.separateRecovery.tests, 15);
   assert.equal(snapshot.data.evidence.architecture, 9);
   assert.equal(snapshot.data.summary.stale, 0);

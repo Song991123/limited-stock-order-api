@@ -345,9 +345,9 @@
       element('p', {}, '아래 수치는 저장된 JUnit과 HTTP/DB 검사 기록입니다. 코드 해설 HTML을 생성하거나 읽는 작업은 주문 서버와 DB를 새로 실행하지 않습니다.'),
       table(['검사 구분', '보관된 결과'], [
         ['정규 JUnit', regular ? `${regular.tests}건, 실패 ${regular.failures} / 오류 ${regular.errors} / 생략 ${regular.skipped}` : '기록 없음'],
-        ['정규 검사 구성', '실제 HTTP/DB 83건, 별도 JVM 종료/재시작 1건, 단위/구조 88건'],
+        ['정규 검사 구성', evidence.groups ? `실제 HTTP/DB ${evidence.groups.httpDatabase}건, 별도 JVM 종료/재시작 ${evidence.groups.processRecovery}건, 단위/구조 ${evidence.groups.unitArchitecture}건` : '분류 기록 없음'],
         ['구조 검사', `${evidence.architecture ?? '기록 없음'}건, 정규 검사 수에 포함`],
-        ['별도 DB 서버 중단', recovery ? `${recovery.tests}건, 5조건을 각각 3회. 정규 검사와 별도` : '기록 없음']
+        ['과거 DB 서버 중단', recovery ? `${recovery.tests}건, 5조건을 각각 3회. 정규 검사와 별도` : '기록 없음']
       ]),
       element('section', {}, element('h2', {}, '대표 조건과 결과'), table(['재현 조건', '관찰 결과'], [
         ['마지막 재고 1개, 서로 다른 고객 두 명', '주문 접수 1건, 재고 부족 1건, 남은 수량 0'],
@@ -355,7 +355,7 @@
         ['같은 주문 취소 동시 20건', '취소 상태와 수량 복구, 복구 이력 한 번'],
         ['저장 중 SQL 오류', '미확정 변경 롤백, 기존 상태와 수량 유지'],
         ['커밋 후 응답 유실과 JVM 재시작', '같은 키 또는 주문 ID로 확인, 추가 차감과 복구 없음'],
-        ['서버 JVM 유지, 전용 DB 중단/재시작', 'DB 연결 회복 후 재요청 성공, 주문과 재고 및 이력 일치']
+        ['과거 검사: 서버 JVM 유지, 전용 DB 중단/재시작', 'DB 연결 회복 후 재요청 성공, 주문과 재고 및 이력 일치']
       ])),
       element('section', {}, element('h2', {}, '아직 확인하지 않은 범위'), element('ul', {}, ...data.project.limits.map(item => element('li', {}, item))), element('p', {}, '과거 k6와 SQL 실행 계획은 해당 코드 버전의 기록이며 최신 코드의 성능 재측정으로 옮기지 않습니다.')),
       element('section', {}, element('h2', {}, '코드 해설의 갱신 상태'), table(['문서 확인', '내용'], [

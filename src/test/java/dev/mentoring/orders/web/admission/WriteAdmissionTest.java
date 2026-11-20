@@ -2,11 +2,14 @@ package dev.mentoring.orders.web.admission;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.awaitility.Awaitility.await;
 
 import dev.mentoring.orders.exception.ApiExceptionHandler;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 
 class WriteAdmissionTest {
@@ -53,32 +56,39 @@ class WriteAdmissionTest {
 
     @Test
     void rateRetryAfterUsesRemainingWindowRoundedUp() {
-        var window = new WriteAdmission.RateWindow();
-        window.checkAndCountRequest(TimeUnit.SECONDS.toNanos(5), 1);
-        assertThatThrownBy(() -> window.checkAndCountRequest(TimeUnit.SECONDS.toNanos(5), 1))
+        var clock = new AtomicLong(TimeUnit.SECONDS.toNanos(5));
+        var window = new WriteAdmission.RateWindow(clock::get);
+        window.checkAndCountRequest(1);
+        assertThatThrownBy(() -> window.checkAndCountRequest(1))
                 .isInstanceOfSatisfying(WriteLimitExceeded.class,
                         error -> assertThat(error.retryAfterSeconds()).isEqualTo(55));
-        assertThatThrownBy(() -> window.checkAndCountRequest(TimeUnit.SECONDS.toNanos(59) + 1, 1))
+        clock.set(TimeUnit.SECONDS.toNanos(59) + 1);
+        assertThatThrownBy(() -> window.checkAndCountRequest(1))
                 .isInstanceOfSatisfying(WriteLimitExceeded.class,
                         error -> assertThat(error.retryAfterSeconds()).isEqualTo(1));
     }
 
     @Test
     void newMinuteResetsTheCustomerCount() {
-        var window = new WriteAdmission.RateWindow();
-        window.checkAndCountRequest(0, 1);
-        assertThatThrownBy(() -> window.checkAndCountRequest(1, 1)).isInstanceOf(WriteLimitExceeded.class);
-        window.checkAndCountRequest(TimeUnit.MINUTES.toNanos(1), 1);
+        var clock = new AtomicLong();
+        var window = new WriteAdmission.RateWindow(clock::get);
+        window.checkAndCountRequest(1);
+        clock.set(1);
+        assertThatThrownBy(() -> window.checkAndCountRequest(1)).isInstanceOf(WriteLimitExceeded.class);
+        clock.set(TimeUnit.MINUTES.toNanos(1));
+        window.checkAndCountRequest(1);
     }
 
     @Test
     void negativeMonotonicTimeStillProducesPositiveRetryAfter() {
-        var window = new WriteAdmission.RateWindow();
-        window.checkAndCountRequest(-1, 1);
-        assertThatThrownBy(() -> window.checkAndCountRequest(-1, 1))
+        var clock = new AtomicLong(-1);
+        var window = new WriteAdmission.RateWindow(clock::get);
+        window.checkAndCountRequest(1);
+        assertThatThrownBy(() -> window.checkAndCountRequest(1))
                 .isInstanceOfSatisfying(WriteLimitExceeded.class,
                         error -> assertThat(error.retryAfterSeconds()).isEqualTo(1));
-        window.checkAndCountRequest(0, 1);
+        clock.set(0);
+        window.checkAndCountRequest(1);
     }
 
     @Test
@@ -144,7 +154,7 @@ class WriteAdmissionTest {
 
     @Test
     void concurrentRateChecksDoNotExceedTheWindowLimit() throws Exception {
-        var window = new WriteAdmission.RateWindow();
+        var window = new WriteAdmission.RateWindow(() -> TimeUnit.SECONDS.toNanos(5));
         var ready = new CountDownLatch(20);
         var start = new CountDownLatch(1);
         try (var pool = Executors.newFixedThreadPool(20)) {
@@ -154,7 +164,7 @@ class WriteAdmissionTest {
                     ready.countDown();
                     waitForRelease(start);
                     try {
-                        window.checkAndCountRequest(TimeUnit.SECONDS.toNanos(5), 5);
+                        window.checkAndCountRequest(5);
                         return true;
                     } catch (WriteLimitExceeded rejected) {
                         return false;
@@ -169,6 +179,41 @@ class WriteAdmissionTest {
             int allowed = 0;
             for (var future : futures) if (future.get(5, TimeUnit.SECONDS)) allowed++;
             assertThat(allowed).isEqualTo(5);
+        }
+    }
+
+    @Test
+    void delayedTimeSampleMustNotEraseTheNewMinuteCount() throws Exception {
+        var clock = new AtomicLong(TimeUnit.MINUTES.toNanos(1) - 1);
+        var reference = new AtomicReference<WriteAdmission.RateWindow>();
+        var window = new WriteAdmission.RateWindow(() -> {
+            assertThat(Thread.holdsLock(reference.get())).as("시각 읽기는 고객별 잠금 안에서 실행").isTrue();
+            return clock.get();
+        });
+        reference.set(window);
+        var waitingThread = new AtomicReference<Thread>();
+        var entered = new CountDownLatch(1);
+        try (var pool = Executors.newSingleThreadExecutor()) {
+            java.util.concurrent.Future<Boolean> delayed;
+            synchronized (window) {
+                delayed = pool.submit(() -> {
+                    waitingThread.set(Thread.currentThread());
+                    entered.countDown();
+                    try {
+                        window.checkAndCountRequest(1);
+                        return true;
+                    } catch (WriteLimitExceeded rejected) {
+                        return false;
+                    }
+                });
+                assertThat(entered.await(5, TimeUnit.SECONDS)).isTrue();
+                await().atMost(java.time.Duration.ofSeconds(2))
+                        .until(() -> waitingThread.get().getState() == Thread.State.BLOCKED);
+                clock.set(TimeUnit.MINUTES.toNanos(1));
+                window.checkAndCountRequest(1);
+            }
+            assertThat(delayed.get(5, TimeUnit.SECONDS)).isFalse();
+            assertThatThrownBy(() -> window.checkAndCountRequest(1)).isInstanceOf(WriteLimitExceeded.class);
         }
     }
 

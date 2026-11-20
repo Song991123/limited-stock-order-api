@@ -5,6 +5,7 @@ import static org.awaitility.Awaitility.await;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.mentoring.orders.support.OrderStorageChecks;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.URI;
@@ -77,22 +78,7 @@ class ActorAdmissionIntegrationTest {
 
     @AfterEach
     void compareOrdersStockAndHistory() {
-        assertThat(jdbc.queryForObject("""
-                SELECT count(*) FROM inventories i WHERE available_quantity < 0
-                OR available_quantity <> initial_quantity - COALESCE((SELECT sum(quantity)
-                    FROM orders o WHERE o.product_id=i.product_id AND o.status='ACCEPTED'),0)
-                OR available_quantity <> initial_quantity + COALESCE((SELECT sum(quantity_delta)
-                    FROM inventory_movements m WHERE m.product_id=i.product_id),0)
-                """, Long.class)).isZero();
-        assertThat(jdbc.queryForObject("SELECT count(*) FROM order_requests WHERE outcome IS NULL", Long.class)).isZero();
-        assertThat(jdbc.queryForObject("""
-                SELECT count(*) FROM orders o JOIN order_requests r ON r.id=o.request_id
-                WHERE o.buyer_id<>r.buyer_id OR o.product_id<>r.product_id OR o.quantity<>r.quantity
-                OR r.outcome<>'ACCEPTED'
-                OR (SELECT count(*) FROM inventory_movements m WHERE m.order_id=o.id AND m.kind='DEBIT')<>1
-                OR (SELECT count(*) FROM inventory_movements m WHERE m.order_id=o.id AND m.kind='RESTORE')<>
-                   (CASE WHEN o.status='CANCELLED' THEN 1 ELSE 0 END)
-                """, Long.class)).isZero();
+        OrderStorageChecks.compare(jdbc).assertConsistent();
     }
 
     @AfterAll

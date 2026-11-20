@@ -1,0 +1,155 @@
+{
+  "preparedOn": "2026-11-21",
+  "baseCommit": "63f4a636cc40e6a48b4612ab74fa78b62b545d4c",
+  "scope": "Local reproduction and fix verification recorded before GitHub publication. Current publication checks and remote CI are separate from these archived runs.",
+  "before": {
+    "run": "20261121-005743",
+    "tests": 175,
+    "failures": 3,
+    "originalCasesPassed": 172,
+    "failedCases": [
+      {
+        "suite": "dev.mentoring.orders.OrderHttpIntegrationTest",
+        "name": "queryTokenDoesNotReplaceRequiredHeaderToken()",
+        "failure": "org.opentest4j.AssertionFailedError: \r\nexpected: 403\r\n but was: 200"
+      },
+      {
+        "suite": "dev.mentoring.orders.OrderHttpIntegrationTest",
+        "name": "consistencyCheckRejectsSwappedMovementAmounts()",
+        "failure": "java.lang.AssertionError: \r\nExpecting code to raise a throwable."
+      },
+      {
+        "suite": "dev.mentoring.orders.web.admission.WriteAdmissionTest",
+        "name": "delayedTimeSampleMustNotEraseTheNewMinuteCount()",
+        "failure": "java.lang.AssertionError: \r\nExpecting code to raise a throwable."
+      }
+    ],
+    "counterReproduction": "Explicit out-of-order pre-lock time samples, not a production HTTP clock shift"
+  },
+  "intermediate": {
+    "run": "20261121-010422",
+    "tests": 186,
+    "failures": 1,
+    "failedCases": [
+      {
+        "suite": "dev.mentoring.orders.PackageStructureTest",
+        "name": "internalTypesDoNotExposeHttpDtosInTheirSignatures()",
+        "failure": "java.lang.AssertionError: Architecture Violation [Priority: MEDIUM] - Rule '서비스와 저장소 및 내부 자료형은 HTTP DTO와 웹 처리에 의존하지 않음' was violated (12 times):\r\nClass <dev.mentoring.orders.security.HeaderCsrfTokenRequestHandler> implements interface <org.springframework.security.web.csrf.CsrfTokenRequestHandler> in (HeaderCsrfTokenRequestHandler.java:0)\r\nConstructor <dev.mentoring.orders.security.HeaderCsrfTokenRequestHandler.<init>()> calls constructor <org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler.<init>()> in (HeaderCsrfTokenRequestHandler.java:16)\r\nField <dev.mentoring.orders.security.HeaderCsrfTokenRequestHandler.tokenHandler> has type <org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler> in (HeaderCsrfTokenRequestHandler.java:0)\r\nMethod <dev.mentoring.orders.security.HeaderCsrfTokenRequestHandler.handle(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse, java.util.function.Supplier)> calls method <org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler.handle(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse, java.util.function.Supplier)> in (HeaderCsrfTokenRequestHandler.java:21)\r\nMethod <dev.mentoring.orders.security.HeaderCsrfTokenRequestHandler.handle(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse, java.util.function.Supplier)> has generic parameter type <java.util.function.Supplier<org.springframework.security.web.csrf.CsrfToken>> with type argument depending on <org.springframework.security.web.csrf.CsrfToken> in (HeaderCsrfTokenRequestHandler.java:0)\r\nMethod <dev.mentoring.orders.security.HeaderCsrfTokenRequestHandler.handle(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse, java.util.function.Supplier)> has parameter of type <jakarta.servlet.http.HttpServletRequest> in (HeaderCsrfTokenRequestHandler.java:0)\r\nMethod <dev.mentoring.orders.security.HeaderCsrfTokenRequestHandler.handle(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse, java.util.function.Supplier)> has parameter of type <jakarta.servlet.http.HttpServletResponse> in (HeaderCsrfTokenRequestHandler.java:0)\r\nMethod <dev.mentoring.orders.security.HeaderCsrfTokenRequestHandler.resolveCsrfTokenValue(jakarta.servlet.http.HttpServletRequest, org.springframework.security.web.csrf.CsrfToken)> calls method <jakarta.servlet.http.HttpServletRequest.getHeader(java.lang.String)> in (HeaderCsrfTokenRequestHandler.java:27)\r\nMethod <dev.mentoring.orders.security.HeaderCsrfTokenRequestHandler.resolveCsrfTokenValue(jakarta.servlet.http.HttpServletRequest, org.springframework.security.web.csrf.CsrfToken)> calls method <org.springframework.security.web.csrf.CsrfToken.getHeaderName()> in (HeaderCsrfTokenRequestHandler.java:27)\r\nMethod <dev.mentoring.orders.security.HeaderCsrfTokenRequestHandler.resolveCsrfTokenValue(jakarta.servlet.http.HttpServletRequest, org.springframework.security.web.csrf.CsrfToken)> calls method <org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler.resolveCsrfTokenValue(jakarta.servlet.http.HttpServletRequest, org.springframework.security.web.csrf.CsrfToken)> in (HeaderCsrfTokenRequestHandler.java:29)\r\nMethod <dev.mentoring.orders.security.HeaderCsrfTokenRequestHandler.resolveCsrfTokenValue(jakarta.servlet.http.HttpServletRequest, org.springframework.security.web.csrf.CsrfToken)> has parameter of type <jakarta.servlet.http.HttpServletRequest> in (HeaderCsrfTokenRequestHandler.java:0)\r\nMethod <dev.mentoring.orders.security.HeaderCsrfTokenRequestHandler.resolveCsrfTokenValue(jakarta.servlet.http.HttpServletRequest, org.springframework.security.web.csrf.CsrfToken)> has parameter of type <org.springframework.security.web.csrf.CsrfToken> in (HeaderCsrfTokenRequestHandler.java:0)"
+      }
+    ],
+    "correction": "Moved the Servlet CSRF handler to web.csrf; architecture rules unchanged"
+  },
+  "after": {
+    "run": "20261121-011852",
+    "tests": 186,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "originalCasesRetained": 172,
+    "additionalCases": 14,
+    "duplicateCaseNames": 0,
+    "missingOriginalCases": [],
+    "sourcesMatch": true,
+    "sourceFiles": 88,
+    "sourceManifestSha256": "1a6d24544f05c81781ee0ae4b30fc0461e3232cac03914c9c2fcd9f1caa720e1",
+    "databaseStopped": true,
+    "bootJar": true,
+    "javadoc": true
+  },
+  "observations": [
+    {
+      "scenario": "query-token-requires-header",
+      "observations": {
+        "http": 403,
+        "available": 9
+      }
+    },
+    {
+      "scenario": "per-order-movement-amount-check",
+      "observations": {
+        "orderViolations": 2,
+        "inventoryViolations": 0
+      }
+    },
+    {
+      "scenario": "same-key-waiter-after-rollback",
+      "observations": {
+        "movements": 1,
+        "available": 8,
+        "replayHttp": 200,
+        "waitingRetryHttp": 201,
+        "firstHttp": 500,
+        "orders": 1,
+        "observedRetryWaiting": true
+      }
+    },
+    {
+      "scenario": "same-key-waiter-after-rollback",
+      "observations": {
+        "movements": 1,
+        "available": 8,
+        "replayHttp": 200,
+        "waitingRetryHttp": 201,
+        "firstHttp": 500,
+        "orders": 1,
+        "observedRetryWaiting": true
+      }
+    },
+    {
+      "scenario": "same-key-waiter-after-rollback",
+      "observations": {
+        "movements": 1,
+        "available": 8,
+        "replayHttp": 200,
+        "waitingRetryHttp": 201,
+        "firstHttp": 500,
+        "orders": 1,
+        "observedRetryWaiting": true
+      }
+    },
+    {
+      "scenario": "per-order-movement-product-check",
+      "observations": {
+        "orderViolations": 2,
+        "inventoryViolations": 0
+      }
+    },
+    {
+      "scenario": "valid-header-with-invalid-query",
+      "observations": {
+        "http": 200,
+        "available": 10
+      }
+    }
+  ],
+  "unchangedFiles": [
+    "src/main/java/dev/mentoring/orders/controller/OrderController.java",
+    "src/main/java/dev/mentoring/orders/service/OrderService.java",
+    "src/main/java/dev/mentoring/orders/repository/OrderRepository.java",
+    "src/main/resources/db/migration/V1__orders_and_inventory.sql",
+    "README.md"
+  ],
+  "jar": {
+    "file": "build/libs/limited-stock-order-api-0.1.0.jar",
+    "bytes": 29505985,
+    "sha256": "919a3bbc193d8f130a4320ad8b1ba2d9443282dc5f3dc08c35ac224192bf6c64"
+  },
+  "unverified": [
+    "Production capacity",
+    "Long-running load",
+    "Current locking-method performance comparison",
+    "Shared multi-server request limits",
+    "Purchase-key expiry and cleanup",
+    "Host power-loss durability"
+  ],
+  "archivedDatabaseRecovery": {
+    "cases": 15,
+    "rerun": false,
+    "excludedFromRegularCount": true
+  },
+  "changedSystems": {
+    "bubli": false,
+    "notion": false,
+    "github": false
+  }
+}
