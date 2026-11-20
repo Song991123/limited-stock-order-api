@@ -90,8 +90,8 @@
       "noteHash": "624c6d8d498344bc82f57a454193e7900b6b88368cf17f88ad6b6aeb00667133"
     },
     "src/main/java/dev/mentoring/orders/config/SecurityConfiguration.java": {
-      "sourceHash": "4723739c357b247184147518a5882cbfbd92c9291459f19d9a2bfce44ae2c39f",
-      "noteHash": "f574bb6586f715b3ee1c3cda916eec6b765d5a47ec2242e27029c25a757242df"
+      "sourceHash": "6a1efec8f0913842b2160595cff50e5fa878c369ae4bb62f719067111b1591a9",
+      "noteHash": "a6f46d80e99f05e380bcc44af9e07798f41edf9f2f0af85632101adad849f447"
     },
     "src/main/java/dev/mentoring/orders/config/TransactionConfiguration.java": {
       "sourceHash": "42009c1e8ca3f5b1cfb8df394d3584a2afe94e81b06e1c2468cfdea5609c4ea4",
@@ -202,15 +202,19 @@
       "noteHash": "44cc574ae34fcaf504a5b1e7af56a3224a5a99afebb89c6ad17bbc85d50eabc1"
     },
     "src/main/java/dev/mentoring/orders/web/admission/WriteAdmission.java": {
-      "sourceHash": "db0e9b306361d6c1c89b1341f072aa780eeeec3faa9c2b06f380ff071dedd6e8",
-      "noteHash": "c973f4cd3d309e1c1b83599208efa3d4732fa0e6ae679f88d92cc3d72ba555e0"
+      "sourceHash": "ae5d942ef933edee011f600afcc3add7e78b29c2f753a798bad0106e4e88c33a",
+      "noteHash": "389589272e0d69e7bad8a50d9bebe362eb8ba4c7534adfe4faa4aebeffd4c5bb"
     },
     "src/main/java/dev/mentoring/orders/web/admission/WriteLimitExceeded.java": {
       "sourceHash": "20448bbe6838a532c09efbd0907860ddc8db6d3a62465a03d54f6e6ad00f583a",
       "noteHash": "d9dfefdb004c03878e52c188a9b6fd2714615b5b063bd64398181ee8cfc0d7a5"
     },
+    "src/main/java/dev/mentoring/orders/web/csrf/HeaderCsrfTokenRequestHandler.java": {
+      "sourceHash": "25ef72882c36597092c65c80699562562f260218e1e57767d32efd82f1ef3e4d",
+      "noteHash": "d538371ca2a82158eeb3ec2415950fe401d1d1cd77b1378c3ee2de4d14af2061"
+    },
     "src/main/java/dev/mentoring/orders/web/filter/RequestSizeFilter.java": {
-      "sourceHash": "984cc23e832d9d01d8ccc5f13726339e1e5f019401468d73e59d3741696f270b",
+      "sourceHash": "5c7d19d4f878f84b57d4fe3b00e754dc9c994115bedf931682480cb0daa79bb9",
       "noteHash": "8e683128a02a6c3d47e663be07e63f9191a977a688c71c84f0ec898eb6dc57f4"
     },
     "src/main/resources/application-demo.yml": {
@@ -238,8 +242,8 @@
       "noteHash": "95549625d492658ed03b3293414fb9b3d373c77e24122c78111f12837a076a26"
     },
     "src/test/java/dev/mentoring/orders/ActorAdmissionIntegrationTest.java": {
-      "sourceHash": "81b0cbcf3f46fd85ebd677c339fa1581a671582b733c2db451f6c050a863dbd3",
-      "noteHash": "5a81c9b8663370c971b11c424defb484b530b4e6c945df78bbc92a642da2a51e"
+      "sourceHash": "20b1b87ce4b1ab718be5cdb15bd8d7d128e49a960fe7a08b61363c6017b6b227",
+      "noteHash": "cb37345ef4a79adb7b4639c2643ae8b8d8f7b43aef21a1b59dbcaf8dde92a72f"
     },
     "src/test/java/dev/mentoring/orders/ActorOrderJourneyIntegrationTest.java": {
       "sourceHash": "1584e31a5364e97899a8e3587970bc21614a4f82fcce4975ba298ee6eb2592e2",
@@ -270,8 +274,8 @@
       "noteHash": "37d5855b5a602e3d9709b27ae999f1e6ed1d8804e699807c91ae2699f9075441"
     },
     "src/test/java/dev/mentoring/orders/OrderHttpIntegrationTest.java": {
-      "sourceHash": "9374b2ed9267335a19ce5f163ce018c664addfb41c69c691fc51509a8ec9aed4",
-      "noteHash": "12ef816a9258991f2cacaaf570f00d3ce178ec6bc0a6e6e3e2ec7cc5c4d96040"
+      "sourceHash": "04922ea75c6b1dc7c28136cc070f9b7f90c1158881d4b61319f05424a79be5cc",
+      "noteHash": "aa5a15ff9477acfa8d406e06a7214e61eaebbcbed9e04a674d256d314630b496"
     },
     "src/test/java/dev/mentoring/orders/OrderProcessRecoveryTest.java": {
       "sourceHash": "6cd96e3f20fcb412379dc85511b3624e0984a6b4dedc554cfe812ce71f48bb31",
@@ -297,17 +301,25 @@
       "sourceHash": "766f4d414f5e79d5715cee1c1f4d8318a036ce7e0c2f7a3995a65319e1820eef",
       "noteHash": "d4512c1b095e3b21bf028cafe860452ee30c852b0c4f356af22f1a2cd1a4db21"
     },
+    "src/test/java/dev/mentoring/orders/support/OrderStorageChecks.java": {
+      "sourceHash": "8599ddf1e8f904666fb65a86226a70b63ce5b30c31b4bd666f0d0389ce0f1789",
+      "noteHash": "f0bdcc95427ea79654731ef0d2cd2f2e77c0b62a5a9a28b13eafc32312ae664a"
+    },
     "src/test/java/dev/mentoring/orders/support/ReviewFixture.java": {
-      "sourceHash": "168d5ebd0bfd005a4120b981afa62a2fa21eccbbfdf677bd0fd48a48e9460658",
-      "noteHash": "aec45a0f551de29011526e19b6282ece04987ea0c335f2d7bae5448a9f8f5f48"
+      "sourceHash": "3dee69c047d84bdb7c40067e69be40b5e3f2e49b6c11e2d85d030bf2204989c7",
+      "noteHash": "c8ab8727ab18bb63e44a862edb0b75c41d329eb720ba5af31edcf6aac5ac95e6"
     },
     "src/test/java/dev/mentoring/orders/TwoServerIntegrationTest.java": {
       "sourceHash": "cfb8bce2e16e974eac159493d1e2cad3f41bad6d12d966f291c4dbbcacf978dc",
       "noteHash": "3d870b3317c41b669409c2f6a08e9a6797ebe22e9a127b98660c636e2c0f1dc6"
     },
     "src/test/java/dev/mentoring/orders/web/admission/WriteAdmissionTest.java": {
-      "sourceHash": "1fe9745d66aa354d9c7b09d2dbfc3c47e3e984dc543f332ba8d7e53ae87e38de",
-      "noteHash": "c5b1f021ab66734356542e4dfdcb6ee6e64029116c27f31a9e3a5d343b60558a"
+      "sourceHash": "2a49ff40c2b23a5bb5bb1b9f602ffa3f554341bcc8ea8b638b262b28cfa11e7c",
+      "noteHash": "0e5ba6fd2e2c4c0c8c946722421966061f96acab4d2c97b7f031124764fc1c85"
+    },
+    "src/test/java/dev/mentoring/orders/web/csrf/HeaderCsrfTokenRequestHandlerTest.java": {
+      "sourceHash": "cb8a07f791081a2d1027643742df80a57b6cf23dbd8a5c166b0e432b7ed2ab69",
+      "noteHash": "6c84074217e535665f5166e369ab7f8156c4ee6695b09aacb241908619db80fc"
     },
     "src/test/java/dev/mentoring/orders/web/filter/RequestSizeFilterTest.java": {
       "sourceHash": "45bafb3893f8c95ffcabdf21a3459390e26c679300fb6997da7484b997564d1d",

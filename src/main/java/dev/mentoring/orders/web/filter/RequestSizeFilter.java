@@ -71,7 +71,7 @@ public class RequestSizeFilter extends OncePerRequestFilter {
     /**
      * 크기를 검사한 본문을 뒤에서 다시 읽을 수 있도록 보관.
      *
-     * <p>폼 파라미터는 다시 만들지 않으므로 CSRF 토큰은 요청 헤더로 받아야 함.
+     * <p>폼 파라미터는 다시 만들지 않음. CSRF 헤더만 허용하는 정책은 HeaderCsrfTokenRequestHandler에서 검사.
      */
     private static final class CachedBodyRequest extends HttpServletRequestWrapper {
         private final byte[] cachedBody;

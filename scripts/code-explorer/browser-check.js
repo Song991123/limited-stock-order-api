@@ -14,7 +14,7 @@ async page => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.reload();
   await page.waitForFunction(() => Boolean(window.codeExplorer));
-  const info = await page.evaluate(() => ({ summary: window.codeExplorer.stats, paths: window.codeExplorer.data.files.map(file => file.path) }));
+  const info = await page.evaluate(() => ({ summary: window.codeExplorer.stats, paths: window.codeExplorer.data.files.map(file => file.path), evidence: window.codeExplorer.data.evidence }));
   check('all source explanations reviewed', info.summary.stale === 0);
   check('no startup error', await page.locator('#app-error').isHidden());
 
@@ -105,7 +105,9 @@ async page => {
   check('technology compares alternatives and limitations', (await page.locator('.technology-detail').innerText()).includes('비용과 보장 범위'));
   await page.locator('[data-view="verification"]').click();
   const verificationText = await page.locator('#view-verification').innerText();
-  check('archived 172 and separate 15 are not combined', verificationText.includes('172건') && verificationText.includes('15건') && verificationText.includes('정규 검사와 별도'));
+  check('recorded regular tests and separate recovery are not combined', verificationText.includes(`${info.evidence.regular.tests}건`) && verificationText.includes('15건') && verificationText.includes('정규 검사와 별도'));
+  check('displayed test groups match recorded suites', verificationText.includes(`HTTP/DB ${info.evidence.groups.httpDatabase}건`) && verificationText.includes(`단위/구조 ${info.evidence.groups.unitArchitecture}건`));
+  check('database server recovery remains an archived scope', verificationText.includes('과거 DB 서버 중단'));
 
   await page.locator('[data-view="execution"]').click();
   check('execution guide has the four real commands', await page.locator('#view-execution .command-row').count() === 4);

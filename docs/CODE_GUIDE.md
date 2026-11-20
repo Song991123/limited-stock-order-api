@@ -17,6 +17,7 @@
 | [WriteAdmission](../src/main/java/dev/mentoring/orders/web/admission/WriteAdmission.java) | 구매/취소 횟수는 고객별로 분리, 전체 동시 쓰기는 함께 제한 |
 | [RequestBodyConfiguration](../src/main/java/dev/mentoring/orders/config/RequestBodyConfiguration.java) | 헤더 검사 전에 본문 전송을 허용하지 않도록 100 Continue 응답 시점 지정 |
 | [RequestSizeFilter](../src/main/java/dev/mentoring/orders/web/filter/RequestSizeFilter.java) | 다른 필터가 읽기 전 본문 크기 검사 |
+| [HeaderCsrfTokenRequestHandler](../src/main/java/dev/mentoring/orders/web/csrf/HeaderCsrfTokenRequestHandler.java) | 헤더만 토큰 입력으로 허용하고 기본 마스킹과 지연 조회 유지 |
 | [TransactionConfiguration](../src/main/java/dev/mentoring/orders/config/TransactionConfiguration.java) | 같은 DataSource의 트랜잭션 관리자 지정, 커밋 오류 보존 |
 | [DatabaseFailures](../src/main/java/dev/mentoring/orders/exception/DatabaseFailures.java) | 인증과 주문에서 공통으로 쓰는 DB 오류 분류 |
 | [CustomerAccountRepository](../src/main/java/dev/mentoring/orders/repository/CustomerAccountRepository.java) | 로그인 계정과 저장된 비밀번호 해시 조회 |
@@ -50,6 +51,10 @@
 | Semaphore와 고객별 카운터 | 서버 프로그램 하나에 너무 많은 요청이 동시에 실행되는 상황 | 여러 서버가 공유하는 한도와 재고 중복 차감 |
 
 재고가 1개일 때 A와 B가 각각 1개를 주문하면 A의 UPDATE가 재고 기록을 잠급니다. B가 같은 기록을 갱신하려면 기다립니다. A가 커밋한 뒤 DB가 B의 `수량 >= 1`을 다시 검사하므로 B는 차감하지 못합니다. 잠금이 없는 방식도, 도착 순서대로 처리하는 대기열도 아닙니다. [PostgreSQL의 갱신과 조건 재검사](https://www.postgresql.org/docs/16/transaction-iso.html#XACT-READ-COMMITTED)
+
+`WriteAdmission`은 고객별 잠금을 얻은 뒤 시각을 읽고 횟수를 갱신합니다. 잠금 전에 시각을 읽으면 이전 분에 도착한 요청이 늦게 진입해 새 분의 횟수를 지울 수 있기 때문입니다. 분이 바뀌면 원래 허용하던 횟수를 새로 세는 정책은 유지합니다. 인증 조회와 비밀번호 계산까지 제한하는 코드는 아닙니다.
+
+같은 구매 키를 먼저 등록한 요청이 롤백하면, 기다리던 요청이 등록을 이어받아 정상 주문을 만들 수 있습니다. 실제 HTTP 두 요청의 DB 대기를 확인한 뒤 첫 등록을 실패시키는 조건으로 검사했습니다. [검토 피드백 반영](REVIEW_FOLLOWUP.md)에서 재현 조건과 검사 범위를 확인할 수 있습니다.
 
 ## 주문과 재고를 함께 저장하는 설정
 
@@ -145,6 +150,6 @@ public OrderPlacement placeOrder(String username, String idempotencyKey, long pr
 | 트랜잭션 관리자를 왜 명시했나요? | 실제 DB 중단에서 커밋 오류가 롤백 오류에 가려졌습니다. 표준 DataSourceTransactionManager로 원래 SQL 오류를 보존했습니다. 저장 범위와 격리 수준은 그대로입니다. |
 | 인증 코드를 왜 나눴나요? | 보안 설정에서 SQL을 제거하고, 저장소는 계정 조회, UserDetailsService는 로그인 정보 변환을 맡게 했습니다. 비밀번호 비교와 인증 응답은 기존 처리를 유지했습니다. |
 | 새 클래스도 구조 검사를 받나요? | 제품 패키지의 컴파일된 클래스 파일을 자동으로 읽고 패키지별 규칙을 적용합니다. 메서드 안에서만 잘못된 타입을 쓰는 경우도 검사합니다. |
-| 어느 범위까지 확인했나요? | 정규 172건과 별도 DB 중단 15건을 구분합니다. 목록 인덱스의 SQL 계획 24개와 k6는 이전 코드의 기록이며 이번에 다시 측정하지 않았습니다. |
+| 어느 범위까지 확인했나요? | 2026-11-21 정규 검사 186건과 2026-11-10 DB 중단 검사 15건을 구분합니다. DB 중단, 목록 인덱스의 SQL 계획 24개와 k6는 별도 과거 기록이며 186건에 합산하지 않습니다. |
 
 [백엔드 점검표](BACKEND_REVIEW.md)에 유지한 구성과 수정 이유, 남은 한계를 모았습니다.

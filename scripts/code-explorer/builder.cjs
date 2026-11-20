@@ -81,11 +81,16 @@ function loadEvidence(root) {
   };
   const regular = record('latest.json');
   const review = record('authentication-structure-review.json');
+  const suites = regular?.suites || [];
+  const total = suites.reduce((sum, suite) => sum + suite.tests, 0);
+  const httpDatabase = suites.filter(suite => suite.name.endsWith('IntegrationTest')).reduce((sum, suite) => sum + suite.tests, 0);
+  const processRecovery = suites.find(suite => suite.name.endsWith('.OrderProcessRecoveryTest'))?.tests || 0;
+  const groups = regular && total === regular.tests ? { httpDatabase, processRecovery, unitArchitecture: total - httpDatabase - processRecovery } : null;
   return {
     recordedRun: regular?.testedOn || null,
     regular: regular ? { tests: regular.tests, failures: regular.failures, errors: regular.errors, skipped: regular.skipped } : null,
-    suites: regular?.suites || [], separateRecovery: review?.databaseRecovery?.summary || null,
-    architecture: review?.architecture?.tests ?? null
+    suites, groups, separateRecovery: review?.databaseRecovery?.summary || null,
+    architecture: suites.find(suite => suite.name.endsWith('.PackageStructureTest'))?.tests ?? null
   };
 }
 

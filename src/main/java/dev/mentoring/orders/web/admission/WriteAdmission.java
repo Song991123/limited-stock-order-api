@@ -2,6 +2,7 @@ package dev.mentoring.orders.web.admission;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
+import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -72,7 +73,7 @@ public class WriteAdmission {
         if (!writePermits.tryAcquire()) throw new WriteLimitExceeded(1);
         try {
             var customerWindow = rateWindows.computeIfAbsent(username, ignored -> new RateWindow());
-            customerWindow.checkAndCountRequest(System.nanoTime(), maxRequestsPerCustomerPerMinute);
+            customerWindow.checkAndCountRequest(maxRequestsPerCustomerPerMinute);
             return writeOperation.get();
         } finally {
             writePermits.release();
@@ -86,17 +87,31 @@ public class WriteAdmission {
      * 컴퓨터 시각을 바꿔도 영향이 없지만, 초기화 직전과 직후에 요청이 몰리는 현상은 막지 못함.
      */
     static final class RateWindow {
+        private final LongSupplier monotonicTime;
         private long windowIndex = Long.MIN_VALUE;
         private int requestCount;
 
+        /** 실행 중인 JVM의 단조 시계 사용. */
+        RateWindow() {
+            this(System::nanoTime);
+        }
+
+        /** 분 전환을 기다리지 않고 검사할 수 있도록 시각 읽기 함수 교체 허용. */
+        RateWindow(LongSupplier monotonicTime) {
+            this.monotonicTime = java.util.Objects.requireNonNull(monotonicTime);
+        }
+
         /**
-         * 요청 수를 초기화할 시각인지 확인하고 횟수 계산. synchronized로 검사 중 다른 스레드의 동시 변경 방지.
+         * 같은 고객의 시각 읽기와 횟수 갱신을 함께 동기화.
          *
-         * @param currentTimeNanos System.nanoTime()으로 읽은 값
+         * <p>잠금을 얻기 전에 시각을 읽으면 늦게 진입한 요청이 이전 분의 값으로 횟수를 초기화할 수 있어,
+         * 잠금을 얻은 다음 현재 시각을 읽음.
+         *
          * @param maxRequests 요청 수를 초기화하기 전까지 허용할 최대 횟수
          * @throws WriteLimitExceeded 한도 초과, 요청 수를 초기화할 때까지 기다릴 초도 함께 전달
          */
-        synchronized void checkAndCountRequest(long currentTimeNanos, int maxRequests) {
+        synchronized void checkAndCountRequest(int maxRequests) {
+            long currentTimeNanos = monotonicTime.getAsLong();
             long currentWindowIndex = Math.floorDiv(currentTimeNanos, NANOS_PER_MINUTE);
             if (currentWindowIndex != windowIndex) {
                 windowIndex = currentWindowIndex;
