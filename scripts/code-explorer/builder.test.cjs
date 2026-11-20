@@ -90,6 +90,25 @@ test('every source line and original character is retained', () => {
   }
 });
 
+test('execution guide links commands, current local reports and the executable without embedding runtime data', () => {
+  const guide = snapshot.data.execution;
+  assert.equal(guide.steps.length, 4);
+  for (const step of guide.steps) {
+    assert.ok(snapshot.files.some(file => file.path === step.source), step.source);
+    assert.ok(step.command.startsWith('pwsh -NoProfile -File .\\scripts\\'));
+  }
+  assert.ok(guide.steps[0].command.endsWith('-IsolatedDatabase'));
+  assert.deepEqual(guide.outputs.map(item => item.href), [
+    '../../build/reports/demo/index.html', '../../build/reports/tests/test/index.html', '../../build/libs/limited-stock-order-api-0.1.0.jar'
+  ]);
+  for (const output of guide.outputs) {
+    assert.ok(path.resolve(path.dirname(snapshot.output), output.href).startsWith(TOOL_ROOT + path.sep));
+  }
+  assert.ok(!snapshot.files.some(file => file.path.startsWith('build/') || file.path.startsWith('.runtime/')));
+  assert.ok(snapshot.html.includes('id="tab-execution"'));
+  assert.ok(snapshot.html.includes('id="view-execution"'));
+});
+
 test('JDK parser locates methods and annotations in all Java sources', () => {
   const javaFiles = snapshot.files.filter(file => file.path.endsWith('.java'));
   assert.equal(Object.keys(snapshot.parsed).length, javaFiles.length);

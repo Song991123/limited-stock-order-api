@@ -54,7 +54,7 @@
     const fallback = 'src/main/java/dev/mentoring/orders/controller/OrderController.java';
     state.file = files.has(parameters.get('file')) ? parameters.get('file') : fallback;
     state.line = Math.max(1, Math.min(Number(parameters.get('line')) || 54, files.get(state.file)?.rows.length || 1));
-    state.view = ['code', 'project', 'technology', 'verification'].includes(parameters.get('view')) ? parameters.get('view') : 'code';
+    state.view = ['code', 'project', 'execution', 'technology', 'verification'].includes(parameters.get('view')) ? parameters.get('view') : 'code';
     if (data.technologies[parameters.get('technology')]) state.technology = parameters.get('technology');
     renderFile(); renderView(); revealAncestors(state.file); renderTree();
   }
@@ -70,8 +70,9 @@
       button.setAttribute('aria-selected', String(button.dataset.view === state.view));
       button.tabIndex = button.dataset.view === state.view ? 0 : -1;
     });
-    for (const view of ['code', 'project', 'technology', 'verification']) $('view-' + view).hidden = view !== state.view;
+    for (const view of ['code', 'project', 'execution', 'technology', 'verification']) $('view-' + view).hidden = view !== state.view;
     if (state.view === 'project') renderProject();
+    if (state.view === 'execution') renderExecution();
     if (state.view === 'technology') renderTechnology();
     if (state.view === 'verification') renderVerification();
   }
@@ -308,11 +309,38 @@
     return element('table', { class: 'data-table' }, element('thead', {}, element('tr', {}, ...headers.map(value => element('th', { scope: 'col' }, value)))), element('tbody', {}, ...rows.map(row => element('tr', {}, ...row.map(value => element('td', {}, value))))));
   }
 
+  function resultLink(output) {
+    return element('a', { id: output.id, class: 'artifact-link', href: output.href, target: '_blank', rel: 'noopener noreferrer' }, output.title, icon('ExternalLink'));
+  }
+
+  /** 서버 실행 명령과 로컬에서 생성한 결과 연결. 이 화면 자체는 명령이나 HTTP 요청을 실행하지 않음. */
+  function renderExecution() {
+    const guide = data.execution;
+    const commands = guide.steps.map((step, index) => {
+      const copy = element('button', { class: 'icon-button', title: '명령 복사: ' + step.title, 'aria-label': '명령 복사: ' + step.title,
+        onclick: async () => { try { await copyText(step.command); toast('명령을 복사했습니다.'); } catch { toast('이 브라우저에서 복사를 허용하지 않았습니다.'); } } }, icon('Copy'));
+      return element('section', { class: 'execution-step' }, element('h2', {}, `${index + 1}. ${step.title}`), element('p', {}, step.text),
+        element('div', { class: 'command-row' }, element('pre', {}, element('code', {}, step.command)), copy), codeLink(step.source));
+    });
+    $('view-execution').replaceChildren(element('div', { class: 'document-inner' }, element('p', { class: 'eyebrow' }, '실행 파일과 실제 요청 결과'),
+      element('h1', {}, '서버 실행과 주문 확인'), element('p', {}, guide.requirements),
+      element('p', { class: 'run-note' }, '이 HTML은 서버를 자동으로 켜지 않습니다. 아래 명령을 실행한 뒤 생성된 로컬 결과를 엽니다.'),
+      element('section', { class: 'execution-outputs' }, element('h2', {}, '실행 결과 열기'), ...guide.outputs.map(output =>
+        element('div', { class: 'artifact-row' }, resultLink(output), element('p', {}, output.text)))),
+      ...commands,
+      element('section', {}, element('h2', {}, '시연에서 확인하는 재고 변화'),
+        table(['동작', '확인할 결과'], [['주문 전 재고 조회', '현재 재고 N을 직접 조회'], ['상품 1개 주문', '새 주문 접수와 재고 N-1'],
+          ['같은 구매 키와 본문으로 재요청', '같은 주문 ID, 재고 N-1 유지'], ['처음 취소', 'CANCELLED 상태와 재고 N 복구'], ['같은 주문 재취소', '같은 주문 ID, 재고 N 유지']]),
+        element('p', {}, '시연 기록은 HTTP 응답을 비교합니다. 동시 주문, SQL 오류와 복구 이력의 DB 대조는 전체 검사 보고서에서 별도로 확인합니다.'))));
+  }
+
   /** 보관된 서비스 검사 결과와 해설 문서의 갱신 상태를 구분해 표시. */
   function renderVerification() {
     const evidence = data.evidence, regular = evidence.regular, recovery = evidence.separateRecovery;
     const date = evidence.recordedRun ? evidence.recordedRun.slice(0, 4) + '-' + evidence.recordedRun.slice(4, 6) + '-' + evidence.recordedRun.slice(6, 8) : '기록 없음';
     $('view-verification').replaceChildren(element('div', { class: 'document-inner' }, element('p', { class: 'eyebrow' }, '실행 기록과 확인 범위'), element('h1', {}, '검증 결과'),
+      element('p', { class: 'local-result-links' }, ...data.execution.outputs.filter(output => output.id !== 'server-jar').map(output => resultLink({ ...output, id: output.id + '-verification' }))),
+      element('p', {}, '위 링크는 로컬에서 마지막으로 실행해 만든 보고서입니다. 아래 표는 저장소에 보관한 기존 검사 기록입니다.'),
       element('p', { class: 'record-date' }, '보관된 서비스 검사 기록 / ' + date),
       element('p', {}, '아래 수치는 저장된 JUnit과 HTTP/DB 검사 기록입니다. 코드 해설 HTML을 생성하거나 읽는 작업은 주문 서버와 DB를 새로 실행하지 않습니다.'),
       table(['검사 구분', '보관된 결과'], [
